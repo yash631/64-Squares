@@ -16,11 +16,14 @@ function isValid(move, color) {
           4,
           0
         );
+
         /* show the update board */
         console.log(`\nBoard Updated after ${move}\n`);
         getBoard.showBoard(getBoard.Board);
-        /* In game pieces with their position */
-        // console.log(getBoard.createInGamePcs(getBoard.Board));
+
+        /* In game pieces with their position 
+        console.log(getBoard.createInGamePcs(getBoard.Board)); */
+
         return true;
       }
     }
@@ -32,9 +35,3 @@ function isValid(move, color) {
 console.log(isValid("a4", 1));
 
 module.exports = { isValid };
-
-/*  Considerations
-1. In en passant if not written ep as suffix -> still a legal move
-2. If given check and + not written as suffix -> still a legal move
-3. If checkmate and # not written as suffix -> still legal move
-*/

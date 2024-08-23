@@ -15,7 +15,6 @@ const file = ["a", "b", "c", "d", "e", "f", "g", "h"],
   rank = ["1", "2", "3", "4", "5", "6", "7", "8"],
   pieces = ["q", "r", "n", "b", "Q", "R", "N", "B"];
 
-
 function pawnMove(m) {
   if (rank.includes(m[1])) {
     if (m[2] == "=" && pieces.includes(m[3])) {
@@ -146,9 +145,8 @@ function pieceMove(m, pc) {
   }
 }
 
-function isCorrectMove(color,move) {
-  if(color == white)
-  console.log(move);
+function isCorrectMove(color, move) {
+  if (color == white) console.log(move);
   const files = ["a", "b", "c", "d", "e", "f", "g", "h"];
   if (files.includes(move[0])) {
     pawnMove(move);
@@ -160,31 +158,5 @@ function isCorrectMove(color,move) {
     console.log(`${move} is an illegal move`);
   }
 }
-
-/*  Test Cases */
-/*
-isCorrectMove("e4");
-isCorrectMove("exd5");
-isCorrectMove("e3+");
-isCorrectMove("h7#");
-isCorrectMove("fxe4+");
-isCorrectMove("axb7#");
-isCorrectMove("d8=q");
-isCorrectMove("dxe8=q");
-isCorrectMove("gxh6ep");
-isCorrectMove("gxh6ep+");
-isCorrectMove("gxf6ep#");
-isCorrectMove("Rxd5");
-isCorrectMove("Kf5");
-isCorrectMove("cf3+");
-isCorrectMove("da3#");
-isCorrectMove("Nxe2#");
-isCorrectMove("fxb4+");
-isCorrectMove("Bd5");
-isCorrectMove("Ne5+");
-isCorrectMove("ef1#");
-isCorrectMove("exd6");
-isCorrectMove("qxd5+");
-isCorrectMove("kxg6#");*/
 
 module.exports = isCorrectMove;
