@@ -1,5 +1,3 @@
-const getBoard = require("./createBoard");
-
 function updateInGamePcs(board, currentPcs, fromRow, fromCol, toRow, toCol) {
   const piece = board[fromRow][fromCol];
 

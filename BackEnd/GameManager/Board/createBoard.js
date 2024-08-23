@@ -8,6 +8,8 @@ let Board = [
   ["P", "P", "P", "P", "P", "P", "P", "P"],
   ["R", "N", "B", "Q", "K", "B", "N", "R"],
 ];
+let Game_State = [],
+    prevMove;
 function createInGamePcs(board) {
   let inGamePcs = {
     b: [],
@@ -47,6 +49,6 @@ function showBoard(board) {
 
 console.log(`-------xxxxx-----NEW GAME-----xxxxx--------\n`);
 showBoard(Board);
-console.log(`\n-------xxxxx-----xxxxxxxx-----xxxxx--------`);
+console.log(`\n-------xxxxx-----xxxxxxxx-----xxxxx--------\n`);
 
-module.exports = {Board,createInGamePcs,showBoard};
+module.exports = {Board,createInGamePcs,showBoard,Game_State,prevMove};

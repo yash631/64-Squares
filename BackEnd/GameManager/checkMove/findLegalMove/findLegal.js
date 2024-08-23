@@ -5,38 +5,24 @@ const bishop = require("./legalBishopMoves");
 const rook = require("./legalRookMoves");
 const knight = require("./legalKnightMoves");
 const queen = require("./legalQueenMoves");
-const king = require("./legalKingMoves")
+const king = require("./legalKingMoves");
 
-let prevMove;
 
-let LEGALMOVES = {
-  p: {
-    0: [],
-    1: [],
-  },
-  b: {
-    0: [],
-    1: [],
-  },
-  r: {
-    0: [],
-    1: [],
-  },
-  n: {
-    0: [],
-    1: [],
-  },
-  q: {
-    0: [],
-    1: [],
-  },
-  k: {
-    0: [],
-    1: [],
-  },
-};
+function createLegalMoves() {
+  const pieces = ["p", "b", "r", "n", "q", "k"];
+  const legalMoves = {};
 
-function findAllLegalMoves(color) {
+  pieces.forEach((piece) => {
+    legalMoves[piece] = {
+      0: [],
+      1: [],
+    };
+  });
+
+  return legalMoves;
+}
+
+function findAllLegalMoves(LEGALMOVES, color, prevMove) {
   pawn.findPawn(
     color,
     LEGALMOVES,
@@ -98,4 +84,4 @@ function findAllLegalMoves(color) {
   );
 }
 
-module.exports = { LEGALMOVES, findAllLegalMoves };
+module.exports = { createLegalMoves, findAllLegalMoves };
