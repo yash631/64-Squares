@@ -35,6 +35,7 @@ function findAllLegalMoves(LEGALMOVES, color, prevMove) {
     prevMove
   );
   bishop.findBishop(
+    color,
     LEGALMOVES,
     notations.BLACKPIECES,
     notations.WHITEPIECES,
@@ -45,6 +46,7 @@ function findAllLegalMoves(LEGALMOVES, color, prevMove) {
     ["B", "b"]
   );
   rook.findRook(
+    color,
     LEGALMOVES,
     notations.BLACKPIECES,
     notations.WHITEPIECES,
@@ -55,6 +57,7 @@ function findAllLegalMoves(LEGALMOVES, color, prevMove) {
     ["R", "r"]
   );
   knight.findKnight(
+    color,
     LEGALMOVES,
     notations.BLACKPIECES,
     notations.WHITEPIECES,
@@ -64,6 +67,7 @@ function findAllLegalMoves(LEGALMOVES, color, prevMove) {
     getBoard.Board
   );
   queen.findQueen(
+    color,
     LEGALMOVES,
     notations.BLACKPIECES,
     notations.WHITEPIECES,
@@ -74,6 +78,7 @@ function findAllLegalMoves(LEGALMOVES, color, prevMove) {
     ["Q", "q"]
   );
   king.findKing(
+    color,
     LEGALMOVES,
     notations.BLACKPIECES,
     notations.WHITEPIECES,

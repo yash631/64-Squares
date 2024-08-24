@@ -43,7 +43,7 @@ function showBoard(board) {
       board[row].map((piece) => (piece === " " ? "." : piece)).join(" ")
     );
   }
-  console.log(" __________________")
+  console.log("  -----------------")
   console.log("   a b c d e f g h");
 }
 
