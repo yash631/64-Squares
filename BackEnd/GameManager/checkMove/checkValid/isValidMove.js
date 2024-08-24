@@ -5,7 +5,7 @@ const getBoard = require("../../Board/createBoard");
 function isValid(move, color, curr_row, curr_column, new_row, new_column) {
   let LEGALMOVES = findlegal.createLegalMoves();
   findlegal.findAllLegalMoves(LEGALMOVES, color, getBoard.prevMove);
-  // console.log(LEGALMOVES);
+  console.log(LEGALMOVES);
   for (const key of Object.keys(LEGALMOVES)) {
     for (const eachmove of LEGALMOVES[key][color]) {
       if (eachmove === move) {

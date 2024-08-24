@@ -19,6 +19,9 @@ function findKing(col, lm, bp, wp, iGP, rk, fl, board) {
           lm.k["1"].push(`Kx${fl[file]}${rk[rank]}`);
           continue;
         }
+        else if (board[rank][file] != " "){
+          continue;
+        }
         lm.k["1"].push(`K${fl[file]}${rk[rank]}`);
       }
     }
@@ -30,6 +33,9 @@ function findKing(col, lm, bp, wp, iGP, rk, fl, board) {
       if (rank >= 0 && rank <= 7 && file >= 0 && file <= 7) {
         if (wp.includes(board[rank][file])) {
           lm.k["0"].push(`kx${fl[file]}${rk[rank]}`);
+          continue;
+        }
+        else if (board[rank][file] != " "){
           continue;
         }
         lm.k["0"].push(`k${fl[file]}${rk[rank]}`);

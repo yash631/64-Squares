@@ -10,6 +10,9 @@ function findBishop(col, lm, bp, wp, iGP, rk, fl, board, piece) {
           lm[piece[1]]["1"].push(`${piece[0]}x${fl[file]}${rk[rank]}`);
           break;
         }
+        else if (board[rank][file] != " "){
+          break;
+        }
         lm[piece[1]]["1"].push(`${piece[0]}${fl[file]}${rk[rank]}`);
       }
       /* left diagonal right */
@@ -17,6 +20,9 @@ function findBishop(col, lm, bp, wp, iGP, rk, fl, board, piece) {
       while (++rank <= 7 && ++file <= 7) {
         if (bp.includes(board[rank][file])) {
           lm[piece[1]]["1"].push(`${piece[0]}x${fl[file]}${rk[rank]}`);
+          break;
+        }
+        else if (board[rank][file] != " "){
           break;
         }
         lm[piece[1]]["1"].push(`${piece[0]}${fl[file]}${rk[rank]}`);
@@ -28,6 +34,9 @@ function findBishop(col, lm, bp, wp, iGP, rk, fl, board, piece) {
           lm[piece[1]]["1"].push(`${piece[0]}x${fl[file]}${rk[rank]}`);
           break;
         }
+        else if (board[rank][file] != " "){
+          break;
+        }
         lm[piece[1]]["1"].push(`${piece[0]}${fl[file]}${rk[rank]}`);
       }
       /* right diagonal right */
@@ -35,6 +44,9 @@ function findBishop(col, lm, bp, wp, iGP, rk, fl, board, piece) {
       while (--rank >= 0 && ++file <= 7) {
         if (bp.includes(board[rank][file])) {
           lm[piece[1]]["1"].push(`${piece[0]}x${fl[file]}${rk[rank]}`);
+          break;
+        }
+        else if (board[rank][file] != " "){
           break;
         }
         lm[piece[1]]["1"].push(`${piece[0]}${fl[file]}${rk[rank]}`);
@@ -51,6 +63,9 @@ function findBishop(col, lm, bp, wp, iGP, rk, fl, board, piece) {
           lm[piece[1]]["0"].push(`${piece[1]}x${fl[file]}${rk[rank]}`);
           break;
         }
+        else if (board[rank][file] != " "){
+          break;
+        }
         lm[piece[1]]["0"].push(`${piece[1]}${fl[file]}${rk[rank]}`);
       }
       /* left diagonal right */
@@ -58,6 +73,9 @@ function findBishop(col, lm, bp, wp, iGP, rk, fl, board, piece) {
       while (++rank <= 7 && ++file <= 7) {
         if (wp.includes(board[rank][file])) {
           lm[piece[1]]["0"].push(`${piece[1]}x${fl[file]}${rk[rank]}`);
+          break;
+        }
+        else if (board[rank][file] != " "){
           break;
         }
         lm[piece[1]]["0"].push(`${piece[1]}${fl[file]}${rk[rank]}`);
@@ -69,6 +87,9 @@ function findBishop(col, lm, bp, wp, iGP, rk, fl, board, piece) {
           lm[piece[1]]["0"].push(`${piece[1]}x${fl[file]}${rk[rank]}`);
           break;
         }
+        else if (board[rank][file] != " "){
+          break;
+        }
         lm[piece[1]]["0"].push(`${piece[1]}${fl[file]}${rk[rank]}`);
       }
       /* right diagonal right */
@@ -76,6 +97,9 @@ function findBishop(col, lm, bp, wp, iGP, rk, fl, board, piece) {
       while (--rank >= 0 && ++file <= 7) {
         if (wp.includes(board[rank][file])) {
           lm[piece[1]]["0"].push(`${piece[1]}x${fl[file]}${rk[rank]}`);
+          break;
+        }
+        else if (board[rank][file] != " "){
           break;
         }
         lm[piece[1]]["0"].push(`${piece[1]}${fl[file]}${rk[rank]}`);

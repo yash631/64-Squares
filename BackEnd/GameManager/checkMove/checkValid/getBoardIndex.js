@@ -1,6 +1,6 @@
 const { isValid } = require("./isValidMove");
 
-function fixMove(initial_Sq, move, color) {
+function sqaureToIndex(initial_Sq, move, color) {
   const rank = {
       1: 7,
       2: 6,
@@ -58,4 +58,4 @@ function fixMove(initial_Sq, move, color) {
     target_sq[1]
   );
 }
-module.exports = { fixMove };
+module.exports = { sqaureToIndex };

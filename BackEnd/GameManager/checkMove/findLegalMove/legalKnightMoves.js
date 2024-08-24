@@ -20,6 +20,9 @@ function findKnight(col, lm, bp, wp, iGP, rk, fl, board) {
             lm.n["1"].push(`Nx${fl[file]}${rk[rank]}`);
             continue;
           }
+          else if (board[rank][file] != " "){
+            continue;
+          }
           lm.n["1"].push(`N${fl[file]}${rk[rank]}`);
         }
       }
@@ -33,6 +36,9 @@ function findKnight(col, lm, bp, wp, iGP, rk, fl, board) {
         if (rank >= 0 && rank <= 7 && file >= 0 && file <= 7) {
           if (wp.includes(board[rank][file])) {
             lm.n["0"].push(`nx${fl[file]}${rk[rank]}`);
+            continue;
+          }
+          else if (board[rank][file] != " "){
             continue;
           }
           lm.n["0"].push(`n${fl[file]}${rk[rank]}`);
