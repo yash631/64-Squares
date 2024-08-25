@@ -14,7 +14,7 @@ const arrOfPieces = {
 const file = ["a", "b", "c", "d", "e", "f", "g", "h"],
   rank = ["1", "2", "3", "4", "5", "6", "7", "8"],
   pieces = ["q", "r", "n", "b", "Q", "R", "N", "B"];
-
+/*
 function pawnMove(initial_Sq, m, color) {
   if (rank.includes(m[1])) {
     if (m[2] == "=" && pieces.includes(m[3])) {
@@ -198,7 +198,7 @@ function pieceMove(initial_Sq, m, pc, color) {
     console.log(`---------xxxxxx---------\n`);
   }
 }
-
+*/
 function isCorrectMove(initial_Sq, move, color) {
   if (file.includes(move[0])) {
     pawnMove(initial_Sq, move, color);
@@ -212,6 +212,13 @@ function isCorrectMove(initial_Sq, move, color) {
   }
 }
 
-isCorrectMove("e2", "e4", 1);
+getIndex.sqaureToIndex(1,"p","e2","e4");
+getIndex.sqaureToIndex(0,"p","d7","d5");
+getIndex.sqaureToIndex(1,"p","e4","exd5");
+getIndex.sqaureToIndex(0,"q","d8","qxd5");
+getIndex.sqaureToIndex(1,"n","b1","Nc3");
+getIndex.sqaureToIndex(0,"p","c7","c6");
+getIndex.sqaureToIndex(1,"n","c3","Nxd5");
+getIndex.sqaureToIndex(0,"p","c6","cxd5");
 
 module.exports = isCorrectMove;

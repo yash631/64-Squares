@@ -1,36 +1,48 @@
 const findlegal = require("../findLegalMove/findLegal");
 const updateBoard = require("../../Board/updateBoard");
 const getBoard = require("../../Board/createBoard");
+const not = require("../notations");
 
-function isValid(move, color, curr_row, curr_column, new_row, new_column) {
+function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
+  function showLegalMoves(LEGALMOVES) {
+    console.log(
+      `CURRENT POSITION OF ${not.COLOR[color]} PIECES AND THEIR LEGAL MOVES`
+    );
+    for (const allPieces in LEGALMOVES) {
+      console.log(`-->>${not.pieces[allPieces]}<<--`);
+      for (const singlePiece in LEGALMOVES[allPieces][color]) {
+        console.log(
+          `${not.FILE[singlePiece[1]]}${not.RANK[singlePiece[0]]} : ${
+            LEGALMOVES[allPieces][color][singlePiece]
+          }`
+        );
+      }
+      console.log("\n");
+    }
+  }
   let LEGALMOVES = findlegal.createLegalMoves();
   findlegal.findAllLegalMoves(LEGALMOVES, color, getBoard.prevMove);
-  console.log(LEGALMOVES);
-  for (const key of Object.keys(LEGALMOVES)) {
-    for (const eachmove of LEGALMOVES[key][color]) {
-      if (eachmove === move) {
-        /* Update the Board */
-        updateBoard.updateInGamePcs(
-          getBoard.Board,
-          getBoard.createInGamePcs(getBoard.Board),
-          curr_row,
-          curr_column,
-          new_row,
-          new_column
-        );
+  /* SHOW LEGAL MOVES 
+  showLegalMoves(LEGALMOVES); */
 
-        /* show the update board */
-        getBoard.prevMove = move;
-        getBoard.Game_State.push(move);
-        // console.log(`\nBoard Updated after ${move}\n`);
-        // console.log(getBoard.createInGamePcs(getBoard.Board));
-        getBoard.showBoard(getBoard.Board);
-        console.log("MOVES : ", getBoard.Game_State);
-        /* In game pieces with their position 
-        console.log(getBoard.createInGamePcs(getBoard.Board)); */
-        return true;
-      }
-    }
+  console.log(`----------------------------`);
+  if (LEGALMOVES[piece][color][`${curr_row}${curr_col}`].includes(move)) {
+    updateBoard.updateInGamePcs(
+      getBoard.Board,
+      getBoard.createInGamePcs(getBoard.Board),
+      curr_row,
+      curr_col,
+      new_row,
+      new_col
+    );
+    getBoard.prevMove = move;
+    getBoard.Game_State.push(move);
+    /*console.log(`\nBoard Updated after ${move}\n`);
+    console.log(getBoard.createInGamePcs(getBoard.Board));*/
+    getBoard.showBoard(getBoard.Board);
+    console.log("MOVES : ", getBoard.Game_State);
+    console.log();
+    return true;
   }
   return false;
 }

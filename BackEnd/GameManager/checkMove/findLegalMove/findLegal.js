@@ -14,8 +14,8 @@ function createLegalMoves() {
 
   pieces.forEach((piece) => {
     legalMoves[piece] = {
-      0: [],
-      1: [],
+      0: {},
+      1: {},
     };
   });
 
