@@ -1,4 +1,4 @@
-const notations = require("../notations");
+const not = require("../notations");
 const pawn = require("./Pawn/legalPawnMoves");
 const bishop = require("./Bishop/legalBishopMoves");
 const rook = require("./Rook/legalRookMoves");
@@ -25,65 +25,59 @@ function findAllLegalMoves(LEGALMOVES,Board,inGamePcs, color, prevMove) {
   pawn.findPawn(
     color,
     LEGALMOVES,
-    notations.BLACKPIECES,
-    notations.WHITEPIECES,
+    not.ALLPIECES,
     inGamePcs,
-    notations.RANK,
-    notations.FILE,
+    not.RANK,
+    not.FILE,
     Board,
     prevMove
   );
   bishop.findBishop(
     color,
     LEGALMOVES,
-    notations.BLACKPIECES,
-    notations.WHITEPIECES,
+    not.ALLPIECES,
     inGamePcs,
-    notations.RANK,
-    notations.FILE,
+    not.RANK,
+    not.FILE,
     Board,
     ["B", "b"]
   );
   rook.findRook(
     color,
     LEGALMOVES,
-    notations.BLACKPIECES,
-    notations.WHITEPIECES,
+    not.ALLPIECES,
     inGamePcs,
-    notations.RANK,
-    notations.FILE,
+    not.RANK,
+    not.FILE,
     Board,
     ["R", "r"]
   );
   knight.findKnight(
     color,
     LEGALMOVES,
-    notations.BLACKPIECES,
-    notations.WHITEPIECES,
+    not.ALLPIECES,
     inGamePcs,
-    notations.RANK,
-    notations.FILE,
+    not.RANK,
+    not.FILE,
     Board
   );
   queen.findQueen(
     color,
     LEGALMOVES,
-    notations.BLACKPIECES,
-    notations.WHITEPIECES,
+    not.ALLPIECES,
     inGamePcs,
-    notations.RANK,
-    notations.FILE,
+    not.RANK,
+    not.FILE,
     Board,
     ["Q", "q"]
   );
   king.findKing(
     color, 
     LEGALMOVES,
-    notations.BLACKPIECES,
-    notations.WHITEPIECES,
+    not.ALLPIECES,
     inGamePcs,
-    notations.RANK,
-    notations.FILE,
+    not.RANK,
+    not.FILE,
     Board
   );
 }

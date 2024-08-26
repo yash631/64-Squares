@@ -1,5 +1,7 @@
-const BLACKPIECES = ["p", "n", "b", "r", "q"];
-const WHITEPIECES = ["P", "N", "B", "R", "Q"];
+const ALLPIECES = {
+  1 : ["P", "N", "B", "R", "Q"],
+  0 : ["p", "n", "b", "r", "q"]
+}
 const COLOR = {
   1 : "WHITE",
   0 : "BLACK"
@@ -38,4 +40,4 @@ const FILE = {
     6: 2,
     7: 1,
 };
-module.exports = {BLACKPIECES , WHITEPIECES , FILE , RANK, COLOR, PIECES, KING};
+module.exports = {ALLPIECES, FILE , RANK, COLOR, PIECES, KING};

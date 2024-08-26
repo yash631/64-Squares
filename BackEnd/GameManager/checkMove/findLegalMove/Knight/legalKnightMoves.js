@@ -1,6 +1,12 @@
 const allDir = require("./findForCheck/allDirections");
+const not = require("../../notations");
 
-function findKnight(col, lm, bp, wp, iGP, rk, fl, board) {
+function findKnight(col, lm, ALLPCS, iGP, rk, fl, board) {
+  const king = not.KING[col];
+  let knight = "n";
+  if (col) {
+    knight = "N";
+  }
   const totalMoves = [
     [2, 1],
     [1, 2],
@@ -11,66 +17,38 @@ function findKnight(col, lm, bp, wp, iGP, rk, fl, board) {
     [1, -2],
     [2, -1],
   ];
-  function normalMove(rank, file, rows, cols, knight) {
+  function normalMove(rank, file, rows, cols) {
     lm.n[col][`${rows}${cols}`].push(`${knight}${fl[file]}${rk[rank]}`);
   }
-  function captureMove(rank, file, rows, cols, knight) {
+  function captureMove(rank, file, rows, cols) {
     lm.n[col][`${rows}${cols}`].push(`${knight}x${fl[file]}${rk[rank]}`);
   }
-  function normalCheck(rank, file, rows, cols, knight) {
+  function normalCheck(rank, file, rows, cols) {
     lm.n[col][`${rows}${cols}`].push(`${knight}${fl[file]}${rk[rank]}+`);
   }
-  function captureCheck(rank, file, rows, cols, knight) {
+  function captureCheck(rank, file, rows, cols) {
     lm.n[col][`${rows}${cols}`].push(`${knight}x${fl[file]}${rk[rank]}+`);
   }
-  if (col) {
-    /* White side knight */
-    for (const locOfKnight of iGP["N"]) {
-      lm.n["1"][`${locOfKnight[0]}${locOfKnight[1]}`] = [];
-      for (const move of totalMoves) {
-        let rank = locOfKnight[0] + move[0],
-          file = locOfKnight[1] + move[1];
-        if (rank >= 0 && rank <= 7 && file >= 0 && file <= 7) {
-          if (bp.includes(board[rank][file])) {
-            if (allDir.movesArray([rank, file], totalMoves, "k")) {
-              captureCheck(rank, file, locOfKnight[0], locOfKnight[1], "N");
-            } else {
-              captureMove(rank, file, locOfKnight[0], locOfKnight[1], "N");
-            }
-            continue;
-          } else if (board[rank][file] != " ") {
-            continue;
-          } else if (allDir.movesArray([rank, file], totalMoves, "k")) {
-            normalCheck(rank, file, locOfKnight[0], locOfKnight[1], "N");
-            continue;
+  for (const locOfKnight of iGP[knight]) {
+    lm.n[col][`${locOfKnight[0]}${locOfKnight[1]}`] = [];
+    for (const move of totalMoves) {
+      let rank = locOfKnight[0] + move[0],
+        file = locOfKnight[1] + move[1];
+      if (rank >= 0 && rank <= 7 && file >= 0 && file <= 7) {
+        if (ALLPCS[1 - col].includes(board[rank][file])) {
+          if (allDir.movesArray([rank, file], totalMoves, king)) {
+            captureCheck(rank, file, locOfKnight[0], locOfKnight[1]);
+          } else {
+            captureMove(rank, file, locOfKnight[0], locOfKnight[1]);
           }
-          normalMove(rank, file, locOfKnight[0], locOfKnight[1], "N");
+          continue;
+        } else if (board[rank][file] != " ") {
+          continue;
+        } else if (allDir.movesArray([rank, file], totalMoves, king)) {
+          normalCheck(rank, file, locOfKnight[0], locOfKnight[1]);
+          continue;
         }
-      }
-    }
-  } else {
-    /* Black side Knight */
-    for (const locOfKnight of iGP["n"]) {
-      lm.n["0"][`${locOfKnight[0]}${locOfKnight[1]}`] = [];
-      for (const move of totalMoves) {
-        let rank = locOfKnight[0] + move[0],
-          file = locOfKnight[1] + move[1];
-        if (rank >= 0 && rank <= 7 && file >= 0 && file <= 7) {
-          if (wp.includes(board[rank][file])) {
-            if (allDir.movesArray([rank, file], totalMoves, "K")) {
-              captureCheck(rank, file, locOfKnight[0], locOfKnight[1], "n");
-            } else {
-              captureMove(rank, file, locOfKnight[0], locOfKnight[1], "n");
-            }
-            continue;
-          } else if (board[rank][file] != " ") {
-            continue;
-          } else if (allDir.movesArray([rank, file], totalMoves, "K")) {
-            normalCheck(rank, file, locOfKnight[0], locOfKnight[1], "n");
-            continue;
-          }
-          normalMove(rank, file, locOfKnight[0], locOfKnight[1], "n");
-        }
+        normalMove(rank, file, locOfKnight[0], locOfKnight[1]);
       }
     }
   }

@@ -24,8 +24,8 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
   findlegal.findAllLegalMoves(LEGALMOVES,getBoard.Board,getBoard.createInGamePcs(getBoard.Board), color, getBoard.prevMove);
   /* SHOW LEGAL MOVES */
   showLegalMoves(LEGALMOVES); 
+  console.log(`-----------------------------------------------`);
 
-  console.log(`----------------------------`);
   if (LEGALMOVES[piece][color][`${curr_row}${curr_col}`].includes(move)) {
     updateBoard.updateInGamePcs(
       getBoard.Board,

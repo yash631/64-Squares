@@ -1,4 +1,4 @@
-function findPawn(col, lm, bp, wp, iGP, rk, fl, board, prevMove) {
+function findPawn(col, lm, ALLPCS, iGP, rk, fl, board, prevMove) {
   /* White side Pawns */
   if (col) {
     for (const locOfPawn of iGP["P"]) {
@@ -8,14 +8,14 @@ function findPawn(col, lm, bp, wp, iGP, rk, fl, board, prevMove) {
       /* Promotion */
       if (rank == 1) {
         /* Capture on left to promote*/
-        if (bp.includes(board[rank - 1][file - 1])) {
+        if (ALLPCS[1-col].includes(board[rank - 1][file - 1])) {
           lm.p[1][`${rank}${file}`].push(`${fl[file]}x${fl[file - 1]}${rk[rank - 1]}=Q`);
           lm.p[1][`${rank}${file}`].push(`${fl[file]}x${fl[file - 1]}${rk[rank - 1]}=R`);
           lm.p[1][`${rank}${file}`].push(`${fl[file]}x${fl[file - 1]}${rk[rank - 1]}=N`);
           lm.p[1][`${rank}${file}`].push(`${fl[file]}x${fl[file - 1]}${rk[rank - 1]}=B`);
         }
         /* Capture on right to promote */
-        if (bp.includes(board[rank - 1][file + 1])) {
+        if (ALLPCS[1-col].includes(board[rank - 1][file + 1])) {
           lm.p[1][`${rank}${file}`].push(`${fl[file]}x${fl[file + 1]}${rk[rank - 1]}=Q`);
           lm.p[1][`${rank}${file}`].push(`${fl[file]}x${fl[file + 1]}${rk[rank - 1]}=R`);
           lm.p[1][`${rank}${file}`].push(`${fl[file]}x${fl[file + 1]}${rk[rank - 1]}=N`);
@@ -38,11 +38,11 @@ function findPawn(col, lm, bp, wp, iGP, rk, fl, board, prevMove) {
           lm.p[1][`${rank}${file}`].push(`${fl[file]}${rk[rank - 2]}`);
         }
         /* Capture Piece on left */
-        if (bp.includes(board[rank - 1][file - 1])) {
+        if (ALLPCS[1-col].includes(board[rank - 1][file - 1])) {
           lm.p[1][`${rank}${file}`].push(`${fl[file]}x${fl[file - 1]}${rk[rank - 1]}`);
         }
         /* Capture Piece on right */
-        if (bp.includes(board[rank - 1][file + 1])) {
+        if (ALLPCS[1-col].includes(board[rank - 1][file + 1])) {
           lm.p[1][`${rank}${file}`].push(`${fl[file]}x${fl[file + 1]}${rk[rank - 1]}`);
         }
         /* En passant on left */
@@ -71,14 +71,14 @@ function findPawn(col, lm, bp, wp, iGP, rk, fl, board, prevMove) {
       /* Promotion */
       if (rank == 6) {
         /* Capture on left to promote*/
-        if (wp.includes(board[rank + 1][file - 1])) {
+        if (ALLPCS[1-col].includes(board[rank + 1][file - 1])) {
           lm.p[0][`${rank}${file}`].push(`${fl[file]}x${fl[file - 1]}${rk[rank + 1]}=q`);
           lm.p[0][`${rank}${file}`].push(`${fl[file]}x${fl[file - 1]}${rk[rank + 1]}=r`);
           lm.p[0][`${rank}${file}`].push(`${fl[file]}x${fl[file - 1]}${rk[rank + 1]}=n`);
           lm.p[0][`${rank}${file}`].push(`${fl[file]}x${fl[file - 1]}${rk[rank + 1]}=b`);
         }
         /* Capture on right to promote */
-        if (wp.includes(board[rank + 1][file + 1])) {
+        if (ALLPCS[1-col].includes(board[rank + 1][file + 1])) {
           lm.p[0][`${rank}${file}`].push(`${fl[file]}x${fl[file + 1]}${rk[rank + 1]}=q`);
           lm.p[0][`${rank}${file}`].push(`${fl[file]}x${fl[file + 1]}${rk[rank + 1]}=r`);
           lm.p[0][`${rank}${file}`].push(`${fl[file]}x${fl[file + 1]}${rk[rank + 1]}=n`);
@@ -101,11 +101,11 @@ function findPawn(col, lm, bp, wp, iGP, rk, fl, board, prevMove) {
           lm.p[0][`${rank}${file}`].push(`${fl[file]}${rk[rank + 2]}`);
         }
         /* Capture Piece on left */
-        if (wp.includes(board[rank + 1][file - 1])) {
+        if (ALLPCS[1-col].includes(board[rank + 1][file - 1])) {
           lm.p[0][`${rank}${file}`].push(`${fl[file]}x${fl[file - 1]}${rk[rank + 1]}`);
         }
         /* Capture Piece on right */
-        if (wp.includes(board[rank + 1][file + 1])) {
+        if (ALLPCS[1-col].includes(board[rank + 1][file + 1])) {
           lm.p[0][`${rank}${file}`].push(`${fl[file]}x${fl[file + 1]}${rk[rank + 1]}`);
         }
         /* En passant on left */
