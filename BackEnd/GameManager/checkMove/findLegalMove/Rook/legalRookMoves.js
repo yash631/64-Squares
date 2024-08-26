@@ -11,7 +11,7 @@ function findRook(col, lm, bp, wp, iGP, rk, fl, board, piece) {
       whichPiece = 0;
     } else {
       whichPiece = 1;
-    }
+    }   
     lm[piece[1]][col][`${rows}${cols}`].push(
       `${piece[whichPiece]}${fl[file]}${rk[rank]}`
     );
