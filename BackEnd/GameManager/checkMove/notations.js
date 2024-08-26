@@ -4,7 +4,7 @@ const COLOR = {
   1 : "WHITE",
   0 : "BLACK"
 }
-const pieces = {
+const PIECES = {
   "p" : "PAWN",
   "b" : "BISHOP",
   "r" : "ROOK",
@@ -12,6 +12,12 @@ const pieces = {
   "q" : "QUEEN",
   "k" : "KING"
 }
+/* for finding check */
+const KING = {
+  0 : "K",
+  1 : "k"
+}
+
 const FILE = {
     0: "a",
     1: "b",
@@ -32,4 +38,4 @@ const FILE = {
     6: 2,
     7: 1,
 };
-module.exports = {BLACKPIECES , WHITEPIECES , FILE , RANK, COLOR, pieces};
+module.exports = {BLACKPIECES , WHITEPIECES , FILE , RANK, COLOR, PIECES, KING};

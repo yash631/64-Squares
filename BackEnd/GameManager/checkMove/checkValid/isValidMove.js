@@ -9,7 +9,7 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
       `CURRENT POSITION OF ${not.COLOR[color]} PIECES AND THEIR LEGAL MOVES`
     );
     for (const allPieces in LEGALMOVES) {
-      console.log(`-->>${not.pieces[allPieces]}<<--`);
+      console.log(`-->>${not.PIECES[allPieces]}<<--`);
       for (const singlePiece in LEGALMOVES[allPieces][color]) {
         console.log(
           `${not.FILE[singlePiece[1]]}${not.RANK[singlePiece[0]]} : ${
@@ -21,9 +21,9 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
     }
   }
   let LEGALMOVES = findlegal.createLegalMoves();
-  findlegal.findAllLegalMoves(LEGALMOVES, color, getBoard.prevMove);
-  /* SHOW LEGAL MOVES 
-  showLegalMoves(LEGALMOVES); */
+  findlegal.findAllLegalMoves(LEGALMOVES,getBoard.Board,getBoard.createInGamePcs(getBoard.Board), color, getBoard.prevMove);
+  /* SHOW LEGAL MOVES */
+  showLegalMoves(LEGALMOVES); 
 
   console.log(`----------------------------`);
   if (LEGALMOVES[piece][color][`${curr_row}${curr_col}`].includes(move)) {

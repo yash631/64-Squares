@@ -27,7 +27,11 @@ function sqaureToIndex(color,piece,initial_Sq, move) {
   curr_sq[1] = file[initial_Sq[0]];
   const allfiles = ["a", "b", "c", "d", "e", "f", "g", "h"];
   if (allfiles.includes(move[0])) {
-    if (move[1] == "x") {
+    if(allfiles.includes(move[1])){
+     target_sq[0] = rank[move[2]];
+     target_sq[1] = file[move[1]];
+    }
+    else if (move[1] == "x") {
       target_sq[0] = rank[move[3]];
       target_sq[1] = file[move[2]];
     } else {

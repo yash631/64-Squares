@@ -1,11 +1,10 @@
-const getBoard = require("../../Board/createBoard");
 const notations = require("../notations");
-const pawn = require("./legalPawnMoves");
-const bishop = require("./legalBishopMoves");
-const rook = require("./legalRookMoves");
-const knight = require("./legalKnightMoves");
-const queen = require("./legalQueenMoves");
-const king = require("./legalKingMoves");
+const pawn = require("./Pawn/legalPawnMoves");
+const bishop = require("./Bishop/legalBishopMoves");
+const rook = require("./Rook/legalRookMoves");
+const knight = require("./Knight/legalKnightMoves");
+const queen = require("./Queen/legalQueenMoves");
+const king = require("./King/legalKingMoves");
 
 
 function createLegalMoves() {
@@ -22,16 +21,16 @@ function createLegalMoves() {
   return legalMoves;
 }
 
-function findAllLegalMoves(LEGALMOVES, color, prevMove) {
+function findAllLegalMoves(LEGALMOVES,Board,inGamePcs, color, prevMove) {
   pawn.findPawn(
     color,
     LEGALMOVES,
     notations.BLACKPIECES,
     notations.WHITEPIECES,
-    getBoard.createInGamePcs(getBoard.Board),
+    inGamePcs,
     notations.RANK,
     notations.FILE,
-    getBoard.Board,
+    Board,
     prevMove
   );
   bishop.findBishop(
@@ -39,10 +38,10 @@ function findAllLegalMoves(LEGALMOVES, color, prevMove) {
     LEGALMOVES,
     notations.BLACKPIECES,
     notations.WHITEPIECES,
-    getBoard.createInGamePcs(getBoard.Board),
+    inGamePcs,
     notations.RANK,
     notations.FILE,
-    getBoard.Board,
+    Board,
     ["B", "b"]
   );
   rook.findRook(
@@ -50,10 +49,10 @@ function findAllLegalMoves(LEGALMOVES, color, prevMove) {
     LEGALMOVES,
     notations.BLACKPIECES,
     notations.WHITEPIECES,
-    getBoard.createInGamePcs(getBoard.Board),
+    inGamePcs,
     notations.RANK,
     notations.FILE,
-    getBoard.Board,
+    Board,
     ["R", "r"]
   );
   knight.findKnight(
@@ -61,31 +60,31 @@ function findAllLegalMoves(LEGALMOVES, color, prevMove) {
     LEGALMOVES,
     notations.BLACKPIECES,
     notations.WHITEPIECES,
-    getBoard.createInGamePcs(getBoard.Board),
+    inGamePcs,
     notations.RANK,
     notations.FILE,
-    getBoard.Board
+    Board
   );
   queen.findQueen(
     color,
     LEGALMOVES,
     notations.BLACKPIECES,
     notations.WHITEPIECES,
-    getBoard.createInGamePcs(getBoard.Board),
+    inGamePcs,
     notations.RANK,
     notations.FILE,
-    getBoard.Board,
+    Board,
     ["Q", "q"]
   );
   king.findKing(
-    color,
+    color, 
     LEGALMOVES,
     notations.BLACKPIECES,
     notations.WHITEPIECES,
-    getBoard.createInGamePcs(getBoard.Board),
+    inGamePcs,
     notations.RANK,
     notations.FILE,
-    getBoard.Board
+    Board
   );
 }
 
