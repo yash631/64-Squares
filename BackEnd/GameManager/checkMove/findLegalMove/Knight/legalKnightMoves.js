@@ -2,7 +2,7 @@ const allDir = require("./findForCheck/allDirections");
 const not = require("../../notations");
 
 function findKnight(col, lm, ALLPCS, iGP, rk, fl, board) {
-  const king = not.KING[1-col];
+  const king = not.KING[1 - col];
   let knight = "n";
   if (col) {
     knight = "N";

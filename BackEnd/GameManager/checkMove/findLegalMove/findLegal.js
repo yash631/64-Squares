@@ -6,7 +6,6 @@ const knight = require("./Knight/legalKnightMoves");
 const queen = require("./Queen/legalQueenMoves");
 const king = require("./King/legalKingMoves");
 
-
 function createLegalMoves() {
   const pieces = ["p", "b", "r", "n", "q", "k"];
   const legalMoves = {};
@@ -21,7 +20,7 @@ function createLegalMoves() {
   return legalMoves;
 }
 
-function findAllLegalMoves(LEGALMOVES,Board,inGamePcs, color, prevMove) {
+function findAllLegalMoves(LEGALMOVES, Board, inGamePcs, color, prevMove) {
   pawn.findPawn(
     color,
     LEGALMOVES,
@@ -72,7 +71,7 @@ function findAllLegalMoves(LEGALMOVES,Board,inGamePcs, color, prevMove) {
     ["Q", "q"]
   );
   king.findKing(
-    color, 
+    color,
     LEGALMOVES,
     not.ALLPIECES,
     inGamePcs,

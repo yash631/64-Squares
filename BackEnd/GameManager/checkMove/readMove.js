@@ -186,7 +186,7 @@ function pieceMove(initial_Sq, m, pc, color) {
     } else if (m[3] == "#" && getIndex.sqaureToIndex(initial_Sq, m, color)) {
       console.log(`${arrOfPieces[pc]} moved to ${fl}${rk} and checkmate`);
       console.log(`----------xxxxxxxx-----Move Made----xxxxxxx----------\n`);
-    } else if (m[3] == undefined && getIndex.sqaureToIndex(initial_Sq, m, color)) {
+    } else if (m[3] == undefine+-d && getIndex.sqaureToIndex(initial_Sq, m, color)) {
       console.log(`${arrOfPieces[pc]} moved to ${fl}${rk}`);
       console.log(`----------xxxxxxxx-----Move Made----xxxxxxx----------\n`);
     } else {

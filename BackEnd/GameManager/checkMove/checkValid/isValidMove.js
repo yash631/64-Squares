@@ -21,26 +21,45 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
     }
   }
   let LEGALMOVES = findlegal.createLegalMoves();
-  findlegal.findAllLegalMoves(LEGALMOVES,getBoard.Board,getBoard.createInGamePcs(getBoard.Board), color, getBoard.prevMove);
+  findlegal.findAllLegalMoves(
+    LEGALMOVES,
+    getBoard.Board,
+    getBoard.createInGamePcs(getBoard.Board),
+    color,
+    getBoard.prevMove
+  );
   /* SHOW LEGAL MOVES */
-  showLegalMoves(LEGALMOVES); 
+  // showLegalMoves(LEGALMOVES);
   console.log(`-----------------------------------------------`);
 
   if (LEGALMOVES[piece][color][`${curr_row}${curr_col}`].includes(move)) {
+    if (color) {
+      piece = piece.toUpperCase();
+    }
+    const len = move.length;
+    if (not.ALLPIECES[color].includes(move[len - 1])) {
+      piece = move[len - 1];
+    } else if (
+      (move[len - 1] == "+" || move[len - 1] == "#") &&
+      not.ALLPIECES[color].includes(move[len - 2])
+    ) {
+      piece = move[len - 2];
+    }
     updateBoard.updateInGamePcs(
       getBoard.Board,
-      getBoard.createInGamePcs(getBoard.Board),
+      piece,
       curr_row,
       curr_col,
       new_row,
       new_col
     );
-    getBoard.prevMove = move;
+    getBoard.prevMove = `${curr_row}${curr_col}${move}`;
+    // console.log(getBoard.prevMove);
     getBoard.Game_State.push(move);
     /*console.log(`\nBoard Updated after ${move}\n`);
     console.log(getBoard.createInGamePcs(getBoard.Board));*/
     getBoard.showBoard(getBoard.Board);
-    console.log("MOVES : ", getBoard.Game_State);
+    // console.log("MOVES : ", getBoard.Game_State);
     console.log();
     return true;
   }

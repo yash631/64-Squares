@@ -9,7 +9,7 @@ let Board = [
   ["R", "N", "B", "Q", "K", "B", "N", "R"],
 ];
 let Game_State = [],
-    prevMove;
+  prevMove;
 function createInGamePcs(board) {
   let inGamePcs = {
     b: [],
@@ -43,7 +43,7 @@ function showBoard(board) {
       board[row].map((piece) => (piece === " " ? "." : piece)).join(" ")
     );
   }
-  console.log("  -----------------")
+  console.log("  -----------------");
   console.log("   a b c d e f g h");
 }
 
@@ -51,4 +51,4 @@ console.log(`-------xxxxx-----NEW GAME-----xxxxx--------\n`);
 showBoard(Board);
 console.log(`\n-------xxxxx-----xxxxxxxx-----xxxxx--------\n`);
 
-module.exports = {Board,createInGamePcs,showBoard,Game_State,prevMove};
+module.exports = { Board, createInGamePcs, showBoard, Game_State, prevMove };
