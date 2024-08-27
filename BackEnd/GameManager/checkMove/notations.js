@@ -16,8 +16,8 @@ const PIECES = {
 }
 /* for finding check */
 const KING = {
-  0 : "K",
-  1 : "k"
+  0 : "k",
+  1 : "K"
 }
 
 const FILE = {

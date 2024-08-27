@@ -5,7 +5,7 @@ const right = require("../Bishop/findForCheck/rightDiagonal");
 const not = require("../../notations");
 
 function findRook(col, lm, ALLPCS, iGP, rk, fl, board, piece) {
-  const king = not.KING[col];
+  const king = not.KING[1-col];
   function normalMove(rank, file, rows, cols) {
     lm[piece[1]][col][`${rows}${cols}`].push(
       `${piece[1 - col]}${fl[file]}${rk[rank]}`

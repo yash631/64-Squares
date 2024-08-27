@@ -1,8 +1,7 @@
+const not = require("../../notations");
+
 function findKing(col, lm, ALLPCS, iGP, rk, fl, board) {
-  let king = "k";
-  if(col){
-    king = "K"
-  }
+  const king = not.KING[1-col];
   const totalMoves = [
     [-1, -1],
     [-1, 0],
