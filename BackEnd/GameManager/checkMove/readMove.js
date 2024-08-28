@@ -211,21 +211,26 @@ function isCorrectMove(initial_Sq, move, color) {
     console.log(`---------xxxxxx---------\n`);
   }
 }
-getIndex.sqaureToIndex(1,"p","e2","e4");
-getIndex.sqaureToIndex(0,"p","d7","d5");
-getIndex.sqaureToIndex(1,"p","e4","exd5");
-getIndex.sqaureToIndex(0,"q","d8","qxd5");
-getIndex.sqaureToIndex(1,"n","b1","Nc3");
-getIndex.sqaureToIndex(0,"p","c7","c6");
-getIndex.sqaureToIndex(1,"n","c3","Nxd5");
-getIndex.sqaureToIndex(0,"p","c6","cxd5");
-getIndex.sqaureToIndex(1,"p","g2","g3");
-getIndex.sqaureToIndex(0,"p","b7","b6");
-getIndex.sqaureToIndex(1,"b","f1","Bh3");
-getIndex.sqaureToIndex(0,"b","c8","ba6");
-getIndex.sqaureToIndex(1,"p","d2","d4");
-getIndex.sqaureToIndex(0,"b","a6","bd3");
-getIndex.sqaureToIndex(1,"p","c2","cxd3");
+
+getIndex.sqaureToIndex(1,"p","d2","d3");
+// getIndex.sqaureToIndex(0,"p","a7","a5");
+// getIndex.sqaureToIndex(1,"p","d3","d4");
+
+// getIndex.sqaureToIndex(1,"p","e2","e4");
+// getIndex.sqaureToIndex(0,"p","d7","d5");
+// getIndex.sqaureToIndex(1,"p","e4","exd5");
+// getIndex.sqaureToIndex(0,"q","d8","qxd5");
+// getIndex.sqaureToIndex(1,"n","b1","Nc3");
+// getIndex.sqaureToIndex(0,"p","c7","c6");
+// getIndex.sqaureToIndex(1,"n","c3","Nxd5");
+// getIndex.sqaureToIndex(0,"p","c6","cxd5");
+// getIndex.sqaureToIndex(1,"p","g2","g3");
+// getIndex.sqaureToIndex(0,"p","b7","b6");
+// getIndex.sqaureToIndex(1,"b","f1","Bh3");
+// getIndex.sqaureToIndex(0,"b","c8","ba6");
+// getIndex.sqaureToIndex(1,"p","d2","d4");
+// getIndex.sqaureToIndex(0,"b","a6","bd3");
+// getIndex.sqaureToIndex(1,"p","c2","cxd3");
 
 
 module.exports = isCorrectMove;

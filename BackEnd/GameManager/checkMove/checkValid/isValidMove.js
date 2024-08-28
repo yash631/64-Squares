@@ -4,6 +4,7 @@ const getBoard = require("../../Board/createBoard");
 const not = require("../notations");
 
 function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
+  let pieceListForCheck = [];
   function showLegalMoves(LEGALMOVES) {
     console.log(
       `CURRENT POSITION OF ${not.COLOR[color]} PIECES AND THEIR LEGAL MOVES`
@@ -29,7 +30,7 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
     getBoard.prevMove
   );
   /* SHOW LEGAL MOVES */
-  // showLegalMoves(LEGALMOVES);
+  showLegalMoves(LEGALMOVES);
   console.log(`-----------------------------------------------`);
 
   if (LEGALMOVES[piece][color][`${curr_row}${curr_col}`].includes(move)) {

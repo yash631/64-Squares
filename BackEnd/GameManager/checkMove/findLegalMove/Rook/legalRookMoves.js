@@ -36,6 +36,9 @@ function findRook(col, lm, ALLPCS, iGP, rk, fl, board, piece) {
     }
     /* file up */
     while (--rank >= 0) {
+      if(board[rank][file] == king){
+        lm[piece[1]][col][`${rows}${cols}`].push(king);
+      }
       if (ALLPCS[1 - col].includes(board[rank][file])) {
         /* For Queen */
         if (piece[1] == "q") {
@@ -75,6 +78,9 @@ function findRook(col, lm, ALLPCS, iGP, rk, fl, board, piece) {
     /* file down */
     (rank = locOfPiece[0]), (file = locOfPiece[1]);
     while (++rank <= 7) {
+      if(board[rank][file] == king){
+        lm[piece[1]][col][`${rows}${cols}`].push(king);
+      }
       if (ALLPCS[1 - col].includes(board[rank][file])) {
         /* For Queen */
         if (piece[1] == "q") {
@@ -114,6 +120,9 @@ function findRook(col, lm, ALLPCS, iGP, rk, fl, board, piece) {
     /* rank left */
     (rank = locOfPiece[0]), (file = locOfPiece[1]);
     while (--file >= 0) {
+      if(board[rank][file] == king){
+        lm[piece[1]][col][`${rows}${cols}`].push(king);
+      }
       if (ALLPCS[1 - col].includes(board[rank][file])) {
         /* For Queen */
         if (piece[1] == "q") {
@@ -153,6 +162,9 @@ function findRook(col, lm, ALLPCS, iGP, rk, fl, board, piece) {
     /* rank right */
     (rank = locOfPiece[0]), (file = locOfPiece[1]);
     while (++file <= 7) {
+      if(board[rank][file] == king){
+        lm[piece[1]][col][`${rows}${cols}`].push(king);
+      }
       if (ALLPCS[1 - col].includes(board[rank][file])) {
         /* For Queen */
         if (piece[1] == "q") {

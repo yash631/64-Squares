@@ -36,6 +36,9 @@ function findBishop(col, lm, ALLPCS, iGP, rk, fl, board, piece) {
     }
     /* left diagonal up-left */
     while (--rank >= 0 && --file >= 0) {
+      if(board[rank][file] == king){
+        lm[piece[1]][col][`${rows}${cols}`].push(king);
+      }
       if (ALLPCS[1 - col].includes(board[rank][file])) {
         /* For Queen */
         if (piece[1] == "q") {
@@ -72,6 +75,9 @@ function findBishop(col, lm, ALLPCS, iGP, rk, fl, board, piece) {
     /* left diagonal down-right */
     (rank = locOfPiece[0]), (file = locOfPiece[1]);
     while (++rank <= 7 && ++file <= 7) {
+      if(board[rank][file] == king){
+        lm[piece[1]][col][`${rows}${cols}`].push(king);
+      }
       if (ALLPCS[1 - col].includes(board[rank][file])) {
         /* For Queen */
         if (piece[1] == "q") {
@@ -110,6 +116,9 @@ function findBishop(col, lm, ALLPCS, iGP, rk, fl, board, piece) {
     /* right diagonal down-left */
     (rank = locOfPiece[0]), (file = locOfPiece[1]);
     while (++rank <= 7 && --file >= 0) {
+      if(board[rank][file] == king){
+        lm[piece[1]][col][`${rows}${cols}`].push(king);
+      }
       if (ALLPCS[1 - col].includes(board[rank][file])) {
         /* For Queen */
         if (piece[1] == "q") {
@@ -146,6 +155,9 @@ function findBishop(col, lm, ALLPCS, iGP, rk, fl, board, piece) {
     /* right diagonal up-right */
     (rank = locOfPiece[0]), (file = locOfPiece[1]);
     while (--rank >= 0 && ++file <= 7) {
+      if(board[rank][file] == king){
+        lm[piece[1]][col][`${rows}${cols}`].push(king);
+      }
       if (ALLPCS[1 - col].includes(board[rank][file])) {
         /* For Queen */
         if (piece[1] == "q") {

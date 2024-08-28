@@ -1,6 +1,8 @@
 const not = require("../../notations");
 const prom = require("./findForCheck/atPromotion");
 const ltrt = require("./findForCheck/leftRightDiag");
+const getBoard = require("../../../Board/createBoard");
+
 function findPawn(col, lm, ALLPCS, iGP, rk, fl, board, prevMove) {
   const king = not.KING[1 - col];
   let pawn = "p";
@@ -51,12 +53,15 @@ function findPawn(col, lm, ALLPCS, iGP, rk, fl, board, prevMove) {
           board[rank + square_left[0]][file + square_left[1]]
         )
       ) {
+        board[locOfPawn[0]][locOfPawn[1]] = " ";
         for (let num = 0; num < 4; num++) {
           if (
             prom.prom(
               prmt_pcs[col][num],
               [rank + square_left[0], file + square_left[1]],
-              king
+              king,
+              col,
+              pawn
             )
           ) {
             lm.p[col][`${rank}${file}`].push(
@@ -72,6 +77,7 @@ function findPawn(col, lm, ALLPCS, iGP, rk, fl, board, prevMove) {
             );
           }
         }
+        board[locOfPawn[0]][locOfPawn[1]] = pawn;
       }
       /* Capture on right to promote */
       if (
@@ -79,12 +85,15 @@ function findPawn(col, lm, ALLPCS, iGP, rk, fl, board, prevMove) {
           board[rank + square_right[0]][file + square_right[1]]
         )
       ) {
+        board[locOfPawn[0]][locOfPawn[1]] = " ";
         for (let num = 0; num < 4; num++) {
           if (
             prom.prom(
               prmt_pcs[col][num],
               [rank + square_right[0], file + square_right[1]],
-              king
+              king,
+              col,
+              pawn
             )
           ) {
             lm.p[col][`${rank}${file}`].push(
@@ -100,11 +109,15 @@ function findPawn(col, lm, ALLPCS, iGP, rk, fl, board, prevMove) {
             );
           }
         }
+        board[locOfPawn[0]][locOfPawn[1]] = pawn;
       }
       /* Direct promotion */
       if (board[rank - 1][file] == " ") {
+        board[locOfPawn[0]][locOfPawn[1]] = " ";
         for (let num = 0; num < 4; num++) {
-          if (prom.prom(prmt_pcs[col][num], [rank - 1, file], king)) {
+          if (
+            prom.prom(prmt_pcs[col][num], [rank - 1, file], king, col, pawn)
+          ) {
             lm.p[col][`${rank}${file}`].push(
               `${fl[file]}${rk[rank + MOVE[col]]}=${prmt_pcs[col][num]}+`
             );
@@ -114,11 +127,14 @@ function findPawn(col, lm, ALLPCS, iGP, rk, fl, board, prevMove) {
             );
           }
         }
+        board[locOfPawn[0]][locOfPawn[1]] = pawn;
       }
     } else {
       /* Default Move */
       if (board[rank + MOVE[col]][file] == " ") {
-        if (ltrt.leftRight(col, [rank + MOVE[col], file], king)) {
+        board[locOfPawn[0]][locOfPawn[1]] = " ";
+        board[rank + MOVE[col]][file] = pawn;
+        if (ltrt.leftRight(col, [rank + MOVE[col], file], king, pawn)) {
           lm.p[col][`${rank}${file}`].push(
             `${fl[file]}${rk[rank + MOVE[col]]}+`
           );
@@ -127,13 +143,22 @@ function findPawn(col, lm, ALLPCS, iGP, rk, fl, board, prevMove) {
             `${fl[file]}${rk[rank + MOVE[col]]}`
           );
         }
+        board[locOfPawn[0]][locOfPawn[1]] = pawn;
+        board[rank + MOVE[col]][file] = " ";
         /* Starting Move */
         if (
           locOfPawn[0] == MOVE[`start${col}`][0] &&
           board[rank + MOVE[`start${col}`][1]][file] == " "
         ) {
+          board[locOfPawn[0]][locOfPawn[1]] = " ";
+          board[rank + MOVE[`start${col}`][1]][file] = pawn;
           if (
-            ltrt.leftRight(col, [rank + MOVE[`start${col}`][1], file], king)
+            ltrt.leftRight(
+              col,
+              [rank + MOVE[`start${col}`][1], file],
+              king,
+              pawn
+            )
           ) {
             lm.p[col][`${rank}${file}`].push(
               `${fl[file]}${rk[rank + MOVE[`start${col}`][1]]}+`
@@ -143,6 +168,8 @@ function findPawn(col, lm, ALLPCS, iGP, rk, fl, board, prevMove) {
               `${fl[file]}${rk[rank + MOVE[`start${col}`][1]]}`
             );
           }
+          board[locOfPawn[0]][locOfPawn[1]] = pawn;
+          board[rank + MOVE[`start${col}`][1]][file] = " ";
         }
       }
 
@@ -152,11 +179,14 @@ function findPawn(col, lm, ALLPCS, iGP, rk, fl, board, prevMove) {
           board[rank + square_left[0]][file + square_left[1]]
         )
       ) {
+        board[locOfPawn[0]][locOfPawn[1]] = " ";
+        board[rank + square_left[0]][file + square_left[1]] = pawn;
         if (
           ltrt.leftRight(
             col,
             [rank + square_left[0], file + square_left[1]],
-            king
+            king,
+            pawn
           )
         ) {
           lm.p[col][`${rank}${file}`].push(
@@ -171,6 +201,8 @@ function findPawn(col, lm, ALLPCS, iGP, rk, fl, board, prevMove) {
             }`
           );
         }
+        board[locOfPawn[0]][locOfPawn[1]] = pawn;
+        board[rank + square_left[0]][file + square_left[1]] = " ";
       } else if (
         /* En passant on left */
         rank == EP[col] &&
@@ -179,11 +211,16 @@ function findPawn(col, lm, ALLPCS, iGP, rk, fl, board, prevMove) {
             rk[rank]
           }`
       ) {
+        board[locOfPawn[0]][locOfPawn[1]] = " ";
+        board[rank][file - 1] = " ";
+        board[rank + square_left[0]][file + square_left[1]] = pawn;
+
         if (
           ltrt.leftRight(col, [
             rank + square_left[0],
             file + square_left[1],
             king,
+            pawn,
           ])
         ) {
           lm.p[col][`${rank}${file}`].push(
@@ -198,6 +235,13 @@ function findPawn(col, lm, ALLPCS, iGP, rk, fl, board, prevMove) {
             }ep`
           );
         }
+        board[locOfPawn[0]][locOfPawn[1]] = pawn;
+        if (col) {
+          board[rank][file - 1] = "p";
+        } else {
+          board[rank][file - 1] = "P";
+        }
+        board[rank + square_left[0]][file + square_left[1]] = " ";
       }
       /* Capture Piece on right */
       if (
@@ -205,11 +249,14 @@ function findPawn(col, lm, ALLPCS, iGP, rk, fl, board, prevMove) {
           board[rank + square_right[0]][file + square_right[1]]
         )
       ) {
+        board[locOfPawn[0]][locOfPawn[1]] = " ";
+        board[rank + square_right[0]][file + square_right[1]] = pawn;
         if (
           ltrt.leftRight(
             col,
             [rank + square_right[0], file + square_right[1]],
-            king
+            king,
+            pawn
           )
         ) {
           lm.p[col][`${rank}${file}`].push(
@@ -224,6 +271,8 @@ function findPawn(col, lm, ALLPCS, iGP, rk, fl, board, prevMove) {
             }`
           );
         }
+        board[locOfPawn[0]][locOfPawn[1]] = pawn;
+        board[rank + square_right[0]][file + square_right[1]] = " ";
       } else if (
         /* En passant on right */
         rank == EP[col] &&
@@ -232,11 +281,15 @@ function findPawn(col, lm, ALLPCS, iGP, rk, fl, board, prevMove) {
             rk[rank]
           }`
       ) {
+        board[locOfPawn[0]][locOfPawn[1]] = " ";
+        board[rank][file + 1] = " ";
+        board[rank + square_right[0]][file + square_right[1]] = pawn;
         if (
           ltrt.leftRight(
             col,
             [rank + square_right[0], file + square_right[1]],
-            king
+            king,
+            pawn
           )
         ) {
           lm.p[col][`${rank}${file}`].push(
@@ -251,6 +304,13 @@ function findPawn(col, lm, ALLPCS, iGP, rk, fl, board, prevMove) {
             }ep`
           );
         }
+        board[locOfPawn[0]][locOfPawn[1]] = pawn;
+        if (col) {
+          board[rank][file + 1] = "p";
+        } else {
+          board[rank][file + 1] = "P";
+        }
+        board[rank + square_right[0]][file + square_right[1]] = " ";
       }
     }
   }
