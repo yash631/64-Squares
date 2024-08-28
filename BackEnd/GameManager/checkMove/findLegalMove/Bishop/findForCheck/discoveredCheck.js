@@ -1,7 +1,8 @@
-function bishopDiscovery(Board, inGamePcs, king, color) {
-  let piece = "b";
-  if (color) {
+function bishopDiscovery(Board,piece, inGamePcs, king, color) {
+  if (piece == "b" && color) {
     piece = "B";
+  } else if( piece == "q" && color){
+    piece = "Q";
   }
   for (const location of inGamePcs[piece]) {
     let rank = location[0],

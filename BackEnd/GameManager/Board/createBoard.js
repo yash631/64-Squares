@@ -19,7 +19,7 @@ function createInGamePcs(board) {
     k: [],
     p: [],
     B: [],
-    R: [],
+    R: [], 
     N: [],
     Q: [],
     K: [],

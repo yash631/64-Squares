@@ -1,10 +1,11 @@
 const allDir = require("./findForCheck/allDirections");
 const not = require("../../notations");
+const getBoard = require("../../../Board/createBoard");
 
-function findKnight(col, lm, ALLPCS, iGP, rk, fl, board) {
-  const king = not.KING[1 - col];
+function findKnight(color, lm, ALLPCS, iGP, rk, fl, board) {
+  const king = not.KING[1 - color];
   let knight = "n";
-  if (col) {
+  if (color) {
     knight = "N";
   }
   const totalMoves = [
@@ -18,37 +19,44 @@ function findKnight(col, lm, ALLPCS, iGP, rk, fl, board) {
     [2, -1],
   ];
   function normalMove(rank, file, rows, cols) {
-    lm.n[col][`${rows}${cols}`].push(`${knight}${fl[file]}${rk[rank]}`);
+    lm.n[color][`${rows}${cols}`].push(`${knight}${fl[file]}${rk[rank]}`);
   }
   function captureMove(rank, file, rows, cols) {
-    lm.n[col][`${rows}${cols}`].push(`${knight}x${fl[file]}${rk[rank]}`);
+    lm.n[color][`${rows}${cols}`].push(`${knight}x${fl[file]}${rk[rank]}`);
   }
   function normalCheck(rank, file, rows, cols) {
-    lm.n[col][`${rows}${cols}`].push(`${knight}${fl[file]}${rk[rank]}+`);
+    lm.n[color][`${rows}${cols}`].push(`${knight}${fl[file]}${rk[rank]}+`);
   }
   function captureCheck(rank, file, rows, cols) {
-    lm.n[col][`${rows}${cols}`].push(`${knight}x${fl[file]}${rk[rank]}+`);
+    lm.n[color][`${rows}${cols}`].push(`${knight}x${fl[file]}${rk[rank]}+`);
   }
   for (const locOfKnight of iGP[knight]) {
-    lm.n[col][`${locOfKnight[0]}${locOfKnight[1]}`] = [];
+    lm.n[color][`${locOfKnight[0]}${locOfKnight[1]}`] = [];
     for (const move of totalMoves) {
       let rank = locOfKnight[0] + move[0],
         file = locOfKnight[1] + move[1];
       if (rank >= 0 && rank <= 7 && file >= 0 && file <= 7) {
-        if (ALLPCS[1 - col].includes(board[rank][file])) {
-          if (allDir.movesArray([rank, file], totalMoves, king)) {
+        if (ALLPCS[1 - color].includes(board[rank][file])) {
+          board[rank][file] = knight;
+          board[locOfKnight[0]][locOfKnight[1]] = " ";
+          if (allDir.movesArray([rank, file], totalMoves, king, color)) {
             captureCheck(rank, file, locOfKnight[0], locOfKnight[1]);
           } else {
             captureMove(rank, file, locOfKnight[0], locOfKnight[1]);
           }
-          continue;
-        } else if (board[rank][file] != " ") {
-          continue;
-        } else if (allDir.movesArray([rank, file], totalMoves, king)) {
-          normalCheck(rank, file, locOfKnight[0], locOfKnight[1]);
-          continue;
+          board[rank][file] = " ";
+          board[locOfKnight[0]][locOfKnight[1]] = knight;
+        } else if (board[rank][file] == " ") {
+          board[rank][file] = knight;
+          board[locOfKnight[0]][locOfKnight[1]] = " ";
+          if (allDir.movesArray([rank, file], totalMoves, king, color)) {
+            normalCheck(rank, file, locOfKnight[0], locOfKnight[1]);
+          } else {
+            normalMove(rank, file, locOfKnight[0], locOfKnight[1]);
+          }
+          board[rank][file] = " ";
+          board[locOfKnight[0]][locOfKnight[1]] = knight;
         }
-        normalMove(rank, file, locOfKnight[0], locOfKnight[1]);
       }
     }
   }

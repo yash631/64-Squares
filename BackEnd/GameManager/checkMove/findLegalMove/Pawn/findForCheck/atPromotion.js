@@ -6,7 +6,6 @@ const RNK = require("../../Rook/findForCheck/rank");
 const DIR = require("../../Knight/findForCheck/allDirections");
 const Bishop = require("../../Bishop/findForCheck/discoveredCheck");
 const Rook = require("../../Rook/findForCheck/discoveredCheck");
-const Queen = require("../../Queen/findForCheck/discoveredCheck");
 
 function prom(piece, square, king, color, pawn) {
   if (piece === "q" || piece === "Q") {
@@ -39,12 +38,13 @@ function prom(piece, square, king, color, pawn) {
     /* Discovered checks */
     const inGamePcs = getBoard.createInGamePcs(getBoard.Board);
     /* Check for Discovered check from Bishop */
-    if (Bishop.bishopDiscovery(getBoard.Board, inGamePcs, king,color)) {
+    if (Bishop.bishopDiscovery(getBoard.Board,"b",inGamePcs, king,color)) {
       return 1;
-    } else if (Rook.rookDiscovery(getBoard.Board, inGamePcs, king,color)) {
+    } else if (Rook.rookDiscovery(getBoard.Board,"r", inGamePcs, king,color)) {
       /* Check for Discovered check from Rook */
       return 1;
-    } else if (Queen.queenDiscovery(getBoard.Board, inGamePcs, king,color)) {
+    } else if (Bishop.bishopDiscovery(getBoard.Board,"q", inGamePcs, king,color) ||
+               Rook.rookDiscovery(getBoard.Board,"q", inGamePcs, king,color)) {
       /* Check for Discovered check from Queen */
       return 1;
     }

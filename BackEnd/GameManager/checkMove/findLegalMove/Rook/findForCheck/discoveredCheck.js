@@ -1,8 +1,9 @@
-function rookDiscovery(Board, inGamePcs, king, color){
-   let piece = "r";
-   if(color){
-    piece = "R"
-   }
+function rookDiscovery(Board, piece,inGamePcs, king, color){
+  if (piece == "r" && color) {
+    piece = "R";
+  } else if( piece == "q" && color){
+    piece = "Q";
+  }
    for (const location of inGamePcs[piece]) {
     let rank = location[0],
       file = location[1];
