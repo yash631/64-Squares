@@ -7,6 +7,7 @@ const not = require("../../notations");
 function findRook(color, lm, ALLPCS, iGP, rk, fl, board, piece) {
   const king = not.KING[1 - color];
   let actual_piece = piece[1 - color];
+  let curr_piece;
   function normalMove(rank, file, rows, cols) {
     lm[piece[1]][color][`${rows}${cols}`].push(
       `${piece[1 - color]}${fl[file]}${rk[rank]}`
@@ -52,17 +53,18 @@ function findRook(color, lm, ALLPCS, iGP, rk, fl, board, piece) {
             break;
           }
         }
+        curr_piece = board[rank][file];
         board[locOfPiece[0]][locOfPiece[1]] = " ";
         board[rank][file] = actual_piece;
         if (RNK.rank([rank, file], king, color, piece[1])) {
           captureCheck(rank, file, rows, cols);
           board[locOfPiece[0]][locOfPiece[1]] = actual_piece;
-          board[rank][file] = " ";
+          board[rank][file] = curr_piece;
           break;
         }
         captureMove(rank, file, rows, cols);
         board[locOfPiece[0]][locOfPiece[1]] = actual_piece;
-        board[rank][file] = " ";
+        board[rank][file] = curr_piece;
         break;
       } else if (board[rank][file] != " ") {
         break;
@@ -78,6 +80,7 @@ function findRook(color, lm, ALLPCS, iGP, rk, fl, board, piece) {
           normalMove(rank, file, rows, cols);
         }
       } else if (board[rank][file] == " ") {
+        curr_piece = board[rank][file];
         board[locOfPiece[0]][locOfPiece[1]] = " ";
         board[rank][file] = actual_piece;
         if (RNK.rank([rank, file], king, color, piece[1])) {
@@ -86,7 +89,7 @@ function findRook(color, lm, ALLPCS, iGP, rk, fl, board, piece) {
           normalMove(rank, file, rows, cols);
         }
         board[locOfPiece[0]][locOfPiece[1]] = actual_piece;
-        board[rank][file] = " ";
+        board[rank][file] = curr_piece;
       }
     }
     /* file down */
@@ -106,17 +109,18 @@ function findRook(color, lm, ALLPCS, iGP, rk, fl, board, piece) {
             break;
           }
         }
+        curr_piece = board[rank][file];
         board[locOfPiece[0]][locOfPiece[1]] = " ";
         board[rank][file] = actual_piece;
         if (RNK.rank([rank, file], king, color, piece[1])) {
           captureCheck(rank, file, rows, cols);
           board[locOfPiece[0]][locOfPiece[1]] = actual_piece;
-          board[rank][file] = " ";
+          board[rank][file] = curr_piece;
           break;
         }
         captureMove(rank, file, rows, cols);
         board[locOfPiece[0]][locOfPiece[1]] = actual_piece;
-        board[rank][file] = " ";
+        board[rank][file] = curr_piece;
         break;
       } else if (board[rank][file] != " ") {
         break;
@@ -132,6 +136,7 @@ function findRook(color, lm, ALLPCS, iGP, rk, fl, board, piece) {
           normalMove(rank, file, rows, cols);
         }
       } else if (board[rank][file] == " ") {
+        curr_piece = board[rank][file];
         board[locOfPiece[0]][locOfPiece[1]] = " ";
         board[rank][file] = actual_piece;
         if (RNK.rank([rank, file], king, color, piece[1])) {
@@ -140,7 +145,7 @@ function findRook(color, lm, ALLPCS, iGP, rk, fl, board, piece) {
           normalMove(rank, file, rows, cols);
         }
         board[locOfPiece[0]][locOfPiece[1]] = actual_piece;
-        board[rank][file] = " ";
+        board[rank][file] = curr_piece;
       }
     }
     /* rank left */
@@ -160,17 +165,18 @@ function findRook(color, lm, ALLPCS, iGP, rk, fl, board, piece) {
             break;
           }
         }
+        curr_piece = board[rank][file];
         board[locOfPiece[0]][locOfPiece[1]] = " ";
         board[rank][file] = actual_piece;
         if (FL.file([rank, file], king, color, piece[1])) {
           captureCheck(rank, file, rows, cols);
           board[locOfPiece[0]][locOfPiece[1]] = actual_piece;
-          board[rank][file] = " ";
+          board[rank][file] = curr_piece;
           break;
         }
         captureMove(rank, file, rows, cols);
         board[locOfPiece[0]][locOfPiece[1]] = actual_piece;
-        board[rank][file] = " ";
+        board[rank][file] = curr_piece;
         break;
       } else if (board[rank][file] != " ") {
         break;
@@ -186,6 +192,7 @@ function findRook(color, lm, ALLPCS, iGP, rk, fl, board, piece) {
           normalMove(rank, file, rows, cols);
         }
       } else if (board[rank][file]) {
+        curr_piece = board[rank][file];
         board[locOfPiece[0]][locOfPiece[1]] = " ";
         board[rank][file] = actual_piece;
         if (FL.file([rank, file], king, color, piece[1])) {
@@ -194,7 +201,7 @@ function findRook(color, lm, ALLPCS, iGP, rk, fl, board, piece) {
           normalMove(rank, file, rows, cols);
         }
         board[locOfPiece[0]][locOfPiece[1]] = actual_piece;
-        board[rank][file] = " ";
+        board[rank][file] = curr_piece;
       }
     }
     /* rank right */
@@ -214,17 +221,18 @@ function findRook(color, lm, ALLPCS, iGP, rk, fl, board, piece) {
             break;
           }
         }
+        curr_piece = board[rank][file];
         board[locOfPiece[0]][locOfPiece[1]] = " ";
         board[rank][file] = actual_piece;
         if (FL.file([rank, file], king, color, piece[1])) {
           captureCheck(rank, file, rows, cols);
           board[locOfPiece[0]][locOfPiece[1]] = actual_piece;
-          board[rank][file] = " ";
+          board[rank][file] = curr_piece;
           break;
         }
         captureMove(rank, file, rows, cols);
         board[locOfPiece[0]][locOfPiece[1]] = actual_piece;
-        board[rank][file] = " ";
+        board[rank][file] = curr_piece;
         break;
       } else if (board[rank][file] != " ") {
         break;
@@ -240,6 +248,7 @@ function findRook(color, lm, ALLPCS, iGP, rk, fl, board, piece) {
           normalMove(rank, file, rows, cols);
         }
       } else if (board[rank][file]) {
+        curr_piece = board[rank][file];
         board[locOfPiece[0]][locOfPiece[1]] = " ";
         board[rank][file] = actual_piece;
         if (FL.file([rank, file], king, color, piece[1])) {
@@ -248,7 +257,7 @@ function findRook(color, lm, ALLPCS, iGP, rk, fl, board, piece) {
           normalMove(rank, file, rows, cols);
         }
         board[locOfPiece[0]][locOfPiece[1]] = actual_piece;
-        board[rank][file] = " ";
+        board[rank][file] = curr_piece;
       }
     }
   }

@@ -5,6 +5,7 @@ const getBoard = require("../../../Board/createBoard");
 
 function findPawn(col, lm, ALLPCS, iGP, rk, fl, board, prevMove) {
   const king = not.KING[1 - col];
+  let curr_piece;
   let pawn = "p";
   if (col) {
     pawn = "P";
@@ -132,6 +133,7 @@ function findPawn(col, lm, ALLPCS, iGP, rk, fl, board, prevMove) {
     } else {
       /* Default Move */
       if (board[rank + MOVE[col]][file] == " ") {
+        curr_piece = board[rank+MOVE[col]][file];
         board[locOfPawn[0]][locOfPawn[1]] = " ";
         board[rank + MOVE[col]][file] = pawn;
         if (ltrt.leftRight(col, [rank + MOVE[col], file], king, pawn)) {
@@ -144,12 +146,13 @@ function findPawn(col, lm, ALLPCS, iGP, rk, fl, board, prevMove) {
           );
         }
         board[locOfPawn[0]][locOfPawn[1]] = pawn;
-        board[rank + MOVE[col]][file] = " ";
+        board[rank + MOVE[col]][file] = curr_piece;
         /* Starting Move */
         if (
           locOfPawn[0] == MOVE[`start${col}`][0] &&
           board[rank + MOVE[`start${col}`][1]][file] == " "
         ) {
+          curr_piece = board[rank + MOVE[`start${col}`][1]][file];
           board[locOfPawn[0]][locOfPawn[1]] = " ";
           board[rank + MOVE[`start${col}`][1]][file] = pawn;
           if (
@@ -169,7 +172,7 @@ function findPawn(col, lm, ALLPCS, iGP, rk, fl, board, prevMove) {
             );
           }
           board[locOfPawn[0]][locOfPawn[1]] = pawn;
-          board[rank + MOVE[`start${col}`][1]][file] = " ";
+          board[rank + MOVE[`start${col}`][1]][file] = curr_piece;
         }
       }
 
@@ -179,6 +182,7 @@ function findPawn(col, lm, ALLPCS, iGP, rk, fl, board, prevMove) {
           board[rank + square_left[0]][file + square_left[1]]
         )
       ) {
+        curr_piece = board[rank + square_left[0]][file + square_left[1]];
         board[locOfPawn[0]][locOfPawn[1]] = " ";
         board[rank + square_left[0]][file + square_left[1]] = pawn;
         if (
@@ -202,7 +206,7 @@ function findPawn(col, lm, ALLPCS, iGP, rk, fl, board, prevMove) {
           );
         }
         board[locOfPawn[0]][locOfPawn[1]] = pawn;
-        board[rank + square_left[0]][file + square_left[1]] = " ";
+        board[rank + square_left[0]][file + square_left[1]] = curr_piece;
       } else if (
         /* En passant on left */
         rank == EP[col] &&
@@ -211,6 +215,7 @@ function findPawn(col, lm, ALLPCS, iGP, rk, fl, board, prevMove) {
             rk[rank]
           }`
       ) {
+        curr_piece = board[rank + square_left[0]][file + square_left[1]];
         board[locOfPawn[0]][locOfPawn[1]] = " ";
         board[rank][file - 1] = " ";
         board[rank + square_left[0]][file + square_left[1]] = pawn;
@@ -241,7 +246,7 @@ function findPawn(col, lm, ALLPCS, iGP, rk, fl, board, prevMove) {
         } else {
           board[rank][file - 1] = "P";
         }
-        board[rank + square_left[0]][file + square_left[1]] = " ";
+        board[rank + square_left[0]][file + square_left[1]] = curr_piece;
       }
       /* Capture Piece on right */
       if (
@@ -249,6 +254,7 @@ function findPawn(col, lm, ALLPCS, iGP, rk, fl, board, prevMove) {
           board[rank + square_right[0]][file + square_right[1]]
         )
       ) {
+        curr_piece = board[rank + square_right[0]][file + square_right[1]];
         board[locOfPawn[0]][locOfPawn[1]] = " ";
         board[rank + square_right[0]][file + square_right[1]] = pawn;
         if (
@@ -272,7 +278,7 @@ function findPawn(col, lm, ALLPCS, iGP, rk, fl, board, prevMove) {
           );
         }
         board[locOfPawn[0]][locOfPawn[1]] = pawn;
-        board[rank + square_right[0]][file + square_right[1]] = " ";
+        board[rank + square_right[0]][file + square_right[1]] = curr_piece;
       } else if (
         /* En passant on right */
         rank == EP[col] &&
@@ -281,6 +287,7 @@ function findPawn(col, lm, ALLPCS, iGP, rk, fl, board, prevMove) {
             rk[rank]
           }`
       ) {
+        curr_piece = board[rank + square_right[0]][file + square_right[1]];
         board[locOfPawn[0]][locOfPawn[1]] = " ";
         board[rank][file + 1] = " ";
         board[rank + square_right[0]][file + square_right[1]] = pawn;
@@ -310,7 +317,7 @@ function findPawn(col, lm, ALLPCS, iGP, rk, fl, board, prevMove) {
         } else {
           board[rank][file + 1] = "P";
         }
-        board[rank + square_right[0]][file + square_right[1]] = " ";
+        board[rank + square_right[0]][file + square_right[1]] = curr_piece;
       }
     }
   }

@@ -18,6 +18,20 @@ const PIECES = {
 const KING = {
   0: "k",
   1: "K",
+  pos0: [0, 4],
+  pos1: [7, 4],
+};
+const ROOK = {
+  0: "r",
+  1: "R",
+  pos0: {
+    q: [0, 0],
+    k: [0, 7],
+  },
+  pos1: {
+    q: [7, 0],
+    k: [7, 7],
+  },
 };
 
 const FILE = {
@@ -40,4 +54,4 @@ const FILE = {
     6: 2,
     7: 1,
   };
-module.exports = { ALLPIECES, FILE, RANK, COLOR, PIECES, KING };
+module.exports = { ALLPIECES, FILE, RANK, COLOR, PIECES, KING, ROOK};

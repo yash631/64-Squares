@@ -8,6 +8,7 @@ function findKnight(color, lm, ALLPCS, iGP, rk, fl, board) {
   if (color) {
     knight = "N";
   }
+  let curr_piece;
   const totalMoves = [
     [2, 1],
     [1, 2],
@@ -37,6 +38,7 @@ function findKnight(color, lm, ALLPCS, iGP, rk, fl, board) {
         file = locOfKnight[1] + move[1];
       if (rank >= 0 && rank <= 7 && file >= 0 && file <= 7) {
         if (ALLPCS[1 - color].includes(board[rank][file])) {
+          curr_piece = board[rank][file];
           board[rank][file] = knight;
           board[locOfKnight[0]][locOfKnight[1]] = " ";
           if (allDir.movesArray([rank, file], totalMoves, king, color)) {
@@ -44,9 +46,10 @@ function findKnight(color, lm, ALLPCS, iGP, rk, fl, board) {
           } else {
             captureMove(rank, file, locOfKnight[0], locOfKnight[1]);
           }
-          board[rank][file] = " ";
+          board[rank][file] = curr_piece;
           board[locOfKnight[0]][locOfKnight[1]] = knight;
         } else if (board[rank][file] == " ") {
+          curr_piece = board[rank][file];
           board[rank][file] = knight;
           board[locOfKnight[0]][locOfKnight[1]] = " ";
           if (allDir.movesArray([rank, file], totalMoves, king, color)) {
@@ -54,7 +57,7 @@ function findKnight(color, lm, ALLPCS, iGP, rk, fl, board) {
           } else {
             normalMove(rank, file, locOfKnight[0], locOfKnight[1]);
           }
-          board[rank][file] = " ";
+          board[rank][file] = curr_piece;
           board[locOfKnight[0]][locOfKnight[1]] = knight;
         }
       }

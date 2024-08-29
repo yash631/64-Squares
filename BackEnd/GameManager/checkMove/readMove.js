@@ -14,6 +14,7 @@ const arrOfPieces = {
 const file = ["a", "b", "c", "d", "e", "f", "g", "h"],
   rank = ["1", "2", "3", "4", "5", "6", "7", "8"],
   pieces = ["q", "r", "n", "b", "Q", "R", "N", "B"];
+
 /*
 function pawnMove(initial_Sq, m, color) {
   if (rank.includes(m[1])) {
@@ -212,12 +213,17 @@ function isCorrectMove(initial_Sq, move, color) {
   }
 }
 
-getIndex.sqaureToIndex(1,"p","d2","d3");
-// getIndex.sqaureToIndex(0,"p","a7","a5");
-// getIndex.sqaureToIndex(1,"p","d3","d4");
 
-// getIndex.sqaureToIndex(1,"p","e2","e4");
-// getIndex.sqaureToIndex(0,"p","d7","d5");
+
+getIndex.sqaureToIndex(1,"p","e2","e4");
+getIndex.sqaureToIndex(0,"p","d7","d5");
+getIndex.sqaureToIndex(1,"k","e1","O-O");
+getIndex.sqaureToIndex(0,"r","a8","rb8");
+getIndex.sqaureToIndex(1,"p","a2","a4");
+getIndex.sqaureToIndex(0,"k","e8","O-O-O");
+
+
+
 // getIndex.sqaureToIndex(1,"p","e4","exd5");
 // getIndex.sqaureToIndex(0,"q","d8","qxd5");
 // getIndex.sqaureToIndex(1,"n","b1","Nc3");

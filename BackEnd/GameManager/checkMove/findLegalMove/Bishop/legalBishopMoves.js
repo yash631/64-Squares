@@ -7,6 +7,7 @@ const not = require("../../notations");
 function findBishop(color, lm, ALLPCS, iGP, rk, fl, board, piece) {
   const king = not.KING[1 - color];
   const actual_piece = piece[1 - color];
+  let curr_piece;
   function normalMove(rank, file, rows, cols) {
     lm[piece[1]][color][`${rows}${cols}`].push(
       `${piece[1 - color]}${fl[file]}${rk[rank]}`
@@ -51,16 +52,17 @@ function findBishop(color, lm, ALLPCS, iGP, rk, fl, board, piece) {
             break;
           }
         }
+        curr_piece = board[rank][file];
         board[rank][file] = actual_piece;
         board[locOfPiece[0]][locOfPiece[1]] = " ";
         if (right.rightDiag([rank, file], king, color, piece[1])) {
           captureCheck(rank, file, rows, cols);
-          board[rank][file] = " ";
+          board[rank][file] = curr_piece;
           board[locOfPiece[0]][locOfPiece[1]] = actual_piece;
           break;
         }
         captureMove(rank, file, rows, cols);
-        board[rank][file] = " ";
+        board[rank][file] = curr_piece;
         board[locOfPiece[0]][locOfPiece[1]] = actual_piece;
         break;
       } else if (board[rank][file] != " ") {
@@ -77,6 +79,7 @@ function findBishop(color, lm, ALLPCS, iGP, rk, fl, board, piece) {
           normalMove(rank, file, rows, cols);
         }
       } else if (board[file][rank] == " ") {
+        curr_piece = board[rank][file];
         board[rank][file] = actual_piece;
         board[locOfPiece[0]][locOfPiece[1]] = " ";
         if (right.rightDiag([rank, file], king, color, piece[1])) {
@@ -84,7 +87,7 @@ function findBishop(color, lm, ALLPCS, iGP, rk, fl, board, piece) {
         } else {
           normalMove(rank, file, rows, cols);
         }
-        board[rank][file] = " ";
+        board[rank][file] = curr_piece;
         board[locOfPiece[0]][locOfPiece[1]] = actual_piece;
       }
     }
@@ -105,16 +108,17 @@ function findBishop(color, lm, ALLPCS, iGP, rk, fl, board, piece) {
             break;
           }
         }
+        curr_piece = board[rank][file];
         board[rank][file] = actual_piece;
         board[locOfPiece[0]][locOfPiece[1]] = " ";
         if (right.rightDiag([rank, file], king, color, piece[1])) {
           captureCheck(rank, file, rows, cols);
-          board[rank][file] = " ";
+          board[rank][file] = curr_piece;
           board[locOfPiece[0]][locOfPiece[1]] = actual_piece;
           break;
         }
         captureMove(rank, file, rows, cols);
-        board[rank][file] = " ";
+        board[rank][file] = curr_piece;
         board[locOfPiece[0]][locOfPiece[1]] = actual_piece;
         break;
       } else if (board[rank][file] != " ") {
@@ -132,6 +136,7 @@ function findBishop(color, lm, ALLPCS, iGP, rk, fl, board, piece) {
           normalMove(rank, file, rows, cols);
         }
       } else if (board[rank][file] == " ") {
+        curr_piece = board[rank][file];
         board[rank][file] = actual_piece;
         board[locOfPiece[0]][locOfPiece[1]] = " ";
         if (right.rightDiag([rank, file], king, color, piece[1])) {
@@ -139,7 +144,7 @@ function findBishop(color, lm, ALLPCS, iGP, rk, fl, board, piece) {
         } else {
           normalMove(rank, file, rows, cols);
         }
-        board[rank][file] = " ";
+        board[rank][file] = curr_piece;
         board[locOfPiece[0]][locOfPiece[1]] = actual_piece;
       }
     }
@@ -161,16 +166,17 @@ function findBishop(color, lm, ALLPCS, iGP, rk, fl, board, piece) {
             break;
           }
         }
+        curr_piece = board[rank][file];
         board[rank][file] = actual_piece;
         board[locOfPiece[0]][locOfPiece[1]] = " ";
         if (left.leftDiag([rank, file], king, color, piece[1])) {
           captureCheck(rank, file, rows, cols);
-          board[rank][file] = " ";
+          board[rank][file] = curr_piece;
           board[locOfPiece[0]][locOfPiece[1]] = actual_piece;
           break;
         }
         captureMove(rank, file, rows, cols);
-        board[rank][file] = " ";
+        board[rank][file] = curr_piece;
         board[locOfPiece[0]][locOfPiece[1]] = actual_piece;
         break;
       } else if (board[rank][file] != " ") {
@@ -187,6 +193,7 @@ function findBishop(color, lm, ALLPCS, iGP, rk, fl, board, piece) {
           normalMove(rank, file, rows, cols);
         }
       } else if (board[rank][file] == " ") {
+        curr_piece = board[rank][file];
         board[rank][file] = actual_piece;
         board[locOfPiece[0]][locOfPiece[1]] = " ";
         if (left.leftDiag([rank, file], king, color, piece[1])) {
@@ -194,7 +201,7 @@ function findBishop(color, lm, ALLPCS, iGP, rk, fl, board, piece) {
         } else {
           normalMove(rank, file, rows, cols);
         }
-        board[rank][file] = " ";
+        board[rank][file] = curr_piece;
         board[locOfPiece[0]][locOfPiece[1]] = actual_piece;
       }
     }
@@ -215,16 +222,17 @@ function findBishop(color, lm, ALLPCS, iGP, rk, fl, board, piece) {
             break;
           }
         }
+        curr_piece = board[rank][file];
         board[rank][file] = actual_piece;
         board[locOfPiece[0]][locOfPiece[1]] = " ";
         if (left.leftDiag([rank, file], king, color, piece[1])) {
           captureCheck(rank, file, rows, cols);
-          board[rank][file] = " ";
+          board[rank][file] = curr_piece;
           board[locOfPiece[0]][locOfPiece[1]] = actual_piece;
           break;
         }
         captureMove(rank, file, rows, cols);
-        board[rank][file] = " ";
+        board[rank][file] = curr_piece;
         board[locOfPiece[0]][locOfPiece[1]] = actual_piece;
         break;
       } else if (board[rank][file] != " ") {
@@ -241,6 +249,7 @@ function findBishop(color, lm, ALLPCS, iGP, rk, fl, board, piece) {
           normalMove(rank, file, rows, cols);
         }
       } else if (board[rank][file] == " ") {
+        curr_piece = board[rank][file];
         board[rank][file] = actual_piece;
         board[locOfPiece[0]][locOfPiece[1]] = " ";
         if (left.leftDiag([rank, file], king, color, piece[1])) {
@@ -248,7 +257,7 @@ function findBishop(color, lm, ALLPCS, iGP, rk, fl, board, piece) {
         } else {
           normalMove(rank, file, rows, cols);
         }
-        board[rank][file] = " ";
+        board[rank][file] = curr_piece;
         board[locOfPiece[0]][locOfPiece[1]] = actual_piece;
       }
     }
