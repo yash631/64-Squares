@@ -8,7 +8,7 @@ const dcrp = require("./decryptMove");
 let LEGALMOVES = findlegal.createLegalMoves();
 let isInCheck = 0;
 let whichPieceGaveCheck;
-let checkPiecePos;
+let checkPiecePos_OLD,checkPiecePos_NEW;
 
 function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
   const len = move.length;
@@ -29,6 +29,19 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
     }
   }
   if (isInCheck) {
+    /* Get the Next moves by all piece of side giving check */
+    for (const allPcs in LEGALMOVES) {
+      LEGALMOVES[allPcs][1-color] = {};
+    }
+    findlegal.findAllLegalMoves(
+      LEGALMOVES,
+      getBoard.Board,
+      getBoard.createInGamePcs(getBoard.Board),
+      1-color,
+      getBoard.prevMove,
+      1
+    );
+
     let inGamePcs = getBoard.createInGamePcs(getBoard.Board);
     let blockedSquaresForKing = [];
     const king_pos = inGamePcs[not.KING[color]][0];
@@ -37,17 +50,33 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
     nextMove.nxtMvByPcGivCheck(
       1 - color, // color of checking piece
       whichPieceGaveCheck, // checking piece
-      checkPiecePos, // position of checking piece (Board index)
+      checkPiecePos_NEW, // position of checking piece (Board index)
       LEGALMOVES, // All legal moves from checking piece side
       blockedSquaresForKing, // Sqaures to block the king to move
       not.KING[color], // King who is in check
       getBoard.Board, // Board
       inGamePcs // Current piece in the game with their position
     );
+    
+    // delete LEGALMOVES[whichPieceGaveCheck][1-color][`${checkPiecePos_NEW[0]}${checkPiecePos_NEW[1]}`];
+    console.log(
+      `CURRENT POSITION OF ${not.COLOR[1-color]} PIECES AND THEIR LEGAL MOVES`
+    );
+    for (const allPieces in LEGALMOVES) {
+      console.log(`-->>${not.PIECES[allPieces]}<<--`);
+      for (const singlePiece in LEGALMOVES[allPieces][1-color]) {
+        console.log(
+          `${not.FILE[singlePiece[1]]}${not.RANK[singlePiece[0]]} : ${
+            LEGALMOVES[allPieces][1-color][singlePiece]
+          }`
+        );
+      }
+      console.log("\n");
+    }
 
     /* All possible Squares that can  be blocked by the checking piece */
     dcrp.decryptMove(blockedSquaresForKing, whichPieceGaveCheck, 1 - color);
-    // console.log(blockedSquaresForKing);
+    console.log(blockedSquaresForKing);
 
     /* Block the Squares from the King moves covered by the piece giving check */
     for (const bl_move of blockedSquaresForKing) {
@@ -67,7 +96,7 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
     /* Remaining Sqaures for the King Left */
     // console.log("king : ",LEGALMOVES["k"][color]);
 
-    // console.log(checkPiecePos);
+    // console.log(checkPiecePos_NEW);
     // console.log("legalmoves of piece : ",LEGALMOVES[whichPieceGaveCheck][1-color]);
     // console.log(inGamePcs);
     isInCheck = 0;
@@ -179,7 +208,8 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
     console.log();
     if (move[len - 1] == "+") {
       whichPieceGaveCheck = move[0];
-      checkPiecePos = [new_row, new_col];
+      checkPiecePos_OLD - [curr_row,curr_col];
+      checkPiecePos_NEW = [new_row, new_col];
       isInCheck = 1;
     }
     return true;

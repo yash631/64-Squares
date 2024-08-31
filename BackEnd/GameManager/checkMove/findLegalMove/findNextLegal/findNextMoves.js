@@ -1,5 +1,4 @@
 const not = require("../../notations");
-const Queen = require("../Queen/legalQueenMoves");
 
 function Bishop(locOfKing, piece_pos, blockedSqs, whichPiece) {
   if (locOfKing[0] + locOfKing[1] == piece_pos[0] + piece_pos[1]) {
@@ -17,8 +16,8 @@ function Bishop(locOfKing, piece_pos, blockedSqs, whichPiece) {
   }
 }
 function Rook(locOfKing, piece_pos, blockedSqs, whichPiece) {
-  if (locOfKing[0] == piece_pos[0]) {
-    // console.log("RookRank");
+  if (locOfKing[0] == piece_pos[0] && locOfKing[1]) {
+    // console.log("RookRank")
     blockedSqs.push(
       `${whichPiece}${not.FILE[locOfKing[1] - 1]}${not.RANK[locOfKing[0]]}`,
       `${whichPiece}${not.FILE[locOfKing[1] + 1]}${not.RANK[locOfKing[0]]}`
@@ -90,23 +89,20 @@ function nxtMvByPcGivCheck(
     if (!Boolean(blockedSqs)) {
       Bishop(locOfKing, piece_pos, blockedSqs, whichPiece);
     }
-    Queen.findQueen(
-      color,
-      LEGALMOVES,
-      not.ALLPIECES,
-      inGamePcs,
-      not.RANK,
-      not.FILE,
-      board,
-      ["Q", "q"],
-      1
+  }
+
+  /* Remove the Square from blocking if the checking piece is 1 square closer to king */
+  if (
+    Math.abs(piece_pos[0] - locOfKing[0]) == 1 ||
+    Math.abs(piece_pos[1] - locOfKing[1]) == 1
+  ) {
+    `${whichPiece}${not.FILE[piece_pos[1]]}${not.RANK[piece_pos[0]]}`;
+    const indexToRemove = blockedSqs.indexOf(
+      `${whichPiece}${not.FILE[piece_pos[1]]}${not.RANK[piece_pos[0]]}`
     );
-    for (const queen of LEGALMOVES[whichPiece][color][
-      `${piece_pos[0]}${piece_pos[1]}`
-    ]) {
-      blockedSqs.push(queen);
+    if (indexToRemove !== -1) {
+      blockedSqs.splice(indexToRemove, 1);
     }
-    // delete LEGALMOVES[whichPiece][color][`${piece_pos[0]}${piece_pos[1]}`];
   }
   return blockedSqs;
 }
