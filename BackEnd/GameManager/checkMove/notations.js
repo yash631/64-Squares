@@ -54,4 +54,10 @@ const FILE = {
     6: 2,
     7: 1,
   };
+const RanktoIndex = {
+
+}
+const Filetoindex = {
+  
+}
 module.exports = { ALLPIECES, FILE, RANK, COLOR, PIECES, KING, ROOK};

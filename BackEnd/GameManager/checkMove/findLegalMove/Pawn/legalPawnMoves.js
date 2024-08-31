@@ -3,7 +3,7 @@ const prom = require("./findForCheck/atPromotion");
 const ltrt = require("./findForCheck/leftRightDiag");
 const getBoard = require("../../../Board/createBoard");
 
-function findPawn(col, lm, ALLPCS, iGP, rk, fl, board, prevMove) {
+function findPawn(col, lm, ALLPCS, iGP, rk, fl, board, prevMove,isInCheck) {
   const king = not.KING[1 - col];
   let curr_piece;
   let pawn = "p";

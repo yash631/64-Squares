@@ -215,18 +215,19 @@ function isCorrectMove(initial_Sq, move, color) {
 
 
 
-getIndex.sqaureToIndex(1,"p","e2","e4");
-getIndex.sqaureToIndex(0,"p","d7","d5");
-getIndex.sqaureToIndex(1,"k","e1","O-O");
-getIndex.sqaureToIndex(0,"r","a8","rb8");
-getIndex.sqaureToIndex(1,"p","a2","a4");
-getIndex.sqaureToIndex(0,"k","e8","O-O-O");
-
-
-
+// getIndex.sqaureToIndex(1,"p","e2","e4");
+// getIndex.sqaureToIndex(0,"p","d7","d5");
 // getIndex.sqaureToIndex(1,"p","e4","exd5");
 // getIndex.sqaureToIndex(0,"q","d8","qxd5");
 // getIndex.sqaureToIndex(1,"n","b1","Nc3");
+
+getIndex.sqaureToIndex(1,"p","a2","a4");
+getIndex.sqaureToIndex(0,"q","d5","qe4+");
+getIndex.sqaureToIndex(1,"k","e3","Ke2");
+// getIndex.sqaureToIndex(0,"q","e4","qh4");
+
+
+
 // getIndex.sqaureToIndex(0,"p","c7","c6");
 // getIndex.sqaureToIndex(1,"n","c3","Nxd5");
 // getIndex.sqaureToIndex(0,"p","c6","cxd5");

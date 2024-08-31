@@ -4,7 +4,7 @@ const RNK = require("../Rook/findForCheck/rank");
 const FL = require("../Rook/findForCheck/file");
 const not = require("../../notations");
 
-function findBishop(color, lm, ALLPCS, iGP, rk, fl, board, piece) {
+function findBishop(color, lm, ALLPCS, iGP, rk, fl, board, piece,isInCheck) {
   const king = not.KING[1 - color];
   const actual_piece = piece[1 - color];
   let curr_piece;
@@ -38,9 +38,9 @@ function findBishop(color, lm, ALLPCS, iGP, rk, fl, board, piece) {
     }
     /* left diagonal up-left */
     while (--rank >= 0 && --file >= 0) {
-      if (board[rank][file] == king) {
-        lm[piece[1]][color][`${rows}${cols}`].push(king);
-      }
+      // if (board[rank][file] == king) {
+      //   lm[piece[1]][color][`${rows}${cols}`].push(king);
+      // }
       if (ALLPCS[1 - color].includes(board[rank][file])) {
         /* For Queen */
         if (piece[1] == "q") {
@@ -94,9 +94,9 @@ function findBishop(color, lm, ALLPCS, iGP, rk, fl, board, piece) {
     /* left diagonal down-right */
     (rank = locOfPiece[0]), (file = locOfPiece[1]);
     while (++rank <= 7 && ++file <= 7) {
-      if (board[rank][file] == king) {
-        lm[piece[1]][color][`${rows}${cols}`].push(king);
-      }
+      // if (board[rank][file] == king) {
+      //   lm[piece[1]][color][`${rows}${cols}`].push(king);
+      // }
       if (ALLPCS[1 - color].includes(board[rank][file])) {
         /* For Queen */
         if (piece[1] == "q") {
@@ -152,9 +152,9 @@ function findBishop(color, lm, ALLPCS, iGP, rk, fl, board, piece) {
     /* right diagonal down-left */
     (rank = locOfPiece[0]), (file = locOfPiece[1]);
     while (++rank <= 7 && --file >= 0) {
-      if (board[rank][file] == king) {
-        lm[piece[1]][color][`${rows}${cols}`].push(king);
-      }
+      // if (board[rank][file] == king) {
+      //   lm[piece[1]][color][`${rows}${cols}`].push(king);
+      // }
       if (ALLPCS[1 - color].includes(board[rank][file])) {
         /* For Queen */
         if (piece[1] == "q") {
@@ -208,9 +208,9 @@ function findBishop(color, lm, ALLPCS, iGP, rk, fl, board, piece) {
     /* right diagonal up-right */
     (rank = locOfPiece[0]), (file = locOfPiece[1]);
     while (--rank >= 0 && ++file <= 7) {
-      if (board[rank][file] == king) {
-        lm[piece[1]][color][`${rows}${cols}`].push(king);
-      }
+      // if (board[rank][file] == king) {
+      //   lm[piece[1]][color][`${rows}${cols}`].push(king);
+      // }
       if (ALLPCS[1 - color].includes(board[rank][file])) {
         /* For Queen */
         if (piece[1] == "q") {

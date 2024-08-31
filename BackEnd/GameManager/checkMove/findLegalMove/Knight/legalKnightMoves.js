@@ -2,7 +2,7 @@ const allDir = require("./findForCheck/allDirections");
 const not = require("../../notations");
 const getBoard = require("../../../Board/createBoard");
 
-function findKnight(color, lm, ALLPCS, iGP, rk, fl, board) {
+function findKnight(color, lm, ALLPCS, iGP, rk, fl, board,isInCheck) {
   const king = not.KING[1 - color];
   let knight = "n";
   if (color) {

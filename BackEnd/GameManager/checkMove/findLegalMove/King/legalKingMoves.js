@@ -1,6 +1,7 @@
 const not = require("../../notations");
 const allDir = require("./findForCheck/allDirections");
 const castle = require("./canCastle");
+const oppponent = require("../../checkValid/isValidMove");
 
 let Castling = {
   0: {
@@ -13,7 +14,7 @@ let Castling = {
   },
 };
 
-function findKing(color, lm, ALLPCS, iGP, rk, fl, board) {
+function findKing(color, lm, ALLPCS, iGP, rk, fl, board,isInCheck) {
   const opp_king = not.KING[1 - color];
   const king = not.KING[color];
   const king_sq = [iGP[king][0][0], iGP[king][0][1]];
