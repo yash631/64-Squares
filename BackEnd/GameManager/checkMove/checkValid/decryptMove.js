@@ -1,14 +1,14 @@
 function decryptMove(moves_list, piece, color) {
-    for (let i = 0; i < moves_list.length; i++) {
-      const mv = moves_list[i];
-      if (mv === "k" || mv === "K") {
-        continue;
-      }
-      if (mv[1] === "x") {
-        moves_list[i] = mv[2]+mv[3];
-      } else {
-        moves_list[i] = mv[1]+mv[2];
+  for (let i = 0; i < moves_list.length; i++) {
+    if (moves_list[i] == "k" ||  moves_list[i] == "K") {
+      continue;
+    }
+    for (let character = 0; character < moves_list[i].length; character++) {
+      /* Regular Expression for finding numbers in string */
+      if (/\d/.test(moves_list[i][character])) {
+        moves_list[i] = `${moves_list[i][character - 1]}${moves_list[i][character]}`;
       }
     }
   }
-  module.exports = { decryptMove };
+}
+module.exports = { decryptMove };
