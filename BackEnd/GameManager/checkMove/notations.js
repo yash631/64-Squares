@@ -54,10 +54,34 @@ const FILE = {
     6: 2,
     7: 1,
   };
-const RanktoIndex = {
-
-}
-const Filetoindex = {
-  
-}
-module.exports = { ALLPIECES, FILE, RANK, COLOR, PIECES, KING, ROOK};
+const RTI = {
+  1: 7,
+  2: 6,
+  3: 5,
+  4: 4,
+  5: 3,
+  6: 2,
+  7: 1,
+  8: 0,
+};
+const FTI = {
+  a: 0,
+  b: 1,
+  c: 2,
+  d: 3,
+  e: 4,
+  f: 5,
+  g: 6,
+  h: 7,
+};
+module.exports = {
+  ALLPIECES,
+  FILE,
+  RANK,
+  COLOR,
+  PIECES,
+  KING,
+  ROOK,
+  RTI,
+  FTI,
+};

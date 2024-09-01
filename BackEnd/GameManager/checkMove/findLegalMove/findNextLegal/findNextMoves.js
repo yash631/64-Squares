@@ -69,6 +69,7 @@ function nxtMvByPcGivCheck(
   piece_pos,
   LEGALMOVES,
   blockedSqs,
+  lineOfSight,
   king,
   board,
   inGamePcs
@@ -79,19 +80,19 @@ function nxtMvByPcGivCheck(
   // console.log("locOfpiece : ", piece_pos);
   // console.log(blockedSqs);
   if (whichPiece == "b" || whichPiece == "B") {
-    Bishop(locOfKing, piece_pos, blockedSqs, whichPiece);
+    Bishop(locOfKing, piece_pos, blockedSqs, lineOfSight, whichPiece);
   } else if (whichPiece == "r" || whichPiece == "R") {
-    Rook(locOfKing, piece_pos, blockedSqs, whichPiece);
+    Rook(locOfKing, piece_pos, blockedSqs, lineOfSight, whichPiece);
   } else if (whichPiece == "n" || whichPiece == "N") {
-    Knight(locOfKing, piece_pos, blockedSqs, whichPiece);
+    Knight(locOfKing, piece_pos, blockedSqs, lineOfSight, whichPiece);
   } else if (whichPiece == "q" || whichPiece == "Q") {
-    Rook(locOfKing, piece_pos, blockedSqs, whichPiece);
+    Rook(locOfKing, piece_pos, blockedSqs, lineOfSight, whichPiece);
     if (!Boolean(blockedSqs)) {
-      Bishop(locOfKing, piece_pos, blockedSqs, whichPiece);
+      Bishop(locOfKing, piece_pos, blockedSqs, lineOfSight, whichPiece);
     }
   }
 
-  /* Remove the Square from blocking if the checking piece is 1 square closer to king */
+  /* Remove the Square of the checking piece from blocking if is 1 square closer to king */
   if (
     Math.abs(piece_pos[0] - locOfKing[0]) == 1 ||
     Math.abs(piece_pos[1] - locOfKing[1]) == 1

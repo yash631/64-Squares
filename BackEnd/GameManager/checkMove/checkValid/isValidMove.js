@@ -6,6 +6,7 @@ const king = require("../findLegalMove/King/legalKingMoves");
 const nextMove = require("../findLegalMove/findNextLegal/findNextMoves");
 const dcrp = require("./decryptMove");
 const gameSt = require("./updateGameState");
+const los = require("../findLegalMove/findNextLegal/lineOfsightSqs");
 
 let LEGALMOVES = findlegal.createLegalMoves();
 let isInCheck = 0;
@@ -58,10 +59,38 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
       1
     );
 
+    /* console.log(
+      `CURRENT POSITION OF ${not.COLOR[1-color]} PIECES AND THEIR LEGAL MOVES`
+    );
+    for (const allPieces in LEGALMOVES) {
+      console.log(`-->>${not.PIECES[allPieces]}<<--`);
+      for (const singlePiece in LEGALMOVES[allPieces][1-color]) {
+        console.log(
+          `${not.FILE[singlePiece[1]]}${not.RANK[singlePiece[0]]} : ${
+            LEGALMOVES[allPieces][1-color][singlePiece]
+          }`
+        );
+      }
+      console.log("\n");
+    }*/
+
     let inGamePcs = getBoard.createInGamePcs(getBoard.Board);
     let blockedSquaresForKing = [];
     const king_pos = inGamePcs[not.KING[color]][0];
+    let lineOfSight = [];
 
+    los.LOS_Squares(
+      1 - color,
+      whichPieceGaveCheck,
+      checkPiecePos_NEW,
+      LEGALMOVES[whichPieceGaveCheck][1 - color][
+        `${checkPiecePos_NEW[0]}${checkPiecePos_NEW[1]}`
+      ],
+      not.KING[color],
+      lineOfSight
+    );
+     console.log("LOS : ", lineOfSight);
+     
     /* Finding the next moves or sqaures by the opponent piece to limit the king moves */
     nextMove.nxtMvByPcGivCheck(
       1 - color, // color of opponent piece
@@ -69,6 +98,7 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
       checkPiecePos_NEW, // position of opponent checking piece (Board index)
       LEGALMOVES, // All legal moves from opponent piece side
       blockedSquaresForKing, // Sqaures to block the king to move
+      lineOfSight,
       not.KING[color], // King who is in check
       getBoard.Board, // Board
       inGamePcs // Current piece in the game with their position
@@ -87,11 +117,11 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
       }
     }
     /* Moves of opponent side pieces */
-    console.log(blockedSquaresForKing);
+    // console.log(blockedSquaresForKing);
 
     /* All Squares that are blocked by the opponent side */
     dcrp.decryptMove(blockedSquaresForKing, whichPieceGaveCheck, 1 - color);
-    console.log("decrypted move : ", blockedSquaresForKing);
+    // console.log("decrypted move : ", blockedSquaresForKing);
 
     /* Block the Squares from the King moves covered by the piece giving check */
     for (const bl_move of blockedSquaresForKing) {

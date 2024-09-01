@@ -38,9 +38,9 @@ function findBishop(color, lm, ALLPCS, iGP, rk, fl, board, piece,isInCheck) {
     }
     /* left diagonal up-left */
     while (--rank >= 0 && --file >= 0) {
-      // if (board[rank][file] == king) {
-      //   lm[piece[1]][color][`${rows}${cols}`].push(king);
-      // }
+      if (board[rank][file] == king) {
+        lm[piece[1]][color][`${rows}${cols}`].push(`${king}${fl[file]}${rk[rank]}`);
+      }
       if (ALLPCS[1 - color].includes(board[rank][file])) {
         /* For Queen */
         if (piece[1] == "q") {
@@ -94,9 +94,9 @@ function findBishop(color, lm, ALLPCS, iGP, rk, fl, board, piece,isInCheck) {
     /* left diagonal down-right */
     (rank = locOfPiece[0]), (file = locOfPiece[1]);
     while (++rank <= 7 && ++file <= 7) {
-      // if (board[rank][file] == king) {
-      //   lm[piece[1]][color][`${rows}${cols}`].push(king);
-      // }
+      if (board[rank][file] == king) {
+        lm[piece[1]][color][`${rows}${cols}`].push(`${king}${fl[file]}${rk[rank]}`);
+      }
       if (ALLPCS[1 - color].includes(board[rank][file])) {
         /* For Queen */
         if (piece[1] == "q") {
@@ -152,9 +152,9 @@ function findBishop(color, lm, ALLPCS, iGP, rk, fl, board, piece,isInCheck) {
     /* right diagonal down-left */
     (rank = locOfPiece[0]), (file = locOfPiece[1]);
     while (++rank <= 7 && --file >= 0) {
-      // if (board[rank][file] == king) {
-      //   lm[piece[1]][color][`${rows}${cols}`].push(king);
-      // }
+      if (board[rank][file] == king) {
+        lm[piece[1]][color][`${rows}${cols}`].push(`${king}${fl[file]}${rk[rank]}`);
+      }
       if (ALLPCS[1 - color].includes(board[rank][file])) {
         /* For Queen */
         if (piece[1] == "q") {
@@ -208,9 +208,9 @@ function findBishop(color, lm, ALLPCS, iGP, rk, fl, board, piece,isInCheck) {
     /* right diagonal up-right */
     (rank = locOfPiece[0]), (file = locOfPiece[1]);
     while (--rank >= 0 && ++file <= 7) {
-      // if (board[rank][file] == king) {
-      //   lm[piece[1]][color][`${rows}${cols}`].push(king);
-      // }
+      if (board[rank][file] == king) {
+        lm[piece[1]][color][`${rows}${cols}`].push(`${king}${fl[file]}${rk[rank]}`);
+      }
       if (ALLPCS[1 - color].includes(board[rank][file])) {
         /* For Queen */
         if (piece[1] == "q") {

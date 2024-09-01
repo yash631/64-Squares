@@ -39,9 +39,9 @@ function findRook(color, lm, ALLPCS, iGP, rk, fl, board, piece,isInCheck) {
     }
     /* file up */
     while (--rank >= 0) {
-      // if (board[rank][file] == king) {
-      //   lm[piece[1]][color][`${rows}${cols}`].push(king);
-      // }
+      if (board[rank][file] == king) {
+        lm[piece[1]][color][`${rows}${cols}`].push(`${king}${fl[file]}${rk[rank]}`);
+      }
       if (ALLPCS[1 - color].includes(board[rank][file])) {
         /* For Queen */
         if (piece[1] == "q") {
@@ -95,9 +95,9 @@ function findRook(color, lm, ALLPCS, iGP, rk, fl, board, piece,isInCheck) {
     /* file down */
     (rank = locOfPiece[0]), (file = locOfPiece[1]);
     while (++rank <= 7) {
-      // if (board[rank][file] == king) {
-      //   lm[piece[1]][color][`${rows}${cols}`].push(king);
-      // }
+      if (board[rank][file] == king) {
+        lm[piece[1]][color][`${rows}${cols}`].push(`${king}${fl[file]}${rk[rank]}`);
+      }
       if (ALLPCS[1 - color].includes(board[rank][file])) {
         /* For Queen */
         if (piece[1] == "q") {
@@ -151,9 +151,9 @@ function findRook(color, lm, ALLPCS, iGP, rk, fl, board, piece,isInCheck) {
     /* rank left */
     (rank = locOfPiece[0]), (file = locOfPiece[1]);
     while (--file >= 0) {
-      // if (board[rank][file] == king) {
-      //   lm[piece[1]][color][`${rows}${cols}`].push(king);
-      // }
+      if (board[rank][file] == king) {
+        lm[piece[1]][color][`${rows}${cols}`].push(`${king}${fl[file]}${rk[rank]}`);
+      }
       if (ALLPCS[1 - color].includes(board[rank][file])) {
         /* For Queen */
         if (piece[1] == "q") {
@@ -207,9 +207,9 @@ function findRook(color, lm, ALLPCS, iGP, rk, fl, board, piece,isInCheck) {
     /* rank right */
     (rank = locOfPiece[0]), (file = locOfPiece[1]);
     while (++file <= 7) {
-      // if (board[rank][file] == king) {
-      //   lm[piece[1]][color][`${rows}${cols}`].push(king);
-      // }
+      if (board[rank][file] == king) {
+        lm[piece[1]][color][`${rows}${cols}`].push(`${king}${fl[file]}${rk[rank]}`);
+      }
       if (ALLPCS[1 - color].includes(board[rank][file])) {
         /* For Queen */
         if (piece[1] == "q") {

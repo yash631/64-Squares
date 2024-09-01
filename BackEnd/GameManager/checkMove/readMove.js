@@ -222,8 +222,8 @@ function isCorrectMove(initial_Sq, move, color) {
 // getIndex.sqaureToIndex(1,"n","b1","Nc3");
 
 getIndex.sqaureToIndex(1,"p","a2","a4");
-getIndex.sqaureToIndex(0,"r","d5","re5+");
-getIndex.sqaureToIndex(1,"k","e3","Kf2");
+getIndex.sqaureToIndex(0,"q","d6","qc5+");
+getIndex.sqaureToIndex(1,"k","e3","Kf3");
 
 
 
