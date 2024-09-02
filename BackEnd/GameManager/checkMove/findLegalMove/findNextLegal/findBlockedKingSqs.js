@@ -2,13 +2,13 @@ const not = require("../../notations");
 
 function Bishop(locOfKing, piece_pos, blockedSqs, whichPiece) {
   if (locOfKing[0] + locOfKing[1] == piece_pos[0] + piece_pos[1]) {
-    // console.log("BishopRightDiag");
+    /* Right Diagonal */
     blockedSqs.push(
       `${whichPiece}${not.FILE[locOfKing[1] - 1]}${not.RANK[locOfKing[0] + 1]}`,
       `${whichPiece}${not.FILE[locOfKing[1] + 1]}${not.RANK[locOfKing[0] - 1]}`
     );
   } else {
-    // console.log("BishopLeftDiag");
+    /* Left Diagonal */
     blockedSqs.push(
       `${whichPiece}${not.FILE[locOfKing[1] - 1]}${not.RANK[locOfKing[0] - 1]}`,
       `${whichPiece}${not.FILE[locOfKing[1] + 1]}${not.RANK[locOfKing[0] + 1]}`
@@ -63,7 +63,7 @@ function Knight(locOfKing, piece_pos, blockedSqs, whichPiece) {
   }
 }
 
-function nxtMvByPcGivCheck(
+function kingSqBlockedBypiece(
   color,
   whichPiece,
   piece_pos,
@@ -73,22 +73,23 @@ function nxtMvByPcGivCheck(
   king,
   board,
   inGamePcs
-) {
+) 
+{
   const locOfKing = [inGamePcs[king][0][0], inGamePcs[king][0][1]];
   // console.log("locofking :", locOfKing);
   // console.log("whichPiece : ", whichPiece);
   // console.log("locOfpiece : ", piece_pos);
   // console.log(blockedSqs);
   if (whichPiece == "b" || whichPiece == "B") {
-    Bishop(locOfKing, piece_pos, blockedSqs, lineOfSight, whichPiece);
+    Bishop(locOfKing, piece_pos, blockedSqs, whichPiece);
   } else if (whichPiece == "r" || whichPiece == "R") {
-    Rook(locOfKing, piece_pos, blockedSqs, lineOfSight, whichPiece);
+    Rook(locOfKing, piece_pos, blockedSqs, whichPiece);
   } else if (whichPiece == "n" || whichPiece == "N") {
-    Knight(locOfKing, piece_pos, blockedSqs, lineOfSight, whichPiece);
+    Knight(locOfKing, piece_pos, blockedSqs, whichPiece);
   } else if (whichPiece == "q" || whichPiece == "Q") {
-    Rook(locOfKing, piece_pos, blockedSqs, lineOfSight, whichPiece);
-    if (!Boolean(blockedSqs)) {
-      Bishop(locOfKing, piece_pos, blockedSqs, lineOfSight, whichPiece);
+    Rook(locOfKing, piece_pos, blockedSqs, whichPiece);
+    if(blockedSqs.length === 0){
+      Bishop(locOfKing, piece_pos, blockedSqs, whichPiece);
     }
   }
 
@@ -107,4 +108,4 @@ function nxtMvByPcGivCheck(
   }
   return blockedSqs;
 }
-module.exports = { nxtMvByPcGivCheck };
+module.exports = { kingSqBlockedBypiece };
