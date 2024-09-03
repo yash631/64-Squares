@@ -3,8 +3,20 @@ const FL = require("./findForCheck/file");
 const left = require("../Bishop/findForCheck/leftDiagonal");
 const right = require("../Bishop/findForCheck/rightDiagonal");
 const not = require("../../notations");
+const pin = require("./afterPinnedMoves");
 
-function findRook(color, lm, ALLPCS, iGP, rk, fl, board, piece,isInCheck) {
+function findRook(
+  color,
+  lm,
+  ALLPCS,
+  iGP,
+  rk,
+  fl,
+  board,
+  piece,
+  isInCheck,
+  pinnedPcs
+) {
   const king = not.KING[1 - color];
   let actual_piece = piece[1 - color];
   let curr_piece;
@@ -37,10 +49,43 @@ function findRook(color, lm, ALLPCS, iGP, rk, fl, board, piece,isInCheck) {
     if (!lm[piece[1]][color][`${rows}${cols}`]) {
       lm[piece[1]][color][`${rows}${cols}`] = [];
     }
+    /* Check if the Piece is pinned to the king */
+
+    if (
+      piece[1 - color] in pinnedPcs[color] &&
+      pinnedPcs[color][piece[1 - color]][1][0] == rank &&
+      pinnedPcs[color][piece[1 - color]][1][1] == file
+    ) {
+      if (
+        (pinnedPcs[color][piece[1 - color]][0] == "Q" ||
+          pinnedPcs[color][piece[1 - color]][0] == "q" ||
+          pinnedPcs[color][piece[1 - color]][0] == "B" ||
+          pinnedPcs[color][piece[1 - color]][0] == "b") &&
+        rank != pinnedPcs[color][piece[1 - color]][3][0] &&
+        file != pinnedPcs[color][piece[1 - color]][3][1]
+      ) {
+        continue;
+      } else {
+        pin.findMovesAfterPin(
+          piece[1],
+          actual_piece,
+          color,
+          pinnedPcs,
+          lm,
+          board,
+          iGP,
+          [rows, cols]
+        );
+        continue;
+      }
+    }
+
     /* file up */
     while (--rank >= 0) {
       if (board[rank][file] == king) {
-        lm[piece[1]][color][`${rows}${cols}`].push(`${king}${fl[file]}${rk[rank]}`);
+        lm[piece[1]][color][`${rows}${cols}`].push(
+          `${king}${fl[file]}${rk[rank]}`
+        );
       }
       if (ALLPCS[1 - color].includes(board[rank][file])) {
         /* For Queen */
@@ -56,7 +101,10 @@ function findRook(color, lm, ALLPCS, iGP, rk, fl, board, piece,isInCheck) {
         curr_piece = board[rank][file];
         board[locOfPiece[0]][locOfPiece[1]] = " ";
         board[rank][file] = actual_piece;
-        if (RNK.rank([rank, file], king, color, piece[1])) {
+        if (
+          RNK.rank([rank, file], king, color, piece[1]) ||
+          FL.file([rank, file], king, color, piece[1])
+        ) {
           captureCheck(rank, file, rows, cols);
           board[locOfPiece[0]][locOfPiece[1]] = actual_piece;
           board[rank][file] = curr_piece;
@@ -96,7 +144,9 @@ function findRook(color, lm, ALLPCS, iGP, rk, fl, board, piece,isInCheck) {
     (rank = locOfPiece[0]), (file = locOfPiece[1]);
     while (++rank <= 7) {
       if (board[rank][file] == king) {
-        lm[piece[1]][color][`${rows}${cols}`].push(`${king}${fl[file]}${rk[rank]}`);
+        lm[piece[1]][color][`${rows}${cols}`].push(
+          `${king}${fl[file]}${rk[rank]}`
+        );
       }
       if (ALLPCS[1 - color].includes(board[rank][file])) {
         /* For Queen */
@@ -112,7 +162,10 @@ function findRook(color, lm, ALLPCS, iGP, rk, fl, board, piece,isInCheck) {
         curr_piece = board[rank][file];
         board[locOfPiece[0]][locOfPiece[1]] = " ";
         board[rank][file] = actual_piece;
-        if (RNK.rank([rank, file], king, color, piece[1])) {
+        if (
+          RNK.rank([rank, file], king, color, piece[1]) ||
+          FL.file([rank, file], king, color, piece[1])
+        ) {
           captureCheck(rank, file, rows, cols);
           board[locOfPiece[0]][locOfPiece[1]] = actual_piece;
           board[rank][file] = curr_piece;
@@ -152,7 +205,9 @@ function findRook(color, lm, ALLPCS, iGP, rk, fl, board, piece,isInCheck) {
     (rank = locOfPiece[0]), (file = locOfPiece[1]);
     while (--file >= 0) {
       if (board[rank][file] == king) {
-        lm[piece[1]][color][`${rows}${cols}`].push(`${king}${fl[file]}${rk[rank]}`);
+        lm[piece[1]][color][`${rows}${cols}`].push(
+          `${king}${fl[file]}${rk[rank]}`
+        );
       }
       if (ALLPCS[1 - color].includes(board[rank][file])) {
         /* For Queen */
@@ -168,7 +223,10 @@ function findRook(color, lm, ALLPCS, iGP, rk, fl, board, piece,isInCheck) {
         curr_piece = board[rank][file];
         board[locOfPiece[0]][locOfPiece[1]] = " ";
         board[rank][file] = actual_piece;
-        if (FL.file([rank, file], king, color, piece[1])) {
+        if (
+          FL.file([rank, file], king, color, piece[1]) ||
+          RNK.rank([rank, file], king, color, piece[1])
+        ) {
           captureCheck(rank, file, rows, cols);
           board[locOfPiece[0]][locOfPiece[1]] = actual_piece;
           board[rank][file] = curr_piece;
@@ -208,7 +266,9 @@ function findRook(color, lm, ALLPCS, iGP, rk, fl, board, piece,isInCheck) {
     (rank = locOfPiece[0]), (file = locOfPiece[1]);
     while (++file <= 7) {
       if (board[rank][file] == king) {
-        lm[piece[1]][color][`${rows}${cols}`].push(`${king}${fl[file]}${rk[rank]}`);
+        lm[piece[1]][color][`${rows}${cols}`].push(
+          `${king}${fl[file]}${rk[rank]}`
+        );
       }
       if (ALLPCS[1 - color].includes(board[rank][file])) {
         /* For Queen */
@@ -224,7 +284,10 @@ function findRook(color, lm, ALLPCS, iGP, rk, fl, board, piece,isInCheck) {
         curr_piece = board[rank][file];
         board[locOfPiece[0]][locOfPiece[1]] = " ";
         board[rank][file] = actual_piece;
-        if (FL.file([rank, file], king, color, piece[1])) {
+        if (
+          FL.file([rank, file], king, color, piece[1]) ||
+          RNK.rank([rank, file], king, color, piece[1])
+        ) {
           captureCheck(rank, file, rows, cols);
           board[locOfPiece[0]][locOfPiece[1]] = actual_piece;
           board[rank][file] = curr_piece;

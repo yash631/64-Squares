@@ -1,15 +1,17 @@
 const findlegal = require("../findLegalMove/findLegal");
-const updateBoard = require("../../Board/updateBoard");
 const getBoard = require("../../Board/createBoard");
 const not = require("../notations");
-const king = require("../findLegalMove/King/legalKingMoves");
-const findBlocked = require("../findLegalMove/findNextLegal/findBlockedKingSqs");
+const findBlocked = require("../findLegalMove/squaresAfterCheck/findBlockedKingSqs");
 const dcrp = require("./decryptMove");
 const gameSt = require("./updateGameState");
-const los = require("../findLegalMove/findNextLegal/lineOfsightSqs");
+const los = require("../findLegalMove/squaresAfterCheck/lineOfsightSqs");
 
 let LEGALMOVES = findlegal.createLegalMoves();
 let isInCheck = 0;
+let pinnedPcs = {
+  0: {},
+  1: {},
+};
 let whichPieceGaveCheck;
 let checkPiecePos_OLD, checkPiecePos_NEW;
 
@@ -43,7 +45,8 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
     getBoard.createInGamePcs(getBoard.Board),
     color,
     getBoard.prevMove,
-    isInCheck
+    isInCheck,
+    pinnedPcs
   );
 
   if (isInCheck) {
@@ -57,7 +60,8 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
       getBoard.createInGamePcs(getBoard.Board),
       1 - color,
       getBoard.prevMove,
-      1
+      1,
+      pinnedPcs
     );
     /*console.log(
       `CURRENT POSITION OF ${not.COLOR[1 - color]} PIECES AND THEIR LEGAL MOVES`
@@ -76,7 +80,7 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
 
     let inGamePcs = getBoard.createInGamePcs(getBoard.Board);
     let blockedSquaresForKing = [];
-    const king_pos = inGamePcs[not.KING[color]][0];
+    const king_pos = inGamePcs[not.KING[color]][0]; 
     let lineOfSight = [];
 
     los.LOS_Squares(
@@ -95,7 +99,7 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
     let checkPieceSquare = `${not.FILE[checkPiecePos_NEW[1]]}${
       not.RANK[checkPiecePos_NEW[0]]
     }`;
-    const regexCheckPieceSquare = new RegExp(`^${checkPieceSquare}$`);
+    // console.log("checkPiece Square :",checkPieceSquare);
 
     /* Updating Legal Moves for capturing checking and blocking the check */
     for (const everyPiece in LEGALMOVES) {
@@ -107,12 +111,11 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
         const availableMoves = [];
         for (const singleMove of LEGALMOVES[everyPiece][color][uniquePiece]) {
           for (const move of lineOfSight) {
-            const regexMove = new RegExp(`^${move}$`);
             if (
               /* To find squares to block the king and checking piece */
-              regexMove.test(singleMove) ||
+              singleMove.includes(move) ||
               /* To capture the checking piece */
-              regexCheckPieceSquare.test(singleMove)
+              singleMove.includes(`x${checkPieceSquare}`)
             ) {
               availableMoves.push(singleMove);
             }
@@ -172,14 +175,13 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
 
     /* Remaining Sqaures for the King Left */
     // console.log("king : ",LEGALMOVES["k"][color]);
-    isInCheck = 0;
   }
 
   /* Print Full LegalMoves Object */
   // console.log(LEGALMOVES);
 
   /* SHOW FINAL LEGAL MOVES */
-  showLegalMoves(LEGALMOVES);
+  // showLegalMoves(LEGALMOVES);
   console.log(`-----------------------------------------------`);
 
   if (LEGALMOVES[piece][color][`${curr_row}${curr_col}`].includes(move)) {
@@ -194,8 +196,34 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
       new_row,
       new_col
     );
-    if (move[len - 1] == "+") {
-      whichPieceGaveCheck = move[0];
+    if (isInCheck) {
+      if(color){
+        piece = piece.toUpperCase();
+      }
+      /* If king Didn't move */
+      if (move[0] != "k" && move[0] != "K") {
+        /* If the checking piece is not captured */
+        if (move[1] != "x") {
+          /* Add piece that blocked check */
+          pinnedPcs[color][piece] = [
+            whichPieceGaveCheck,
+            [new_row, new_col],
+            [`${not.FILE[new_col]}${not.RANK[new_row]}`],
+            [checkPiecePos_NEW[0], checkPiecePos_NEW[1]],
+            [
+              `${not.FILE[checkPiecePos_NEW[1]]}${
+                not.RANK[checkPiecePos_NEW[0]]
+              }`,
+            ],
+            []
+          ];
+        }
+      }
+      isInCheck = 0;
+      // console.log("Pinned Pieces : ",pinnedPcs);
+       console.log(`Pinned Pieces : ${JSON.stringify(pinnedPcs, null, 3)}`);
+    } else if (move[len - 1] == "+") {
+      whichPieceGaveCheck = move[0].toLowerCase();
       checkPiecePos_OLD = [curr_row, curr_col];
       checkPiecePos_NEW = [new_row, new_col];
       isInCheck = 1;

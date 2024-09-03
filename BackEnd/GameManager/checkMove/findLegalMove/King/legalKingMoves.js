@@ -14,7 +14,7 @@ let Castling = {
   },
 };
 
-function findKing(color, lm, ALLPCS, iGP, rk, fl, board,isInCheck) {
+function findKing(color, lm, ALLPCS, iGP, rk, fl, board, isInCheck, pinnedPcs) {
   const opp_king = not.KING[1 - color];
   const king = not.KING[color];
   const king_sq = [iGP[king][0][0], iGP[king][0][1]];
@@ -60,18 +60,20 @@ function findKing(color, lm, ALLPCS, iGP, rk, fl, board,isInCheck) {
   if (!lm.k[color][`${king_sq[0]}${king_sq[1]}`]) {
     lm.k[color][`${king_sq[0]}${king_sq[1]}`] = [];
   }
-  /* Check if it's possible to castle i.e. king and queen-side rook didn't move till now*/
-  if (Castling[color]["q"]) {
-    /* Check if there is no piece between king and queen-side rook */
-    if (castle.kingRookCastle(color, board, king, "q")) {
-      castlingMove("queen");
+  if (isInCheck == 0) {
+    /* Check if it's possible to castle i.e. king and queen-side rook didn't move till now*/
+    if (Castling[color]["q"]) {
+      /* Check if there is no piece between king and queen-side rook */
+      if (castle.kingRookCastle(color, board, king, "q")) {
+        castlingMove("queen");
+      }
     }
-  }
-  /* Check if it's possible to castle i.e. king and king-side rook didn't move till now */
-  if (Castling[color]["k"]) {
-    /* Check if there is no piece between king and king-side rook */
-    if (castle.kingRookCastle(color, board, king, "k")) {
-      castlingMove("king");
+    /* Check if it's possible to castle i.e. king and king-side rook didn't move till now */
+    if (Castling[color]["k"]) {
+      /* Check if there is no piece between king and king-side rook */
+      if (castle.kingRookCastle(color, board, king, "k")) {
+        castlingMove("king");
+      }
     }
   }
 
@@ -119,4 +121,4 @@ function findKing(color, lm, ALLPCS, iGP, rk, fl, board,isInCheck) {
     }
   }
 }
-module.exports = { findKing, Castling};
+module.exports = { findKing, Castling };
