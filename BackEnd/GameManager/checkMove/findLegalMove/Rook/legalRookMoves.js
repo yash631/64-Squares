@@ -144,7 +144,7 @@ function findRook(
     /* Check if the Piece is pinned to the oppKing */
 
     const pinPos = `${rows}${cols}`;
-    const pinnedPiece = pinnedPcs[color]?.[piece[1 - color]]?.[pinPos];
+    const pinnedPiece = pinnedPcs[color]?.[piece[1]]?.[pinPos];
 
     if (pinnedPiece) {
       const pinnedPieceType = pinnedPiece[0];
@@ -166,7 +166,6 @@ function findRook(
           color,
           pinnedPcs,
           lm,
-          board,
           iGP,
           [rows, cols]
         );

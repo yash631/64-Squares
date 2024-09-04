@@ -14,6 +14,9 @@ function updateGS(
   new_row,
   new_col
 ) {
+  if (color) {
+    piece = piece.toUpperCase();
+  }
   Game_State.push(move);
   console.log("MOVES : ", Game_State);
   if (move == "O-O") {

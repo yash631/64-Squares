@@ -142,8 +142,8 @@ function findBishop(
     /* Check if the Piece is pinned to the oppKing */
 
     const pinPos = `${rows}${cols}`;
-    const pinnedPiece = pinnedPcs[color]?.[piece[1 - color]]?.[pinPos];
-
+    const pinnedPiece = pinnedPcs[color]?.[piece[1]]?.[pinPos];
+    // console.log("rows,cols and pinnedPiecepos : ",[rows,cols],pinnedPiece);
     if (pinnedPiece) {
       const pinnedPieceType = pinnedPiece[0];
       const pinnedPiecePosition = pinnedPiece[3];
@@ -163,7 +163,6 @@ function findBishop(
           color,
           pinnedPcs,
           lm,
-          board,
           iGP,
           [rows, cols]
         );

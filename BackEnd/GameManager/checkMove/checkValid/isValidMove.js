@@ -13,6 +13,10 @@ let pinnedPcs = {
   0: {},
   1: {},
 };
+let pinningPcs = {
+  0: {},
+  1: {},
+};
 let whichPieceGaveCheck;
 let checkPiecePos_OLD, checkPiecePos_NEW;
 
@@ -42,7 +46,6 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
   for (const allPcs in LEGALMOVES) {
     LEGALMOVES[allPcs][color] = {};
   }
-  /* Find the squares from king moves covered by the opponent checking piece in the line of sight with the king*/
   findlegal.findAllLegalMoves(
     LEGALMOVES,
     getBoard.Board,
@@ -54,7 +57,7 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
   );
 
   if (isInCheck) {
-    /* Get the next Leagal of opponent to block the king movement to those squares*/
+    /* Get the next Legal of opponent to block the king movement to those squares*/
     for (const allPcs in LEGALMOVES) {
       LEGALMOVES[allPcs][1 - color] = {};
     }
@@ -82,8 +85,8 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
       console.log("\n");
     }*/
 
+    /* Find the squares from king moves covered by the opponent checking piece in the line of sight with the king*/
     let lineOfSight = [];
-
     los.LOS_Squares(
       1 - color,
       whichPieceGaveCheck,
@@ -183,13 +186,22 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
 
   /* SHOW FINAL LEGAL MOVES */
   showLegalMoves(LEGALMOVES);
-  console.log(`Pinned Pieces : ${JSON.stringify(pinnedPcs, null, 3)}`);
   console.log(`-----------------------------------------------`);
 
+  /*for (const allPcs in LEGALMOVES) {
+    LEGALMOVES[allPcs][1-color] = {};
+  }
+  findlegal.findAllLegalMoves(
+    LEGALMOVES,
+    getBoard.Board,
+    getBoard.createInGamePcs(getBoard.Board),
+    1-color,
+    getBoard.prevMove,
+    isInCheck,
+    pinnedPcs
+  );*/
+
   if (LEGALMOVES[piece][color][`${curr_row}${curr_col}`].includes(move)) {
-    if (color) {
-      piece = piece.toUpperCase();
-    }
     gameSt.updateGS(
       move,
       len,
@@ -202,7 +214,18 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
       new_col
     );
 
-    // pin.updatePinnedPieceState(pinnedPcs,not.KING[color],king_pos);
+    pin.updatePinnedPieceState(
+      color,
+      piece,
+      move,
+      [curr_row, curr_col],
+      [new_row, new_col],
+      pinnedPcs,
+      pinningPcs,
+      not.KING[color],
+      inGamePcs,
+      LEGALMOVES,
+    );
 
     if (isInCheck) {
       /* If king Didn't move */
@@ -225,11 +248,17 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
               [],
             ],
           };
+          pinningPcs[1 - color] = {
+            [`${whichPieceGaveCheck}`]: {
+              [`${checkPiecePos_NEW[0]}${checkPiecePos_NEW[1]}`]: [
+                piece,
+                `${new_row}${new_col}`,
+              ],
+            },
+          };
         }
       }
       isInCheck = 0;
-      // console.log("Pinned Pieces : ",pinnedPcs);
-      //  console.log(`Pinned Pieces : ${JSON.stringify(pinnedPcs, null, 3)}`);
     } else if (move[len - 1] == "+") {
       whichPieceGaveCheck = move[0].toLowerCase();
       checkPiecePos_OLD = [curr_row, curr_col];
@@ -243,6 +272,8 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
         }->${not.FILE[checkPiecePos_NEW[1]]}${not.RANK[checkPiecePos_NEW[0]]}`
       ); */
     }
+    console.log(`Pinned Pieces : ${JSON.stringify(pinnedPcs, null, 3)}`);
+    console.log(`Pinning Pieces : ${JSON.stringify(pinningPcs, null, 3)}`);
   } else {
     console.log("ILLEGAL MOVE");
     return false;

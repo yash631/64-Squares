@@ -5,32 +5,31 @@ const left = require("../Bishop/findForCheck/leftDiagonal");
 const right = require("../Bishop/findForCheck/rightDiagonal");
 
 function findMovesAfterPin(
-  pieceToPush,
-  actualPiece, // pinned piece
+  pinnedPiece,
+  actualPiece,
   color,
   pinnedPcs,
   lm,
-  board,
   inGamePcs,
   pinnedPiecePos
 ) {
   function captureCheck(rank, file, rows, cols) {
-    lm[pieceToPush][color][`${rank}${file}`].push(
+    lm[pinnedPiece][color][`${rank}${file}`].push(
       `${actualPiece}x${not.FILE[cols]}${not.RANK[rows]}+`
     );
   }
   function captureMove(rank, file, rows, cols) {
-    lm[pieceToPush][color][`${rank}${file}`].push(
+    lm[pinnedPiece][color][`${rank}${file}`].push(
       `${actualPiece}x${not.FILE[cols]}${not.RANK[rows]}`
     );
   }
   function normalMove(rank, file, rows, cols) {
-    lm[pieceToPush][color][`${rank}${file}`].push(
+    lm[pinnedPiece][color][`${rank}${file}`].push(
       `${actualPiece}${not.FILE[cols]}${not.RANK[rows]}`
     );
   }
   function normalCheck(rank, file, rows, cols) {
-    lm[pieceToPush][color][`${rank}${file}`].push(
+    lm[pinnedPiece][color][`${rank}${file}`].push(
       `${actualPiece}${not.FILE[cols]}${not.RANK[rows]}+`
     );
   }
@@ -38,7 +37,7 @@ function findMovesAfterPin(
   function findForcheck(currPinnedPiecePos) {
     const oppKing = not.KING[1 - color];
     const [rank, file] = currPinnedPiecePos;
-    if (pieceToPush == "q") {
+    if (pinnedPiece == "q") {
       return (
         RNK.rank([rank, file], oppKing, color, "q") ||
         FL.file([rank, file], oppKing, color, "q") ||
@@ -54,12 +53,14 @@ function findMovesAfterPin(
   }
   const pinnedPieceKey = `${pinnedPiecePos[0]}${pinnedPiecePos[1]}`;
   const kingPos = inGamePcs[not.KING[color]][0];
-  let pinningPiece = pinnedPcs[color][actualPiece][pinnedPieceKey][0];
+  let pinningPiece = pinnedPcs[color][pinnedPiece][pinnedPieceKey][0];
   if (color) {
+    pinningPiece = pinningPiece.toLowerCase();
+  } else {
     pinningPiece = pinningPiece.toUpperCase();
   }
-  const pinningPiecePos = pinnedPcs[color][actualPiece][pinnedPieceKey][3];
-  pinnedPcs[color][actualPiece][pinnedPieceKey][6] = [];
+  const pinningPiecePos = pinnedPcs[color][pinnedPiece][pinnedPieceKey][3];
+  pinnedPcs[color][pinnedPiece][pinnedPieceKey][6] = [];
 
   /* Function to add moves in the given direction */
   function addMoves(
@@ -103,7 +104,7 @@ function findMovesAfterPin(
         } else {
           normalMove(startRow, startCol, row, col);
         }
-        pinnedPcs[color][actualPiece][pinnedPieceKey][6].push(
+        pinnedPcs[color][pinnedPiece][pinnedPieceKey][6].push(
           `${pinningPiece}${not.FILE[col]}${not.RANK[row]}`
         );
       }
@@ -137,7 +138,7 @@ function findMovesAfterPin(
         } else {
           normalMove(startRow, startCol, row, col);
         }
-        pinnedPcs[color][actualPiece][pinnedPieceKey][6].push(
+        pinnedPcs[color][pinnedPiece][pinnedPieceKey][6].push(
           `${pinningPiece}${not.FILE[col]}${not.RANK[row]}`
         );
       }
@@ -150,8 +151,8 @@ function findMovesAfterPin(
       captureMove(startRow, startCol, endRow, endCol);
     }
 
-    pinnedPcs[color][actualPiece][pinnedPieceKey][5] =
-      lm[pieceToPush][color][`${startRow}${startCol}`];
+    pinnedPcs[color][pinnedPiece][pinnedPieceKey][5] =
+      lm[pinnedPiece][color][`${startRow}${startCol}`];
 
     /*  Add pinning piece moves till it touches an edge of the board */
     (row = endRow), (col = endCol);
@@ -166,7 +167,7 @@ function findMovesAfterPin(
         row++;
       }
       if (row < 0 || row > 7 || col < 0 || col > 7) break;
-      pinnedPcs[color][actualPiece][pinnedPieceKey][6].push(
+      pinnedPcs[color][pinnedPiece][pinnedPieceKey][6].push(
         `${pinningPiece}${not.FILE[col]}${not.RANK[row]}`
       );
     }
