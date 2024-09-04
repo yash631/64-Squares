@@ -17,7 +17,7 @@ function findRook(
   isInCheck,
   pinnedPcs
 ) {
-  const king = not.KING[1 - color];
+  const oppKing = not.KING[1 - color];
   let actual_piece = piece[1 - color];
   let curr_piece;
   function normalMove(rank, file, rows, cols) {
@@ -45,7 +45,7 @@ function findRook(
   function processDirection(
     board,
     locOfPiece,
-    king,
+    oppKing,
     pieceType,
     color,
     direction,
@@ -72,17 +72,17 @@ function findRook(
       rank += rankChange;
       file += fileChange;
 
-      if (board[rank][file] === king) {
+      if (board[rank][file] === oppKing) {
         lm[pieceType][color][`${locOfPiece[0]}${locOfPiece[1]}`].push(
-          `${king}${fl[file]}${rk[rank]}`
+          `${oppKing}${fl[file]}${rk[rank]}`
         );
       }
 
       if (ALLPCS[1 - color].includes(board[rank][file])) {
         if (pieceType === "q") {
           if (
-            left.leftDiag([rank, file], king, color, pieceType) ||
-            right.rightDiag([rank, file], king, color, pieceType)
+            left.leftDiag([rank, file], oppKing, color, pieceType) ||
+            right.rightDiag([rank, file], oppKing, color, pieceType)
           ) {
             captureCheck(rank, file, locOfPiece[0], locOfPiece[1]);
             break;
@@ -93,8 +93,8 @@ function findRook(
         board[rank][file] = actual_piece;
         board[locOfPiece[0]][locOfPiece[1]] = " ";
         if (
-          RNK.rank([rank, file], king, color, pieceType) ||
-          FL.file([rank, file], king, color, pieceType)
+          RNK.rank([rank, file], oppKing, color, pieceType) ||
+          FL.file([rank, file], oppKing, color, pieceType)
         ) {
           captureCheck(rank, file, locOfPiece[0], locOfPiece[1]);
           board[rank][file] = curr_piece;
@@ -109,12 +109,11 @@ function findRook(
         break;
       } else if (pieceType === "q") {
         if (
-          RNK.rank([rank, file], king, color, pieceType) ||
-          FL.file([rank, file], king, color, pieceType) ||
-          left.leftDiag([rank,file],king,color,pieceType) ||
-          right.rightDiag([rank,file],king,color,pieceType)
+          RNK.rank([rank, file], oppKing, color, pieceType) ||
+          FL.file([rank, file], oppKing, color, pieceType) ||
+          left.leftDiag([rank,file],oppKing,color,pieceType) ||
+          right.rightDiag([rank,file],oppKing,color,pieceType)
         ) {
-          console.log("normalcheck");
           normalCheck(rank, file, locOfPiece[0], locOfPiece[1]);
         } else {
           normalMove(rank, file, locOfPiece[0], locOfPiece[1]);
@@ -123,8 +122,8 @@ function findRook(
         let curr_piece = board[rank][file];
         board[rank][file] = actual_piece;
         board[locOfPiece[0]][locOfPiece[1]] = " ";
-        if (RNK.rank([rank, file], king, color, pieceType) ||
-            FL.file([rank,file],king,color,pieceType)) {
+        if (RNK.rank([rank, file], oppKing, color, pieceType) ||
+            FL.file([rank,file],oppKing,color,pieceType)) {
           normalCheck(rank, file, locOfPiece[0], locOfPiece[1]);
         } else {
           normalMove(rank, file, locOfPiece[0], locOfPiece[1]);
@@ -142,7 +141,7 @@ function findRook(
     if (!lm[piece[1]][color][`${rows}${cols}`]) {
       lm[piece[1]][color][`${rows}${cols}`] = [];
     }
-    /* Check if the Piece is pinned to the king */
+    /* Check if the Piece is pinned to the oppKing */
 
     const pinPos = `${rows}${cols}`;
     const pinnedPiece = pinnedPcs[color]?.[piece[1 - color]]?.[pinPos];
@@ -180,7 +179,7 @@ function findRook(
     processDirection(
       board,
       locOfPiece,
-      king,
+      oppKing,
       piece[1],
       color,
       [-1, 0],
@@ -199,7 +198,7 @@ function findRook(
     processDirection(
       board,
       locOfPiece,
-      king,
+      oppKing,
       piece[1],
       color,
       [1, 0],
@@ -218,7 +217,7 @@ function findRook(
     processDirection(
       board,
       locOfPiece,
-      king,
+      oppKing,
       piece[1],
       color,
       [0, -1],
@@ -237,7 +236,7 @@ function findRook(
     processDirection(
       board,
       locOfPiece,
-      king,
+      oppKing,
       piece[1],
       color,
       [0, 1],

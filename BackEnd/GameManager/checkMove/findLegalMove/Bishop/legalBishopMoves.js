@@ -17,7 +17,7 @@ function findBishop(
   isInCheck,
   pinnedPcs
 ) {
-  const king = not.KING[1 - color];
+  const oppKing = not.KING[1 - color];
   const actual_piece = piece[1 - color];
   let curr_piece;
   function normalMove(rank, file, rows, cols) {
@@ -43,7 +43,7 @@ function findBishop(
   function processDiagonal(
     board,
     locOfPiece,
-    king,
+    oppKing,
     pieceType,
     color,
     direction,
@@ -72,17 +72,17 @@ function findBishop(
       rank += rankChange;
       file += fileChange;
 
-      if (board[rank][file] === king) {
+      if (board[rank][file] === oppKing) {
         lm[pieceType][color][`${locOfPiece[0]}${locOfPiece[1]}`].push(
-          `${king}${fl[file]}${rk[rank]}`
+          `${oppKing}${fl[file]}${rk[rank]}`
         );
       }
 
       if (ALLPCS[1 - color].includes(board[rank][file])) {
         if (pieceType === "q") {
           if (
-            RNK.rank([rank, file], king, color, pieceType) ||
-            FL.file([rank, file], king, color, pieceType)
+            RNK.rank([rank, file], oppKing, color, pieceType) ||
+            FL.file([rank, file], oppKing, color, pieceType)
           ) {
             captureCheck(rank, file, locOfPiece[0], locOfPiece[1]);
             break;
@@ -92,8 +92,8 @@ function findBishop(
         board[rank][file] = actual_piece;
         board[locOfPiece[0]][locOfPiece[1]] = " ";
         if (
-          right.rightDiag([rank, file], king, color, pieceType) ||
-          left.leftDiag([rank, file], king, color, pieceType)
+          right.rightDiag([rank, file], oppKing, color, pieceType) ||
+          left.leftDiag([rank, file], oppKing, color, pieceType)
         ) {
           captureCheck(rank, file, locOfPiece[0], locOfPiece[1]);
           board[rank][file] = curr_piece;
@@ -108,10 +108,10 @@ function findBishop(
         break;
       } else if (pieceType === "q") {
         if (
-          RNK.rank([rank, file], king, color, pieceType) ||
-          FL.file([rank, file], king, color, pieceType) ||
-          right.rightDiag([rank, file], king, color, pieceType) ||
-          left.leftDiag([rank,file],king,color,pieceType)
+          RNK.rank([rank, file], oppKing, color, pieceType) ||
+          FL.file([rank, file], oppKing, color, pieceType) ||
+          right.rightDiag([rank, file], oppKing, color, pieceType) ||
+          left.leftDiag([rank,file],oppKing,color,pieceType)
         ) {
           normalCheck(rank, file, locOfPiece[0], locOfPiece[1]);
         } else {
@@ -121,8 +121,8 @@ function findBishop(
         let curr_piece = board[rank][file];
         board[rank][file] = actual_piece;
         board[locOfPiece[0]][locOfPiece[1]] = " ";
-        if (right.rightDiag([rank, file], king, color, pieceType) ||
-            left.leftDiag([rank,file],king,color,pieceType)) {
+        if (right.rightDiag([rank, file], oppKing, color, pieceType) ||
+            left.leftDiag([rank,file],oppKing,color,pieceType)) {
           normalCheck(rank, file, locOfPiece[0], locOfPiece[1]);
         } else {
           normalMove(rank, file, locOfPiece[0], locOfPiece[1]);
@@ -139,7 +139,7 @@ function findBishop(
     if (!lm[piece[1]][color][`${locOfPiece[0]}${locOfPiece[1]}`]) {
       lm[piece[1]][color][`${locOfPiece[0]}${locOfPiece[1]}`] = [];
     }
-    /* Check if the Piece is pinned to the king */
+    /* Check if the Piece is pinned to the oppKing */
 
     const pinPos = `${rows}${cols}`;
     const pinnedPiece = pinnedPcs[color]?.[piece[1 - color]]?.[pinPos];
@@ -175,7 +175,7 @@ function findBishop(
     processDiagonal(
       board,
       locOfPiece,
-      king,
+      oppKing,
       piece[1],
       color,
       [-1, -1],
@@ -197,7 +197,7 @@ function findBishop(
     processDiagonal(
       board,
       locOfPiece,
-      king,
+      oppKing,
       piece[1],
       color,
       [1, 1],
@@ -219,7 +219,7 @@ function findBishop(
     processDiagonal(
       board,
       locOfPiece,
-      king,
+      oppKing,
       piece[1],
       color,
       [1, -1],
@@ -241,7 +241,7 @@ function findBishop(
     processDiagonal(
       board,
       locOfPiece,
-      king,
+      oppKing,
       piece[1],
       color,
       [-1, 1],

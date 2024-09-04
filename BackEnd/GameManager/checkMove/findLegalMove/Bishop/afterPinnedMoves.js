@@ -1,8 +1,12 @@
 const not = require("../../notations");
+const RNK = require("../Rook/findForCheck/rank");
+const FL = require("../Rook/findForCheck/file");
+const left = require("../Bishop/findForCheck/leftDiagonal");
+const right = require("../Bishop/findForCheck/rightDiagonal");
 
 function findMovesAfterPin(
   pieceToPush,
-  actualPiece,
+  actualPiece, // pinned piece
   color,
   pinnedPcs,
   lm,
@@ -10,6 +14,44 @@ function findMovesAfterPin(
   inGamePcs,
   pinnedPiecePos
 ) {
+  function captureCheck(rank, file, rows, cols) {
+    lm[pieceToPush][color][`${rank}${file}`].push(
+      `${actualPiece}x${not.FILE[cols]}${not.RANK[rows]}+`
+    );
+  }
+  function captureMove(rank, file, rows, cols) {
+    lm[pieceToPush][color][`${rank}${file}`].push(
+      `${actualPiece}x${not.FILE[cols]}${not.RANK[rows]}`
+    );
+  }
+  function normalMove(rank, file, rows, cols) {
+    lm[pieceToPush][color][`${rank}${file}`].push(
+      `${actualPiece}${not.FILE[cols]}${not.RANK[rows]}`
+    );
+  }
+  function normalCheck(rank, file, rows, cols) {
+    lm[pieceToPush][color][`${rank}${file}`].push(
+      `${actualPiece}${not.FILE[cols]}${not.RANK[rows]}+`
+    );
+  }
+
+  function findForcheck(currPinnedPiecePos) {
+    const oppKing = not.KING[1 - color];
+    const [rank, file] = currPinnedPiecePos;
+    if (pieceToPush == "q") {
+      return (
+        RNK.rank([rank, file], oppKing, color, "q") ||
+        FL.file([rank, file], oppKing, color, "q") ||
+        right.rightDiag([rank, file], king, color, "q") ||
+        left.leftDiag([rank, file], king, color, "q")
+      );
+    } else {
+      return (
+        left.leftDiag([rank, file], oppKing, color, "r") ||
+        right.rightDiag([rank, file], oppKing, color, "r")
+      );
+    }
+  }
   const pinnedPieceKey = `${pinnedPiecePos[0]}${pinnedPiecePos[1]}`;
   const kingPos = inGamePcs[not.KING[color]][0];
   let pinningPiece = pinnedPcs[color][actualPiece][pinnedPieceKey][0];
@@ -29,13 +71,6 @@ function findMovesAfterPin(
     endCol,
     direction
   ) {
-    console.log(
-      "i am running",
-      [startRow, startCol],
-      [kingRow, kingCol],
-      [endRow, endCol],
-      direction
-    );
     let row = startRow,
       col = startCol;
 
@@ -57,9 +92,11 @@ function findMovesAfterPin(
       if (row === kingRow && col === kingCol) {
         break;
       }
-      lm[pieceToPush][color][`${startRow}${startCol}`].push(
-        `${actualPiece}${not.FILE[col]}${not.RANK[row]}`
-      );
+      if (findForcheck([row, col])) {
+        normalCheck(startRow, startCol, row, col);
+      } else {
+        normalMove(startRow, startCol, row, col);
+      }
     }
     (row = startRow), (col = startCol);
 
@@ -81,20 +118,23 @@ function findMovesAfterPin(
       if (row == endRow && col == endCol) {
         break;
       }
-      lm[pieceToPush][color][`${startRow}${startCol}`].push(
-        `${actualPiece}${not.FILE[col]}${not.RANK[row]}`
-      );
+      if (findForcheck([row, col])) {
+        normalCheck(startRow, startCol, row, col);
+      } else {
+        normalMove(startRow, startCol, row, col);
+      }
       pinnedPcs[color][actualPiece][pinnedPieceKey][6].push(
         `${pinningPiece}${not.FILE[col]}${not.RANK[row]}`
       );
     }
 
     /* Add the capture move */
-    lm[pieceToPush][color][`${startRow}${startCol}`].push(
-      `${actualPiece}x${not.FILE[pinningPiecePos[1]]}${
-        not.RANK[pinningPiecePos[0]]
-      }`
-    );
+    if (findForcheck(pinningPiecePos)) {
+      captureCheck(startRow, startCol, endRow, endCol);
+    } else {
+      captureMove(startRow, startCol, endRow, endCol);
+    }
+
     pinnedPcs[color][actualPiece][pinnedPieceKey][5] =
       lm[pieceToPush][color][`${startRow}${startCol}`];
 
