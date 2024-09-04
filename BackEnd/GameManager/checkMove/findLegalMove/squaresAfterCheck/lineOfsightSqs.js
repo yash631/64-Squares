@@ -11,7 +11,9 @@ function LOS_Squares(
 ) {
   //  console.log("Moves of piece giving Check : ",Moves);
   dcrp.decryptMove(Moves, whichPieceGaveCheck, color);
-
+  if(!Moves){
+    return;
+  }
   for (let i = 0; i < Moves.length; i++) {
     if (Moves[i][0] == king) {
       let isChecked = false;

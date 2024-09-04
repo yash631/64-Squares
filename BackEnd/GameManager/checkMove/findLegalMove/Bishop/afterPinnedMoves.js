@@ -1,91 +1,172 @@
 const not = require("../../notations");
 
 function findMovesAfterPin(
-  piece_to_push,
-  actual_piece,
+  pieceToPush,
+  actualPiece,
   color,
   pinnedPcs,
   lm,
   board,
   inGamePcs,
-  pinnedPiece_pos
+  pinnedPiecePos
 ) {
-  const king_pos = inGamePcs[not.KING[color]][0];
-  const pinningPiece_pos = pinnedPcs[color][actual_piece][3];
+  const pinnedPieceKey = `${pinnedPiecePos[0]}${pinnedPiecePos[1]}`;
+  const kingPos = inGamePcs[not.KING[color]][0];
+  let pinningPiece = pinnedPcs[color][actualPiece][pinnedPieceKey][0];
+  if (color) {
+    pinningPiece = pinningPiece.toUpperCase();
+  }
+  const pinningPiecePos = pinnedPcs[color][actualPiece][pinnedPieceKey][3];
+  pinnedPcs[color][actualPiece][pinnedPieceKey][6] = [];
 
-  if (
-    /* Left Diagonal Left */
-    king_pos[0] > pinnedPiece_pos[0] &&
-    king_pos[1] > pinnedPiece_pos[1]
+  /* Function to add moves in the given direction */
+  function addMoves(
+    startRow,
+    startCol,
+    kingRow,
+    kingCol,
+    endRow,
+    endCol,
+    direction
   ) {
-    let row = pinnedPiece_pos[0],
-      col = pinnedPiece_pos[1];
-    while (--row > pinningPiece_pos[0] && --col > pinningPiece_pos[1]) {
-      lm[piece_to_push][color][`${pinnedPiece_pos[0]}${pinnedPiece_pos[1]}`].push(
-        `${actual_piece}${not.FILE[col]}${not.RANK[row]}`
+    console.log(
+      "i am running",
+      [startRow, startCol],
+      [kingRow, kingCol],
+      [endRow, endCol],
+      direction
+    );
+    let row = startRow,
+      col = startCol;
+
+    /* Add moves until pinned piece reaches king */
+    while (row !== kingRow && col !== kingCol) {
+      if (direction === "right-up") {
+        row++;
+        col--;
+      } else if (direction === "right-down") {
+        row--;
+        col++;
+      } else if (direction === "left-up") {
+        row++;
+        col++;
+      } else if (direction === "left-down") {
+        row--;
+        col--;
+      }
+      if (row === kingRow && col === kingCol) {
+        break;
+      }
+      lm[pieceToPush][color][`${startRow}${startCol}`].push(
+        `${actualPiece}${not.FILE[col]}${not.RANK[row]}`
       );
     }
-    (row = pinnedPiece_pos[0]), (col = pinnedPiece_pos[1]);
-    while (++row < king_pos[0] && ++col < king_pos[1]) {
-      lm[piece_to_push][color][`${pinnedPiece_pos[0]}${pinnedPiece_pos[1]}`].push(
-        `${actual_piece}${not.FILE[col]}${not.RANK[row]}`
+    (row = startRow), (col = startCol);
+
+    /* Add moves until pinned piece reaches the pinningPiece */
+    while (row !== endRow && col !== endCol) {
+      if (direction === "right-up") {
+        row--;
+        col++;
+      } else if (direction === "right-down") {
+        row++;
+        col--;
+      } else if (direction === "left-up") {
+        row--;
+        col--;
+      } else if (direction === "left-down") {
+        row++;
+        col++;
+      }
+      if (row == endRow && col == endCol) {
+        break;
+      }
+      lm[pieceToPush][color][`${startRow}${startCol}`].push(
+        `${actualPiece}${not.FILE[col]}${not.RANK[row]}`
+      );
+      pinnedPcs[color][actualPiece][pinnedPieceKey][6].push(
+        `${pinningPiece}${not.FILE[col]}${not.RANK[row]}`
       );
     }
-  } else if (
-    /* Left Diagonal Right */
-    king_pos[0] < pinnedPiece_pos[0] &&
-    king_pos[1] < pinnedPiece_pos[1]
-  ) {
-    let row = pinnedPiece_pos[0],
-      col = pinnedPiece_pos[1];
-    while (++row < pinningPiece_pos[0] && ++col < pinningPiece_pos[1]) {
-      lm[piece_to_push][color][`${pinnedPiece_pos[0]}${pinnedPiece_pos[1]}`].push(
-        `${actual_piece}${not.FILE[col]}${not.RANK[row]}`
-      );
-    }
-    (row = pinnedPiece_pos[0]), (col = pinnedPiece_pos[1]);
-    while (--row > king_pos[0] && --col > king_pos[1]) {
-      lm[piece_to_push][color][`${pinnedPiece_pos[0]}${pinnedPiece_pos[1]}`].push(
-        `${actual_piece}${not.FILE[col]}${not.RANK[row]}`
-      );
-    }
-  } else if (
-    /* Right Diagonal Left */
-    king_pos[0] < pinnedPiece_pos[0] &&
-    king_pos[1] > pinnedPiece_pos[1]
-  ) {
-    let row = pinnedPiece_pos[0],
-      col = pinnedPiece_pos[1];
-    while (++row < pinningPiece_pos[0] && --col > pinningPiece_pos[1]) {
-      lm[piece_to_push][color][`${pinnedPiece_pos[0]}${pinnedPiece_pos[1]}`].push(
-        `${actual_piece}${not.FILE[col]}${not.RANK[row]}`
-      );
-    }
-    (row = pinnedPiece_pos[0]), (col = pinnedPiece_pos[1]);
-    while (--row > king_pos[0] && ++col < king_pos[1]) {
-      lm[piece_to_push][color][`${pinnedPiece_pos[0]}${pinnedPiece_pos[1]}`].push(
-        `${actual_piece}${not.FILE[col]}${not.RANK[row]}`
-      );
-    }
-  } else if (
-    /* Right Diagonal Right */
-    king_pos[0] > pinnedPiece_pos[0] &&
-    king_pos[1] < pinnedPiece_pos[1]
-  ) {
-    let row = pinnedPiece_pos[0],
-      col = pinnedPiece_pos[1];
-    while (--row > pinningPiece_pos[0] && ++col < pinningPiece_pos[1]) {
-      lm[piece_to_push][color][`${pinnedPiece_pos[0]}${pinnedPiece_pos[1]}`].push(
-        `${actual_piece}${not.FILE[col]}${not.RANK[row]}`
-      );
-    }
-    (row = pinnedPiece_pos)[0], (col = pinnedPiece_pos[1]);
-    while (++row < king_pos[0] && --col > king_pos[1]) {
-      lm[piece_to_push][color][`${pinnedPiece_pos[0]}${pinnedPiece_pos[1]}`].push(
-        `${actual_piece}${not.FILE[col]}${not.RANK[row]}`
+
+    /* Add the capture move */
+    lm[pieceToPush][color][`${startRow}${startCol}`].push(
+      `${actualPiece}x${not.FILE[pinningPiecePos[1]]}${
+        not.RANK[pinningPiecePos[0]]
+      }`
+    );
+    pinnedPcs[color][actualPiece][pinnedPieceKey][5] =
+      lm[pieceToPush][color][`${startRow}${startCol}`];
+
+    /* Add pinning piece moves till it touches an edge of the board */
+    (row = endRow), (col = endCol);
+    while (row >= 0 && col >= 0 && row <= 7 && col <= 7) {
+      if (direction === "right-up") {
+        row--;
+        col++;
+      } else if (direction === "right-down") {
+        row++;
+        col--;
+      } else if (direction === "left-up") {
+        row--;
+        col--;
+      } else if (direction === "left-down") {
+        row++;
+        col++;
+      }
+      if (row > 7 || row < 0 || col > 7 || col < 0) {
+        break;
+      }
+      pinnedPcs[color][actualPiece][pinnedPieceKey][6].push(
+        `${pinningPiece}${not.FILE[col]}${not.RANK[row]}`
       );
     }
   }
-}
 
+  if (kingPos[0] > pinnedPiecePos[0] && kingPos[1] > pinnedPiecePos[1]) {
+    /* Check from Left-Diagonal left */
+    addMoves(
+      pinnedPiecePos[0],
+      pinnedPiecePos[1],
+      kingPos[0],
+      kingPos[1],
+      pinningPiecePos[0],
+      pinningPiecePos[1],
+      "left-up"
+    );
+  } else if (kingPos[0] < pinnedPiecePos[0] && kingPos[1] < pinnedPiecePos[1]) {
+    /* Check from Left-Diagonal right */
+    addMoves(
+      pinnedPiecePos[0],
+      pinnedPiecePos[1],
+      kingPos[0],
+      kingPos[1],
+      pinningPiecePos[0],
+      pinningPiecePos[1],
+      "left-down"
+    );
+  } else if (kingPos[0] < pinnedPiecePos[0] && kingPos[1] > pinnedPiecePos[1]) {
+    /* Check from Right-Diagonal left */
+    addMoves(
+      pinnedPiecePos[0],
+      pinnedPiecePos[1],
+      kingPos[0],
+      kingPos[1],
+      pinningPiecePos[0],
+      pinningPiecePos[1],
+      "right-down"
+    );
+  } else if (kingPos[0] > pinnedPiecePos[0] && kingPos[1] < pinnedPiecePos[1]) {
+    /* Check from Right-Diagonal right */
+    addMoves(
+      pinnedPiecePos[0],
+      pinnedPiecePos[1],
+      kingPos[0],
+      kingPos[1],
+      pinningPiecePos[0],
+      pinningPiecePos[1],
+      "right-up"
+    );
+  }
+}
 module.exports = { findMovesAfterPin };

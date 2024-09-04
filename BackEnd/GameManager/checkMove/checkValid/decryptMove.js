@@ -1,4 +1,7 @@
 function decryptMove(moves_list, piece, color) {
+  if(!moves_list){
+    return;
+  }
   for (let i = 0; i < moves_list.length; i++) {
     if (moves_list[i].includes("k") ||  moves_list[i].includes("K")){
       continue;
