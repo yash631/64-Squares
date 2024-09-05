@@ -213,6 +213,7 @@ function isCorrectMove(initial_Sq, move, color) {
   }
 }
 
+          /* pinned  */
 getIndex.sqaureToIndex(1,"q","g1","Qh1+");
 getIndex.sqaureToIndex(0,"b","c8","bb7");
 getIndex.sqaureToIndex(1,"q","h1","Qg2");
@@ -222,34 +223,26 @@ getIndex.sqaureToIndex(0,"b","f7","bd5");
 
 
 
-
-
-
-// getIndex.sqaureToIndex(0,"n","c7","ne6");
-// getIndex.sqaureToIndex(1,"n","b1","Nc3");
-// getIndex.sqaureToIndex(0,"b","b7","bxf3");
-
-
-
-
-// getIndex.sqaureToIndex(1,"p","e2","e4");
-// getIndex.sqaureToIndex(0,"p","d7","d5");
-// getIndex.sqaureToIndex(1,"p","e4","exd5");
-// getIndex.sqaureToIndex(0,"q","d8","qxd5");
-// getIndex.sqaureToIndex(1,"n","b1","Nc3");
-// getIndex.sqaureToIndex(0,"p","c7","c6");
-// getIndex.sqaureToIndex(1,"n","c3","Nxd5");
-// getIndex.sqaureToIndex(0,"p","c6","cxd5");
-// getIndex.sqaureToIndex(1,"p","g2","g3");
-// getIndex.sqaureToIndex(0,"p","b7","b6");
-// getIndex.sqaureToIndex(1,"b","f1","Bh3");
-// getIndex.sqaureToIndex(0,"b","c8","ba6");
-// getIndex.sqaureToIndex(1,"p","d2","d4");
-// getIndex.sqaureToIndex(0,"b","a6","bd3");
-// getIndex.sqaureToIndex(1,"b","h3","Bd7+");
-// getIndex.sqaureToIndex(0,"k","e8","kd8");
-// getIndex.sqaureToIndex(1,"b","d7","Bc8");
-
+         /* Full game */
+/*
+getIndex.sqaureToIndex(1,"p","e2","e4");
+getIndex.sqaureToIndex(0,"p","d7","d5");
+getIndex.sqaureToIndex(1,"p","e4","exd5");
+getIndex.sqaureToIndex(0,"q","d8","qxd5");
+getIndex.sqaureToIndex(1,"n","b1","Nc3");
+getIndex.sqaureToIndex(0,"p","c7","c6");
+getIndex.sqaureToIndex(1,"n","c3","Nxd5");
+getIndex.sqaureToIndex(0,"p","c6","cxd5");
+getIndex.sqaureToIndex(1,"p","g2","g3");
+getIndex.sqaureToIndex(0,"p","b7","b6");
+getIndex.sqaureToIndex(1,"b","f1","Bh3");
+getIndex.sqaureToIndex(0,"b","c8","ba6");
+getIndex.sqaureToIndex(1,"p","d2","d4");
+getIndex.sqaureToIndex(0,"b","a6","bd3");
+getIndex.sqaureToIndex(1,"b","h3","Bd7+");
+getIndex.sqaureToIndex(0,"k","e8","kd8");
+getIndex.sqaureToIndex(1,"b","d7","Bc8");
+*/
 
 
 

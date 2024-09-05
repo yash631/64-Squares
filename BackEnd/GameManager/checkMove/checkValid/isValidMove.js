@@ -23,20 +23,20 @@ let checkPiecePos_OLD, checkPiecePos_NEW;
 function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
   const len = move.length;
   const inGamePcs = getBoard.createInGamePcs(getBoard.Board);
+  const king = not.KING[color];
   const king_pos = inGamePcs[not.KING[color]][0];
+  const kingRankFile = `${not.FILE[king_pos[1]]}${not.RANK[king_pos[0]]}`;
+  let blockedSquaresForKing = [];
 
-  function showLegalMoves(LEGALMOVES,C) {
+  function showLegalMoves(LEGALMOVES, C) {
     console.log(
       `CURRENT POSITION OF ${not.COLOR[C]} PIECES AND THEIR LEGAL MOVES`
     );
     for (const allPieces in LEGALMOVES) {
       console.log(`-->>${not.PIECES[allPieces]}<<--`);
       for (const singlePiece in LEGALMOVES[allPieces][C]) {
-        console.log(
-          `${not.FILE[singlePiece[1]]}${not.RANK[singlePiece[0]]} : ${
-            LEGALMOVES[allPieces][C][singlePiece]
-          }`
-        );
+        console.log(`${not.FILE[singlePiece[1]]}${not.RANK[singlePiece[0]]}`);
+        console.log(LEGALMOVES[allPieces][C][singlePiece]);
       }
       console.log("\n");
     }
@@ -56,35 +56,47 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
     pinnedPcs
   );
 
-  if (isInCheck) {
-    /* Get the next Legal of opponent to block the king movement to those squares*/
-    for (const allPcs in LEGALMOVES) {
-      LEGALMOVES[allPcs][1 - color] = {};
-    }
-    findlegal.findAllLegalMoves(
-      LEGALMOVES,
-      getBoard.Board,
-      getBoard.createInGamePcs(getBoard.Board),
-      1 - color,
-      getBoard.prevMove,
-      1,
-      pinnedPcs
-    );
-    /*console.log(
-      `CURRENT POSITION OF ${not.COLOR[1 - color]} PIECES AND THEIR LEGAL MOVES`
-    );
-    for (const allPieces in LEGALMOVES) {
-      console.log(`-->>${not.PIECES[allPieces]}<<--`);
-      for (const singlePiece in LEGALMOVES[allPieces][1 - color]) {
-        console.log(
-          `${not.FILE[singlePiece[1]]}${not.RANK[singlePiece[0]]} : ${
-            LEGALMOVES[allPieces][1 - color][singlePiece]
-          }`
-        );
-      }
-      console.log("\n");
-    }*/
+  /* Get the next Legal of opponent to block the king movement to those squares*/
+  for (const allPcs in LEGALMOVES) {
+    LEGALMOVES[allPcs][1 - color] = {};
+  }
+  findlegal.findAllLegalMoves(
+    LEGALMOVES,
+    getBoard.Board,
+    getBoard.createInGamePcs(getBoard.Board),
+    1 - color,
+    getBoard.prevMove,
+    isInCheck,
+    pinnedPcs
+  );
 
+  for (const allPieces in LEGALMOVES) {
+    for (const singlePiece in LEGALMOVES[allPieces][1 - color]) {
+      for (const eachMove of LEGALMOVES[allPieces][1 - color][singlePiece]) {
+        blockedSquaresForKing.push(eachMove);
+      }
+    }
+  }
+  dcrp.decryptMove(blockedSquaresForKing, piece, color);
+
+  /* Block the squares from King Already covered by Opp pieces */
+
+  for (const bl_move of blockedSquaresForKing) {
+    for (
+      let i = 0;
+      i < LEGALMOVES["k"][color][`${king_pos[0]}${king_pos[1]}`].length;
+      i++
+    ) {
+      const single_move =
+        LEGALMOVES["k"][color][`${king_pos[0]}${king_pos[1]}`][i];
+      if (single_move.includes(bl_move)) {
+        LEGALMOVES["k"][color][`${king_pos[0]}${king_pos[1]}`].splice(i, 1);
+        break;
+      }
+    }
+  }
+
+  if (isInCheck) {
     /* Find the squares from king moves covered by the opponent checking piece in the line of sight with the king*/
     let lineOfSight = [];
     los.LOS_Squares(
@@ -105,7 +117,7 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
     }`;
     // console.log("checkPiece Square :",checkPieceSquare);
 
-    /* Updating Legal Moves for capturing checking and blocking the check */
+    /* Updating Legal Moves for capturing checking piece and blocking the check */
     for (const everyPiece in LEGALMOVES) {
       if (everyPiece == "k") {
         continue;
@@ -128,7 +140,6 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
         LEGALMOVES[everyPiece][color][uniquePiece] = availableMoves;
       }
     }
-    let blockedSquaresForKing = [];
     /* To find squares from the king moves that are covered by checking piece */
     findBlocked.kingSqBlockedBypiece(
       1 - color, // color of opponent piece
@@ -185,7 +196,7 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
   // console.log(LEGALMOVES);
 
   /* SHOW FINAL LEGAL MOVES */
-  // showLegalMoves(LEGALMOVES,color);
+  showLegalMoves(LEGALMOVES, color);
   console.log(`-----------------------------------------------`);
 
   /*for (const allPcs in LEGALMOVES) {
@@ -203,7 +214,6 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
   showLegalMoves(LEGALMOVES,1-color);
   console.log(`-----------------------------------------------`);*/
 
-
   if (LEGALMOVES[piece][color][`${curr_row}${curr_col}`].includes(move)) {
     gameSt.updateGS(
       move,
@@ -216,7 +226,7 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
       new_row,
       new_col
     );
-     /*findlegal.findAllLegalMoves(
+    /*findlegal.findAllLegalMoves(
       LEGALMOVES,
       getBoard.Board,
       getBoard.createInGamePcs(getBoard.Board),
@@ -235,7 +245,7 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
       pinningPcs,
       not.KING[color],
       inGamePcs,
-      LEGALMOVES,
+      LEGALMOVES
     );
 
     if (isInCheck) {
@@ -283,8 +293,8 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
         }->${not.FILE[checkPiecePos_NEW[1]]}${not.RANK[checkPiecePos_NEW[0]]}`
       ); */
     }
-    console.log(`Pinned Pieces : ${JSON.stringify(pinnedPcs, null, 3)}`);
-    console.log(`Pinning Pieces : ${JSON.stringify(pinningPcs, null, 3)}`);
+    // console.log(`Pinned Pieces : ${JSON.stringify(pinnedPcs, null, 3)}`);
+    // console.log(`Pinning Pieces : ${JSON.stringify(pinningPcs, null, 3)}`);
   } else {
     console.log("ILLEGAL MOVE");
     return false;

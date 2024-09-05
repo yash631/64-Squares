@@ -32,7 +32,17 @@ function updatePinnedPieceState(
       `${pinningPiecePos[0]}${pinningPiecePos[1]}`
     ];
   }
-  
+  function removeCurrentPinningPiece(color, pinningPiece, pinningPiecePos){
+    const pinnedPiece =
+      pinningPcs?.[color]?.[pinningPiece]?.[pinningPiecePos]?.[0];
+    const pinnedPiecePos = 
+      pinningPcs?.[color]?.[pinningPiece]?.[pinningPiecePos]?.[1];
+    delete pinningPcs[color][pinningPiece][pinningPiecePos];
+    delete pinnedPcs[1 - color][pinnedPiece][
+     `${pinnedPiecePos[0]}${pinnedPiecePos[1]}`
+    ];
+  }
+
   function changePinnedPiecePos(pinnedPiece, oldPos, newPos) {
     /* Update Pinning Piece information */
     const pinningPiece = pinnedPcs?.[color]?.[pinnedPiece]?.[oldPos]?.[0];
@@ -100,8 +110,8 @@ function updatePinnedPieceState(
         for (const square of pinnedSquares) {
           const squareRank = square[1]; // Rank of the square
           const squareFile = square[0]; // File of the square
-          console.log("SquareRank and SquareFile : ", squareRank, squareFile);
-          console.log(`${movedPieceRank}`, movedPieceFile);
+          // console.log("SquareRank and SquareFile : ", squareRank, squareFile);
+          // console.log(`${movedPieceRank}`, movedPieceFile);
           // Check if the moved piece has moved to one of the pinned piece's allowed squares
           if (movedPieceRank === squareRank && movedPieceFile === squareFile) {
             console.log(
