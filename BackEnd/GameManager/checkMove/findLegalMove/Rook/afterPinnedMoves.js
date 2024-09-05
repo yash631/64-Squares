@@ -3,6 +3,7 @@ const RNK = require("../Rook/findForCheck/rank");
 const FL = require("../Rook/findForCheck/file");
 const left = require("../Bishop/findForCheck/leftDiagonal");
 const right = require("../Bishop/findForCheck/rightDiagonal");
+const getBoard = require("../../../Board/createBoard");
 
 function findMovesAfterPin(
   pinnedPiece,
@@ -51,9 +52,15 @@ function findMovesAfterPin(
       );
     }
   }
+  const board = getBoard.Board;
   const pinnedPieceKey = `${pinnedPiecePos[0]}${pinnedPiecePos[1]}`;
   const kingPos = inGamePcs[not.KING[color]][0];
   let pinningPiece = pinnedPcs[color][pinnedPiece][pinnedPieceKey][0];
+  // const pnPc = pinningPiece;
+  // const pnPcPos = pinnedPcs[color][pinnedPiece][pinnedPieceKey][3];
+  // console.log(pnPc,pnPcPos);
+  // console.log("legal moves of pinning piece", lm[pnPc][1-color][`${pnPcPos[0]}${pnPcPos[1]}`]);
+  /* To push the moves of Pinning Piece */
   if (color) {
     pinningPiece = pinningPiece.toLowerCase();
   } else {
@@ -84,6 +91,7 @@ function findMovesAfterPin(
           col++;
         }
         if (col == kingCol) break;
+        if (board[row][col] != " ") break;
         if (findForcheck([row, col])) {
           normalCheck(startRow, startCol, row, col);
         } else {
@@ -99,6 +107,7 @@ function findMovesAfterPin(
           col--;
         }
         if (col == endCol) break;
+        if (board[row][col] != " ") break;
         if (findForcheck([row, col])) {
           normalCheck(startRow, startCol, row, col);
         } else {
@@ -107,6 +116,14 @@ function findMovesAfterPin(
         pinnedPcs[color][pinnedPiece][pinnedPieceKey][6].push(
           `${pinningPiece}${not.FILE[col]}${not.RANK[row]}`
         );
+      }
+      if (row == endRow && col == endCol) {
+        /* Add the capture move */
+        if (findForcheck(pinningPiecePos)) {
+          captureCheck(startRow, startCol, endRow, endCol);
+        } else {
+          captureMove(startRow, startCol, endRow, endCol);
+        }
       }
     } else if (direction == "up" || direction == "down") {
       /* Add moves until pinned piece reaches king */
@@ -118,6 +135,8 @@ function findMovesAfterPin(
           row--;
         }
         if (row == kingRow) break;
+        if (board[row][col] != " ") break;
+
         if (findForcheck([row, col])) {
           normalCheck(startRow, startCol, row, col);
         } else {
@@ -133,6 +152,8 @@ function findMovesAfterPin(
           row++;
         }
         if (row == endRow) break;
+        if (board[row][col] != " ") break;
+
         if (findForcheck([row, col])) {
           normalCheck(startRow, startCol, row, col);
         } else {
@@ -142,13 +163,14 @@ function findMovesAfterPin(
           `${pinningPiece}${not.FILE[col]}${not.RANK[row]}`
         );
       }
-    }
-
-    /* Add the capture move */
-    if (findForcheck(pinningPiecePos)) {
-      captureCheck(startRow, startCol, endRow, endCol);
-    } else {
-      captureMove(startRow, startCol, endRow, endCol);
+      if (row == endRow && col == endCol) {
+        /* Add the capture move */
+        if (findForcheck(pinningPiecePos)) {
+          captureCheck(startRow, startCol, endRow, endCol);
+        } else {
+          captureMove(startRow, startCol, endRow, endCol);
+        }
+      }
     }
 
     pinnedPcs[color][pinnedPiece][pinnedPieceKey][5] =
@@ -167,6 +189,7 @@ function findMovesAfterPin(
         row++;
       }
       if (row < 0 || row > 7 || col < 0 || col > 7) break;
+      if (board[row][col] != " ") break;
       pinnedPcs[color][pinnedPiece][pinnedPieceKey][6].push(
         `${pinningPiece}${not.FILE[col]}${not.RANK[row]}`
       );

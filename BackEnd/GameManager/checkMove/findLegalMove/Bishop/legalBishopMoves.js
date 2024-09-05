@@ -150,6 +150,10 @@ function findBishop(
       const isPinnedPieceBishopOrQueen = ["Q", "q", "B", "b"].includes(
         pinnedPieceType
       );
+      const dir = {
+        "left" : [[-1,-1],[1,1]],
+        "right": [[-1,1],[1,-1]]
+      }
 
       if (
         isPinnedPieceBishopOrQueen &&

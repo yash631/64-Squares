@@ -25,16 +25,16 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
   const inGamePcs = getBoard.createInGamePcs(getBoard.Board);
   const king_pos = inGamePcs[not.KING[color]][0];
 
-  function showLegalMoves(LEGALMOVES) {
+  function showLegalMoves(LEGALMOVES,C) {
     console.log(
-      `CURRENT POSITION OF ${not.COLOR[color]} PIECES AND THEIR LEGAL MOVES`
+      `CURRENT POSITION OF ${not.COLOR[C]} PIECES AND THEIR LEGAL MOVES`
     );
     for (const allPieces in LEGALMOVES) {
       console.log(`-->>${not.PIECES[allPieces]}<<--`);
-      for (const singlePiece in LEGALMOVES[allPieces][color]) {
+      for (const singlePiece in LEGALMOVES[allPieces][C]) {
         console.log(
           `${not.FILE[singlePiece[1]]}${not.RANK[singlePiece[0]]} : ${
-            LEGALMOVES[allPieces][color][singlePiece]
+            LEGALMOVES[allPieces][C][singlePiece]
           }`
         );
       }
@@ -185,7 +185,7 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
   // console.log(LEGALMOVES);
 
   /* SHOW FINAL LEGAL MOVES */
-  showLegalMoves(LEGALMOVES);
+  // showLegalMoves(LEGALMOVES,color);
   console.log(`-----------------------------------------------`);
 
   /*for (const allPcs in LEGALMOVES) {
@@ -199,7 +199,10 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
     getBoard.prevMove,
     isInCheck,
     pinnedPcs
-  );*/
+  );
+  showLegalMoves(LEGALMOVES,1-color);
+  console.log(`-----------------------------------------------`);*/
+
 
   if (LEGALMOVES[piece][color][`${curr_row}${curr_col}`].includes(move)) {
     gameSt.updateGS(
@@ -213,7 +216,15 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
       new_row,
       new_col
     );
-
+     /*findlegal.findAllLegalMoves(
+      LEGALMOVES,
+      getBoard.Board,
+      getBoard.createInGamePcs(getBoard.Board),
+      color,
+      getBoard.prevMove,
+      isInCheck,
+      pinnedPcs
+    );*/
     pin.updatePinnedPieceState(
       color,
       piece,
