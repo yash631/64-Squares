@@ -5,11 +5,9 @@ const findBlocked = require("../findLegalMove/squaresAfterCheck/findBlockedKingS
 const dcrp = require("./decryptMove");
 const gameSt = require("./updateGameState");
 const los = require("../findLegalMove/squaresAfterCheck/lineOfsightSqs");
-const updPin = require("../findLegalMove/King/findPins/updatePins");
 const updLM = require("./updateLegalMoves");
 const newPin = require("../findLegalMove/King/findPins/checkNewPins");
-/* const rmvPin = require("../findLegalMove/King/findPins/removePins"); */
-const showPin = require("../findLegalMove/King/findPins/showPinObjects");
+/* const showPin = require("../findLegalMove/King/findPins/showPinObjects"); */
 
 let LEGALMOVES = findlegal.createLegalMoves();
 let isInCheck = 0;
@@ -207,6 +205,7 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
       newPin.pinnedPcs
     );*/
 
+    /*
     updPin.updatePinnedPieceState(
       color,
       piece,
@@ -219,6 +218,7 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
       getBoard.createInGamePcs(getBoard.Board),
       LEGALMOVES
     );
+    */
 
     if (isInCheck) {
       isInCheck = 0;

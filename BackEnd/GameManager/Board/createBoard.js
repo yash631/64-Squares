@@ -7,9 +7,10 @@ let Board = [
   [" ", " ", " ", " ", " ", " ", " ", " "],
   ["P", "P", " ", "P", " ", " ", " ", " "],
   ["R", "N", " ", "K", " ", "R", "Q", " "],
-];
+];   
 
-/*    New Board
+/*    New Board  */
+/*
 let Board = [
   ["r", "n", "b", "q", "k", "b", "n", "r"],
   ["p", "p", "p", "p", "p", "p", "p", "p"],
@@ -21,6 +22,7 @@ let Board = [
   ["R", "N", "B", "Q", "K", "B", "N", "R"],
 ];
 */
+
 let Game_State = [],
   prevMove;
 function createInGamePcs(board) {
