@@ -1,4 +1,5 @@
 const getIndex = require("./checkValid/getBoardIndex");
+/* const testCases = require("../../ExperimentalCode/TestCases"); */
 
 const arrOfPieces = {
   q: "black queen",
@@ -213,36 +214,8 @@ function isCorrectMove(initial_Sq, move, color) {
   }
 }
 
-/* pinned  */
-getIndex.squareToIndex(1,"r","f1","Re1+");
-getIndex.squareToIndex(0,"b","f6","be5");
-getIndex.squareToIndex(1,"r","e1","Re2");
-getIndex.squareToIndex(0,"q","d8","qe7");
-getIndex.squareToIndex(1,"r","e2","Re3");
 
+/* Generate a complete game */
+// testCases.generateFullGame();
 
-
-
-
-/* Full game */
-/*
-getIndex.squareToIndex(1,"p","e2","e4");
-getIndex.squareToIndex(0,"p","d7","d5");
-getIndex.squareToIndex(1,"p","e4","exd5");
-getIndex.squareToIndex(0,"q","d8","qxd5");
-getIndex.squareToIndex(1,"n","b1","Nc3");
-getIndex.squareToIndex(0,"p","c7","c6");
-getIndex.squareToIndex(1,"n","c3","Nxd5");
-getIndex.squareToIndex(0,"p","c6","cxd5");
-getIndex.squareToIndex(1,"p","g2","g3");
-getIndex.squareToIndex(0,"p","b7","b6");
-getIndex.squareToIndex(1,"b","f1","Bh3");
-getIndex.squareToIndex(0,"b","c8","ba6");
-getIndex.squareToIndex(1,"p","d2","d4");
-getIndex.squareToIndex(0,"b","a6","bd3");
-getIndex.squareToIndex(1,"b","h3","Bd7+");
-getIndex.squareToIndex(0,"k","e8","kd8");
-getIndex.squareToIndex(1,"b","d7","Bc8");
-*/
-
-module.exports = isCorrectMove;
+module.exports = {isCorrectMove};

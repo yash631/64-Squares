@@ -75,6 +75,17 @@ function updateGS(
       }
     }
 
+    /* For En-passant */
+    if (move.includes("ep")) {
+      /* Remove the pawn from board */
+      if (new_col > curr_col) {
+        /* En-passant on right side */
+        getBoard.Board[curr_row][curr_col + 1] = " ";
+      } else {
+        /* En-passant on left side */
+        getBoard.Board[curr_row][curr_col - 1] = " ";
+      }
+    }
     /* For Pawn's promotion */
     if (not.ALLPIECES[color].includes(move[len - 1])) {
       piece = move[len - 1];

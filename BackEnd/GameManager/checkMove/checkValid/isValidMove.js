@@ -28,6 +28,7 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
   const king_pos = inGamePcs[not.KING[color]][0];
   const kingRankFile = `${not.FILE[king_pos[1]]}${not.RANK[king_pos[0]]}`;
   let blockedSquaresForKing = [];
+  let kingCaptureSquare;
 
   /* Print Legal Moves */
   function showLegalMoves(LEGALMOVES, C) {
@@ -55,7 +56,6 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
     color,
     getBoard.prevMove,
     isInCheck,
-    newPin.pinnedPcs
   );
 
   /* Get the next Legal of opponent to block the king movement to those squares (Imp.)*/
@@ -69,8 +69,12 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
     1 - color,
     getBoard.prevMove,
     isInCheck,
-    newPin.pinnedPcs
   );
+
+  // if(move.includes(`${not.KING[color]}x`)){
+  //   blockedSquaresForKing.push(`${move[2]}${move[3]}`);
+  // }
+  // console.log(blockedSquaresForKing);
 
   for (const allPieces in LEGALMOVES) {
     for (const singlePiece in LEGALMOVES[allPieces][1 - color]) {
@@ -85,6 +89,7 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
   updLM.updateLM(color, king_pos, LEGALMOVES, blockedSquaresForKing);
 
   if (isInCheck) {
+    console.log(`King ${not.KING[color]} is in check`);
     /* Find the squares from king moves covered by the opponent checking piece in the line of sight with the king*/
     let lineOfSight = [];
     los.LOS_Squares(
@@ -202,7 +207,6 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
       color,
       getBoard.prevMove,
       isInCheck,
-      newPin.pinnedPcs
     );*/
 
     /*
@@ -223,7 +227,13 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
     if (isInCheck) {
       isInCheck = 0;
     } else if (move[len - 1] == "+") {
-      whichPieceGaveCheck = move[0].toLowerCase();
+      if(move.includes("=")){
+        /* Check after promotion of a pawn */
+        whichPieceGaveCheck = move[len-2];
+      } else{
+        /* Check by any other piece */
+       whichPieceGaveCheck = move[0].toLowerCase();
+      }
       checkPiecePos_OLD = [curr_row, curr_col];
       checkPiecePos_NEW = [new_row, new_col];
       isInCheck = 1;

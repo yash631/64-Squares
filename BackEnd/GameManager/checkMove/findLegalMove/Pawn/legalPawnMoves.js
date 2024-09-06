@@ -2,6 +2,7 @@ const not = require("../../notations");
 const prom = require("./findForCheck/atPromotion");
 const ltrt = require("./findForCheck/leftRightDiag");
 const getBoard = require("../../../Board/createBoard");
+const newPin = require("../King/findPins/checkNewPins");
 
 function findPawn(
   color,
@@ -13,9 +14,9 @@ function findPawn(
   board,
   prevMove,
   isInCheck,
-  pinnedPcs
 ) {
-  const king = not.KING[1 - color];
+  let pinnedPcs = newPin.getPinnedPcs();
+  const oppKing = not.KING[1 - color];
   let curr_piece;
   let pawn = "p";
   if (color) {
@@ -48,6 +49,10 @@ function findPawn(
     0: 4,
     1: 3,
   };
+  const prmt_rank = {
+    0 : 7,
+    1 : 0
+  }
 
   for (const locOfPawn of iGP[pawn]) {
     let rank = locOfPawn[0],
@@ -59,12 +64,11 @@ function findPawn(
       square_right = [RIGHT[color][0], RIGHT[color][1]];
 
     /* Check if the Piece is pinned to the king */
-    if (
-      pawn in pinnedPcs[color] &&
-      pinnedPcs[color][pawn][1][0] == rank &&
-      pinnedPcs[color][pawn][1][1] == file
-    ) {
-      continue;
+    const pinPos = `${rank}${file}`;
+    if("p" in pinnedPcs[color]){
+      if(pinnedPcs[color]["p"][pinPos]){
+        continue;
+      }
     }
 
     /* Promotion */
@@ -81,7 +85,7 @@ function findPawn(
             prom.prom(
               prmt_pcs[color][num],
               [rank + square_left[0], file + square_left[1]],
-              king,
+              oppKing,
               color,
               pawn
             )
@@ -113,7 +117,7 @@ function findPawn(
             prom.prom(
               prmt_pcs[color][num],
               [rank + square_right[0], file + square_right[1]],
-              king,
+              oppKing,
               color,
               pawn
             )
@@ -134,11 +138,11 @@ function findPawn(
         board[locOfPawn[0]][locOfPawn[1]] = pawn;
       }
       /* Direct promotion */
-      if (board[rank - 1][file] == " ") {
+      if (board[prmt_rank[color]][file] == " ") {
         board[locOfPawn[0]][locOfPawn[1]] = " ";
         for (let num = 0; num < 4; num++) {
           if (
-            prom.prom(prmt_pcs[color][num], [rank - 1, file], king, color, pawn)
+            prom.prom(prmt_pcs[color][num], [prmt_rank[color], file], oppKing, color, pawn)
           ) {
             lm.p[color][`${rank}${file}`].push(
               `${fl[file]}${rk[rank + MOVE[color]]}=${prmt_pcs[color][num]}+`
@@ -157,7 +161,7 @@ function findPawn(
         curr_piece = board[rank + MOVE[color]][file];
         board[locOfPawn[0]][locOfPawn[1]] = " ";
         board[rank + MOVE[color]][file] = pawn;
-        if (ltrt.leftRight(color, [rank + MOVE[color], file], king, pawn)) {
+        if (ltrt.leftRight(color, [rank + MOVE[color], file], oppKing, pawn)) {
           lm.p[color][`${rank}${file}`].push(
             `${fl[file]}${rk[rank + MOVE[color]]}+`
           );
@@ -180,7 +184,7 @@ function findPawn(
             ltrt.leftRight(
               color,
               [rank + MOVE[`start${color}`][1], file],
-              king,
+              oppKing,
               pawn
             )
           ) {
@@ -210,7 +214,7 @@ function findPawn(
           ltrt.leftRight(
             color,
             [rank + square_left[0], file + square_left[1]],
-            king,
+            oppKing,
             pawn
           )
         ) {
@@ -245,7 +249,7 @@ function findPawn(
           ltrt.leftRight(color, [
             rank + square_left[0],
             file + square_left[1],
-            king,
+            oppKing,
             pawn,
           ])
         ) {
@@ -282,7 +286,7 @@ function findPawn(
           ltrt.leftRight(
             color,
             [rank + square_right[0], file + square_right[1]],
-            king,
+            oppKing,
             pawn
           )
         ) {
@@ -316,7 +320,7 @@ function findPawn(
           ltrt.leftRight(
             color,
             [rank + square_right[0], file + square_right[1]],
-            king,
+            oppKing,
             pawn
           )
         ) {

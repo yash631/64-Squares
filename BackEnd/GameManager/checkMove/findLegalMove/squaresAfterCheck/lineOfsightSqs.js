@@ -19,7 +19,6 @@ function LOS_Squares(
       let isChecked = false;
       let kingPos = [not.RTI[Moves[i][2]], not.FTI[Moves[i][1]]];
       if (--i < 0) {
-        console.log("i now : ", i);
         return;
       }
       let sqInd = [not.RTI[Moves[i][1]], not.FTI[Moves[i][0]]];

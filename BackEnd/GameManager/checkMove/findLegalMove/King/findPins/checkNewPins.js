@@ -1,7 +1,6 @@
 const getBoard = require("../../../../Board/createBoard");
 const not = require("../../../notations");
 const board = getBoard.Board;
-const inGamePcs = getBoard.createInGamePcs(board);
 const showPin = require("./showPinObjects");
 
 // Data structures to hold information about pinned and pinning pieces
@@ -17,6 +16,7 @@ let pinningPcs = {
 
 // Function to find and store all existing pins on the board for a given color
 function findExistingPins(color) {
+  const inGamePcs = getBoard.createInGamePcs(board);
   const king = not.KING[color]; // Get the king's notation based on color (0 for Black, 1 for White)
   const kingPos = [inGamePcs[king][0][0], inGamePcs[king][0][1]]; // Get the king's position
   const directions = not.DIRECTIONS; // Get all possible movement directions for pins
@@ -137,23 +137,38 @@ function storePinDetails(pinnedPiece, pinningPiece, color) {
     `Pinned piece ${pinnedType} at ${pinnedSquare} by ${pinningType} at ${pinningSquare}`
   );
 }
+
+// Function to detect pins and reset the pinnedPcs and pinningPcs objects
 function detectPins() {
   pinnedPcs = {
-    0 : {},
-    1 : {}
-  } 
+    0: {},
+    1: {},
+  };
   pinningPcs = {
-    0 : {},
-    1 : {}
-  }
+    0: {},
+    1: {},
+  };
+
+  // Find pins for both black and white
   for (let i of [0, 1]) {
     findExistingPins(i);
   }
+
+  // Print the updated pinnedPcs and pinningPcs objects
   console.log("--> Pinned Pieces <--");
   showPin.printTableWithSpacing(pinnedPcs);
+
   console.log("\n--> Pinning Pieces <--");
   showPin.printTableWithSpacing(pinningPcs);
-  console.log("\n");
 }
 
-module.exports = { detectPins, pinnedPcs, pinningPcs };
+// Make sure that when the module is accessed, it reflects the latest state
+function getPinnedPcs() {
+  return pinnedPcs;
+}
+
+function getPinningPcs() {
+  return pinningPcs;
+}
+
+module.exports = { detectPins, getPinnedPcs, getPinningPcs };

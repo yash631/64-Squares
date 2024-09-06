@@ -14,11 +14,12 @@ let Castling = {
   },
 };
 
-function findKing(color, lm, ALLPCS, iGP, rk, fl, board, isInCheck, pinnedPcs) {
+function findKing(color, lm, ALLPCS, iGP, rk, fl, board, isInCheck) {
   const opp_king = not.KING[1 - color];
   const king = not.KING[color];
   const king_sq = [iGP[king][0][0], iGP[king][0][1]];
   let curr_piece;
+
   const totalMoves = [
     [-1, -1],
     [-1, 0],
@@ -30,36 +31,37 @@ function findKing(color, lm, ALLPCS, iGP, rk, fl, board, isInCheck, pinnedPcs) {
     [1, 1],
   ];
   function captureCheck(rank, file) {
-    lm.k[color][`${king_sq[0]}${king_sq[1]}`].push(
+    lm["k"][color][`${king_sq[0]}${king_sq[1]}`].push(
       `${king}x${fl[file]}${rk[rank]}+`
     );
   }
   function normalCheck(rank, file) {
-    lm.k[color][`${king_sq[0]}${king_sq[1]}`].push(
+    lm["k"][color][`${king_sq[0]}${king_sq[1]}`].push(
       `${king}${fl[file]}${rk[rank]}+`
     );
   }
   function captureMove(rank, file) {
-    lm.k[color][`${king_sq[0]}${king_sq[1]}`].push(
+    lm["k"][color][`${king_sq[0]}${king_sq[1]}`].push(
       `${king}x${fl[file]}${rk[rank]}`
     );
   }
   function normalMove(rank, file) {
-    lm.k[color][`${king_sq[0]}${king_sq[1]}`].push(
+    lm["k"][color][`${king_sq[0]}${king_sq[1]}`].push(
       `${king}${fl[file]}${rk[rank]}`
     );
   }
   function castlingMove(side) {
     if (side == "king") {
-      lm.k[color][`${king_sq[0]}${king_sq[1]}`].push("O-O");
+      lm["k"][color][`${king_sq[0]}${king_sq[1]}`].push("O-O");
     } else if (side == "queen") {
-      lm.k[color][`${king_sq[0]}${king_sq[1]}`].push("O-O-O");
+      lm["k"][color][`${king_sq[0]}${king_sq[1]}`].push("O-O-O");
     }
   }
 
-  if (!lm.k[color][`${king_sq[0]}${king_sq[1]}`]) {
-    lm.k[color][`${king_sq[0]}${king_sq[1]}`] = [];
+  if (!lm["k"][color][`${king_sq[0]}${king_sq[1]}`]) {
+    lm["k"][color][`${king_sq[0]}${king_sq[1]}`] = [];
   }
+
   if (isInCheck == 0) {
     /* Check if it's possible to castle i.e. king and queen-side rook didn't move till now*/
     if (Castling[color]["q"]) {

@@ -4,6 +4,8 @@ const left = require("../Bishop/findForCheck/leftDiagonal");
 const right = require("../Bishop/findForCheck/rightDiagonal");
 const not = require("../../notations");
 const pin = require("./afterPinnedMoves");
+const newPin = require("../King/findPins/checkNewPins");
+
 
 function findRook(
   color,
@@ -15,11 +17,11 @@ function findRook(
   board,
   piece,
   isInCheck,
-  pinnedPcs
 ) {
   const oppKing = not.KING[1 - color];
   let actual_piece = piece[1 - color];
   let curr_piece;
+  let pinnedPcs = newPin.getPinnedPcs();
   function normalMove(rank, file, rows, cols) {
     lm[piece[1]][color][`${rows}${cols}`].push(
       `${piece[1 - color]}${fl[file]}${rk[rank]}`
@@ -106,6 +108,9 @@ function findRook(
         board[locOfPiece[0]][locOfPiece[1]] = actual_piece;
         break;
       } else if (board[rank][file] !== " ") {
+        lm[pieceType][color][`${locOfPiece[0]}${locOfPiece[1]}`].push(
+          `${board[rank][file]}${fl[file]}${rk[rank]}`
+        );
         break;
       } else if (pieceType === "q") {
         if (

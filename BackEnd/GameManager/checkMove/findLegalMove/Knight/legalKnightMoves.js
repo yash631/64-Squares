@@ -1,8 +1,9 @@
 const allDir = require("./findForCheck/allDirections");
 const not = require("../../notations");
 const getBoard = require("../../../Board/createBoard");
+const newPin = require("../King/findPins/checkNewPins");
 
-function findKnight(color, lm, ALLPCS, iGP, rk, fl, board,isInCheck,pinnedPcs) {
+function findKnight(color, lm, ALLPCS, iGP, rk, fl, board, isInCheck) {
   const king = not.KING[1 - color];
   let knight = "n";
   if (color) {
@@ -19,6 +20,8 @@ function findKnight(color, lm, ALLPCS, iGP, rk, fl, board,isInCheck,pinnedPcs) {
     [1, -2],
     [2, -1],
   ];
+  const pinnedPcs = newPin.getPinnedPcs();
+
   function normalMove(rank, file, rows, cols) {
     lm.n[color][`${rows}${cols}`].push(`${knight}${fl[file]}${rk[rank]}`);
   }
@@ -33,15 +36,15 @@ function findKnight(color, lm, ALLPCS, iGP, rk, fl, board,isInCheck,pinnedPcs) {
   }
   for (const locOfKnight of iGP[knight]) {
     lm.n[color][`${locOfKnight[0]}${locOfKnight[1]}`] = [];
-    /* Check if the Piece is pinned to the king */
 
-    if (
-      knight in pinnedPcs[color] &&
-      pinnedPcs[color][knight][1][0] == locOfKnight[0] &&
-      pinnedPcs[color][knight][1][1] == locOfKnight[1]
-    ) {
-      continue;
+    /* Check if the Piece is pinned to the king */
+    const pinPos = `${locOfKnight[0]}${locOfKnight[1]}`;
+    if ("n" in pinnedPcs[color]) {
+      if (pinnedPcs[color]["n"][pinPos]) {
+        continue;
+      }
     }
+
     for (const move of totalMoves) {
       let rank = locOfKnight[0] + move[0],
         file = locOfKnight[1] + move[1];
@@ -68,6 +71,10 @@ function findKnight(color, lm, ALLPCS, iGP, rk, fl, board,isInCheck,pinnedPcs) {
           }
           board[rank][file] = curr_piece;
           board[locOfKnight[0]][locOfKnight[1]] = knight;
+        } else if (board[rank][file] !== " ") {
+          lm.n[color][`${locOfKnight[0]}${locOfKnight[1]}`].push(
+            `${board[rank][file]}${fl[file]}${rk[rank]}`
+          );
         }
       }
     }

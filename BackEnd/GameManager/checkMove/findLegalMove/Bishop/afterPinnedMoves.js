@@ -42,8 +42,8 @@ function findMovesAfterPin(
       return (
         RNK.rank([rank, file], oppKing, color, "q") ||
         FL.file([rank, file], oppKing, color, "q") ||
-        right.rightDiag([rank, file], king, color, "q") ||
-        left.leftDiag([rank, file], king, color, "q")
+        right.rightDiag([rank, file], oppKing, color, "q") ||
+        left.leftDiag([rank, file], oppKing, color, "q")
       );
     } else {
       return (
