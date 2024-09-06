@@ -1,6 +1,6 @@
 const { isValid } = require("./isValidMove");
 
-function sqaureToIndex(color, piece, initial_Sq, move) {
+function squareToIndex(color, piece, initial_Sq, move) {
   const rank = {
       1: 7,
       2: 6,
@@ -56,4 +56,4 @@ function sqaureToIndex(color, piece, initial_Sq, move) {
     target_sq[1]
   );
 }
-module.exports = { sqaureToIndex };
+module.exports = { squareToIndex };

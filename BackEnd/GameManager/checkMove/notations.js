@@ -33,7 +33,16 @@ const ROOK = {
     k: [7, 7],
   },
 };
-
+const DIRECTIONS = [
+  { dir: "LDU", move: [-1, -1] },    // left diagonal up
+  { dir: "LDD", move: [1, 1] },      // left diagonal down
+  { dir: "RDU", move: [-1, 1] },     // right diagonal up
+  { dir: "RDD", move: [1, -1] },     // right diagonal down
+  { dir: "FU", move: [-1, 0] },      // file up
+  { dir: "FD", move: [1, 0] },       // file down
+  { dir: "RL", move: [0, -1] },      // rank left
+  { dir: "RR", move: [0, 1] },       // rank right
+];
 const FILE = {
     0: "a",
     1: "b",
@@ -74,6 +83,19 @@ const FTI = {
   g: 6,
   h: 7,
 };
+function isSameDirection(square1, square2) {
+  /* const fileToNumber = (file) => file.charCodeAt(0) - 'a'.charCodeAt(0) + 1; */
+
+  const [file1, rank1] = [FTI[square1[0]], parseInt(square1[1])];
+  const [file2, rank2] = [FTI[square2[0]], parseInt(square2[1])];
+  
+  const sameRank = rank1 === rank2;
+  const sameFile = file1 === file2;
+  const sameDiagonal = Math.abs(file1 - file2) === Math.abs(rank1 - rank2);
+
+  return sameRank || sameFile || sameDiagonal;
+}
+
 module.exports = {
   ALLPIECES,
   FILE,
@@ -84,4 +106,6 @@ module.exports = {
   ROOK,
   RTI,
   FTI,
+  DIRECTIONS,
+  isSameDirection
 };

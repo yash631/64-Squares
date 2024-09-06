@@ -68,6 +68,7 @@ function findMovesAfterPin(
   }
   const pinningPiecePos = pinnedPcs[color][pinnedPiece][pinnedPieceKey][3];
   pinnedPcs[color][pinnedPiece][pinnedPieceKey][6] = [];
+  pinnedPcs[color][pinnedPiece][pinnedPieceKey][7] = [];
 
   /* Function to add moves in the given direction */
   function addMoves(
@@ -199,6 +200,22 @@ function findMovesAfterPin(
   if (kingPos[0] === pinnedPiecePos[0]) {
     if (kingPos[1] > pinnedPiecePos[1]) {
       /* Check from Rank right */
+      if (
+        kingPos[1] + 1 <= 7 &&
+        board[kingPos[0]][kingPos[1] + 1] == " "
+      ) {
+        pinnedPcs[color][pinnedPiece][pinnedPieceKey][7].push(
+          `${not.FILE[kingPos[1]+1]}${not.RANK[kingPos[0]]}`,
+        );
+      }
+      if (
+        kingPos[1] - 1 >= 0 &&
+        board[kingPos[0]][kingPos[1] - 1] == " "
+      ) {
+        pinnedPcs[color][pinnedPiece][pinnedPieceKey][7].push(
+          `${not.FILE[kingPos[1]-1]}${not.RANK[kingPos[0]]}`,
+        );
+      }
       addMoves(
         pinnedPiecePos[0],
         pinnedPiecePos[1],
@@ -210,6 +227,22 @@ function findMovesAfterPin(
       );
     } else {
       /* Check from Rank left */
+      if (
+        kingPos[1] + 1 <= 7 &&
+        board[kingPos[0]][kingPos[1] + 1] == " "
+      ) {
+        pinnedPcs[color][pinnedPiece][pinnedPieceKey][7].push(
+          `${not.FILE[kingPos[1]+1]}${not.RANK[kingPos[0]]}`,
+        );
+      }
+      if (
+        kingPos[1] - 1 >= 0 &&
+        board[kingPos[0]][kingPos[1] - 1] == " "
+      ) {
+        pinnedPcs[color][pinnedPiece][pinnedPieceKey][7].push(
+          `${not.FILE[kingPos[1]-1]}${not.RANK[kingPos[0]]}`,
+        );
+      }
       addMoves(
         pinnedPiecePos[0],
         pinnedPiecePos[1],
@@ -223,6 +256,22 @@ function findMovesAfterPin(
   } else if (kingPos[1] === pinnedPiecePos[1]) {
     if (kingPos[0] > pinnedPiecePos[0]) {
       /* Check from File up */
+      if (
+        kingPos[0] + 1 <= 7 &&
+        board[kingPos[0]+1][kingPos[1]] == " "
+      ) {
+        pinnedPcs[color][pinnedPiece][pinnedPieceKey][7].push(
+          `${not.FILE[kingPos[1]]}${not.RANK[kingPos[0]+1]}`,
+        );
+      }
+      if (
+        kingPos[0] - 1 >= 0 &&
+        board[kingPos[0]-1][kingPos[1]] == " "
+      ) {
+        pinnedPcs[color][pinnedPiece][pinnedPieceKey][7].push(
+          `${not.FILE[kingPos[1]]}${not.RANK[kingPos[0]-1]}`,
+        );
+      }
       addMoves(
         pinnedPiecePos[0],
         pinnedPiecePos[1],
@@ -234,6 +283,22 @@ function findMovesAfterPin(
       );
     } else {
       /* Check from File down */
+      if (
+        kingPos[0] + 1 <= 7 &&
+        board[kingPos[0]+1][kingPos[1]] == " "
+      ) {
+        pinnedPcs[color][pinnedPiece][pinnedPieceKey][7].push(
+          `${not.FILE[kingPos[1]]}${not.RANK[kingPos[0]+1]}`,
+        );
+      }
+      if (
+        kingPos[0] - 1 >= 0 &&
+        board[kingPos[0]-1][kingPos[1]] == " "
+      ) {
+        pinnedPcs[color][pinnedPiece][pinnedPieceKey][7].push(
+          `${not.FILE[kingPos[1]]}${not.RANK[kingPos[0]-1]}`,
+        );
+      }
       addMoves(
         pinnedPiecePos[0],
         pinnedPiecePos[1],

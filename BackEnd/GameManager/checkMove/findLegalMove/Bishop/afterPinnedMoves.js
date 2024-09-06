@@ -52,6 +52,7 @@ function findMovesAfterPin(
       );
     }
   }
+
   const board = getBoard.Board;
   const pinnedPieceKey = `${pinnedPiecePos[0]}${pinnedPiecePos[1]}`;
   const kingPos = inGamePcs[not.KING[color]][0];
@@ -61,13 +62,14 @@ function findMovesAfterPin(
   // console.log(pnPc,pnPcPos,[`${pnPcPos[0]}${pnPcPos[1]}`]);
   // console.log("legal moves of pinning piece", lm[pnPc][1-color]);
   /* To push the moves of Pinning Piece */
-  if (color) {   
+  if (color) {
     pinningPiece = pinningPiece.toLowerCase();
   } else {
     pinningPiece = pinningPiece.toUpperCase();
   }
   const pinningPiecePos = pinnedPcs[color][pinnedPiece][pinnedPieceKey][3];
   pinnedPcs[color][pinnedPiece][pinnedPieceKey][6] = [];
+  pinnedPcs[color][pinnedPiece][pinnedPieceKey][7] = [];
 
   /* Function to add moves in the given direction */
   function addMoves(
@@ -178,6 +180,25 @@ function findMovesAfterPin(
 
   if (kingPos[0] > pinnedPiecePos[0] && kingPos[1] > pinnedPiecePos[1]) {
     /* Check from Left-Diagonal left */
+    if (
+      kingPos[0] - 1 >= 0 &&
+      kingPos[1] - 1 >= 0 &&
+      board[kingPos[0] - 1][kingPos[1] - 1] == " "
+    ) {
+      pinnedPcs[color][pinnedPiece][pinnedPieceKey][7].push(
+        `${not.FILE[kingPos[1]-1]}${not.RANK[kingPos[0]-1]}`,
+      );
+    }
+    if (
+      kingPos[0] + 1 <= 7 &&
+      kingPos[1] + 1 <= 7 &&
+      board[kingPos[0] + 1][kingPos[1] + 1] == " "
+    ) {
+      pinnedPcs[color][pinnedPiece][pinnedPieceKey][7].push(
+        `${not.FILE[kingPos[1]+1]}${not.RANK[kingPos[0]+1]}`,
+      );
+    }
+
     addMoves(
       pinnedPiecePos[0],
       pinnedPiecePos[1],
@@ -189,6 +210,24 @@ function findMovesAfterPin(
     );
   } else if (kingPos[0] < pinnedPiecePos[0] && kingPos[1] < pinnedPiecePos[1]) {
     /* Check from Left-Diagonal right */
+    if (
+      kingPos[0] - 1 >= 0 &&
+      kingPos[1] - 1 >= 0 &&
+      board[kingPos[0] - 1][kingPos[1] - 1] == " "
+    ) {
+      pinnedPcs[color][pinnedPiece][pinnedPieceKey][7].push(
+        `${not.FILE[kingPos[1]-1]}${not.RANK[kingPos[0]-1]}`,
+      );
+    }
+    if (
+      kingPos[0] + 1 <= 7 &&
+      kingPos[1] + 1 <= 7 &&
+      board[kingPos[0] + 1][kingPos[1] + 1] == " "
+    ) {
+      pinnedPcs[color][pinnedPiece][pinnedPieceKey][7].push(
+        `${not.FILE[kingPos[1]+1]}${not.RANK[kingPos[0]+1]}`,
+      );
+    }
     addMoves(
       pinnedPiecePos[0],
       pinnedPiecePos[1],
@@ -200,6 +239,24 @@ function findMovesAfterPin(
     );
   } else if (kingPos[0] < pinnedPiecePos[0] && kingPos[1] > pinnedPiecePos[1]) {
     /* Check from Right-Diagonal left */
+    if (
+      kingPos[0] - 1 >= 0 &&
+      kingPos[1] + 1 <= 7 &&
+      board[kingPos[0] - 1][kingPos[1] + 1] == " "
+    ) {
+      pinnedPcs[color][pinnedPiece][pinnedPieceKey][7].push(
+        `${not.FILE[kingPos[1]+1]}${not.RANK[kingPos[0]-1]}`,
+      );
+    }
+    if (
+      kingPos[0] + 1 <= 7 &&
+      kingPos[1] - 1 >= 0 &&
+      board[kingPos[0] + 1][kingPos[1] - 1] == " "
+    ) {
+      pinnedPcs[color][pinnedPiece][pinnedPieceKey][7].push(
+        `${not.FILE[kingPos[1]-1]}${not.RANK[kingPos[0]+1]}`,
+      );
+    }
     addMoves(
       pinnedPiecePos[0],
       pinnedPiecePos[1],
@@ -211,6 +268,24 @@ function findMovesAfterPin(
     );
   } else if (kingPos[0] > pinnedPiecePos[0] && kingPos[1] < pinnedPiecePos[1]) {
     /* Check from Right-Diagonal right */
+    if (
+      kingPos[0] + 1 <= 7 &&
+      kingPos[1] - 1 >= 0 &&
+      board[kingPos[0] + 1][kingPos[1] - 1] == " "
+    ) {
+      pinnedPcs[color][pinnedPiece][pinnedPieceKey][7].push(
+        `${not.FILE[kingPos[1]-1]}${not.RANK[kingPos[0]+1]}`,
+      );
+    }
+    if (
+      kingPos[0] - 1 >= 0 &&
+      kingPos[1] + 1 <= 7 &&
+      board[kingPos[0] - 1][kingPos[1] + 1] == " "
+    ) {
+      pinnedPcs[color][pinnedPiece][pinnedPieceKey][7].push(
+        `${not.FILE[kingPos[1]+1]}${not.RANK[kingPos[0]-1]}`,
+      );
+    }
     addMoves(
       pinnedPiecePos[0],
       pinnedPiecePos[1],

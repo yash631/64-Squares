@@ -19,27 +19,27 @@ const file = ["a", "b", "c", "d", "e", "f", "g", "h"],
 function pawnMove(initial_Sq, m, color) {
   if (rank.includes(m[1])) {
     if (m[2] == "=" && pieces.includes(m[3])) {
-      if (m[4] == "+" && getIndex.sqaureToIndex(initial_Sq, m, color)) {
+      if (m[4] == "+" && getIndex.squareToIndex(initial_Sq, m, color)) {
         console.log(
           `${m[0]} moved to ${m[0]}${m[1]} and promoted to ${m[3]} with check`
         );
         console.log(`----------xxxxxxxx-----Move Made----xxxxxxx----------\n`);
-      } else if (m[4] == "#" && getIndex.sqaureToIndex(initial_Sq, m, color)) {
+      } else if (m[4] == "#" && getIndex.squareToIndex(initial_Sq, m, color)) {
         console.log(
           `${m[0]} moved to ${m[0]}${m[1]} and promoted to ${m[3]} with checkmate`
         );
         console.log(`----------xxxxxxxx-----Move Made----xxxxxxx----------\n`);
-      } else if (m[4] == undefined && getIndex.sqaureToIndex(initial_Sq, m, color)) {
+      } else if (m[4] == undefined && getIndex.squareToIndex(initial_Sq, m, color)) {
         console.log(`${m[0]} moved to ${m[0]}${m[1]} and promoted to ${m[3]}`);
         console.log(`----------xxxxxxxx-----Move Made----xxxxxxx----------\n`);
       }
-    } else if (m[2] == "+" && getIndex.sqaureToIndex(initial_Sq, m, color)) {
+    } else if (m[2] == "+" && getIndex.squareToIndex(initial_Sq, m, color)) {
       console.log(`${m[0]} moved to ${m[0]}${m[1]} with check`);
       console.log(`----------xxxxxxxx-----Move Made----xxxxxxx----------\n`);
-    } else if (m[2] == "#" && getIndex.sqaureToIndex(initial_Sq, m, color)) {
+    } else if (m[2] == "#" && getIndex.squareToIndex(initial_Sq, m, color)) {
       console.log(`${m[0]} moved to ${m[0]}${m[1]} and checkmate`);
       console.log(`----------xxxxxxxx-----Move Made----xxxxxxx----------\n`);
-    } else if (m[2] == undefined && getIndex.sqaureToIndex(initial_Sq, m, color)) {
+    } else if (m[2] == undefined && getIndex.squareToIndex(initial_Sq, m, color)) {
       console.log(`${m[0]} moved to ${m}`);
       console.log(`----------xxxxxxxx-----Move Made----xxxxxxx----------\n`);
     } else {
@@ -49,21 +49,21 @@ function pawnMove(initial_Sq, m, color) {
   } else if (m[1] == "x") {
     if (file.includes(m[2]) && rank.includes(m[3])) {
       if (m[4] == "=" && pieces.includes(m[5])) {
-        if (m[6] == "+" && getIndex.sqaureToIndex(initial_Sq, m, color)) {
+        if (m[6] == "+" && getIndex.squareToIndex(initial_Sq, m, color)) {
           console.log(
             `${m[0]} captured on ${m[2]}${m[3]} and promoted to ${m[5]} with check`
           );
           console.log(
             `----------xxxxxxxx-----Move Made----xxxxxxx----------\n`
           );
-        } else if (m[6] == "#" && getIndex.sqaureToIndex(initial_Sq, m, color)) {
+        } else if (m[6] == "#" && getIndex.squareToIndex(initial_Sq, m, color)) {
           console.log(
             `${m[0]} captured on ${m[2]}${m[3]} and promoted to ${m[5]} and checkmate`
           );
           console.log(
             `----------xxxxxxxx-----Move Made----xxxxxxx----------\n`
           );
-        } else if (m[6] == undefined && getIndex.sqaureToIndex(initial_Sq, m, color)) {
+        } else if (m[6] == undefined && getIndex.squareToIndex(initial_Sq, m, color)) {
           console.log(
             `${m[0]} captured on ${m[2]}${m[3]} and promoted to ${m[5]}`
           );
@@ -75,21 +75,21 @@ function pawnMove(initial_Sq, m, color) {
           console.log(`---------xxxxxx---------\n`);
         }
       } else if (m[4] == "e") {
-        if (m[6] == "+" && getIndex.sqaureToIndex(initial_Sq, m, color)) {
+        if (m[6] == "+" && getIndex.squareToIndex(initial_Sq, m, color)) {
           console.log(
             `${m[0]} captured on ${m[2]}${m[3]} en passant with check`
           );
           console.log(
             `----------xxxxxxxx-----Move Made----xxxxxxx----------\n`
           );
-        } else if (m[6] == "#" && getIndex.sqaureToIndex(initial_Sq, m, color)) {
+        } else if (m[6] == "#" && getIndex.squareToIndex(initial_Sq, m, color)) {
           console.log(
             `${m[0]} captured on ${m[2]}${m[3]} en passant and checkmate`
           );
           console.log(
             `----------xxxxxxxx-----Move Made----xxxxxxx----------\n`
           );
-        } else if (m[6] == undefined && getIndex.sqaureToIndex(initial_Sq, m, color)) {
+        } else if (m[6] == undefined && getIndex.squareToIndex(initial_Sq, m, color)) {
           console.log(`${m[0]} captured on ${m[2]}${m[3]} en passant`);
           console.log(
             `----------xxxxxxxx-----Move Made----xxxxxxx----------\n`
@@ -98,13 +98,13 @@ function pawnMove(initial_Sq, m, color) {
           console.log(`${m} is an illegal move`);
           console.log(`---------xxxxxx---------\n`);
         }
-      } else if (m[4] == "+" && getIndex.sqaureToIndex(initial_Sq, m, color)) {
+      } else if (m[4] == "+" && getIndex.squareToIndex(initial_Sq, m, color)) {
         console.log(`${m[0]} captured on ${m[2]}${m[3]} with check`);
         console.log(`----------xxxxxxxx-----Move Made----xxxxxxx----------\n`);
-      } else if (m[4] == "#" && getIndex.sqaureToIndex(initial_Sq, m, color)) {
+      } else if (m[4] == "#" && getIndex.squareToIndex(initial_Sq, m, color)) {
         console.log(`${m[0]} captured on ${m[2]}${m[3]} and checkmate`);
         console.log(`----------xxxxxxxx-----Move Made----xxxxxxx----------\n`);
-      } else if (m[4] == undefined && getIndex.sqaureToIndex(initial_Sq, m, color)) {
+      } else if (m[4] == undefined && getIndex.squareToIndex(initial_Sq, m, color)) {
         console.log(`${m[0]} captured on ${m[2]}${m[3]}`);
         console.log(`----------xxxxxxxx-----Move Made----xxxxxxx----------\n`);
       } else {
@@ -130,7 +130,7 @@ function kingMove(initial_Sq, m, color) {
     if (
       rank.includes(rk) &&
       file.includes(fl) &&
-      getIndex.sqaureToIndex(initial_Sq, m, color)
+      getIndex.squareToIndex(initial_Sq, m, color)
     ) {
       console.log(`King captured on ${fl}${rk}`);
       console.log(`----------xxxxxxxx-----Move Made----xxxxxxx----------\n`);
@@ -143,7 +143,7 @@ function kingMove(initial_Sq, m, color) {
     if (
       rank.includes(rk) &&
       file.includes(fl) &&
-      getIndex.sqaureToIndex(initial_Sq, m, color)
+      getIndex.squareToIndex(initial_Sq, m, color)
     ) {
       console.log(`King moved to ${fl}${rk}`);
       console.log(`----------xxxxxxxx-----Move Made----xxxxxxx----------\n`);
@@ -162,13 +162,13 @@ function pieceMove(initial_Sq, m, pc, color) {
   if (m[1] == "x") {
     (fl = m[2]), (rk = m[3]);
     if (rank.includes(rk) && file.includes(fl)) {
-      if (m[4] == "+" && getIndex.sqaureToIndex(initial_Sq, m, color)) {
+      if (m[4] == "+" && getIndex.squareToIndex(initial_Sq, m, color)) {
         console.log(`${arrOfPieces[pc]} captured on ${fl}${rk} with check`);
         console.log(`----------xxxxxxxx-----Move Made----xxxxxxx----------\n`);
-      } else if (m[4] == "#" && getIndex.sqaureToIndex(initial_Sq, m, color)) {
+      } else if (m[4] == "#" && getIndex.squareToIndex(initial_Sq, m, color)) {
         console.log(`${arrOfPieces[pc]} captured on ${fl}${rk} and checkmate`);
         console.log(`----------xxxxxxxx-----Move Made----xxxxxxx----------\n`);
-      } else if (m[4] == undefined && getIndex.sqaureToIndex(initial_Sq, m, color)) {
+      } else if (m[4] == undefined && getIndex.squareToIndex(initial_Sq, m, color)) {
         console.log(`${arrOfPieces[pc]} captured on ${fl}${rk}`);
         console.log(`----------xxxxxxxx-----Move Made----xxxxxxx----------\n`);
       } else {
@@ -181,13 +181,13 @@ function pieceMove(initial_Sq, m, pc, color) {
     }
   } else if (file.includes(m[1]) && rank.includes(m[2])) {
     (fl = m[1]), (rk = m[2]);
-    if (m[3] == "+" && getIndex.sqaureToIndex(initial_Sq, m, color)) {
+    if (m[3] == "+" && getIndex.squareToIndex(initial_Sq, m, color)) {
       console.log(`${arrOfPieces[pc]} moved to ${fl}${rk} with check`);
       console.log(`----------xxxxxxxx-----Move Made----xxxxxxx----------\n`);
-    } else if (m[3] == "#" && getIndex.sqaureToIndex(initial_Sq, m, color)) {
+    } else if (m[3] == "#" && getIndex.squareToIndex(initial_Sq, m, color)) {
       console.log(`${arrOfPieces[pc]} moved to ${fl}${rk} and checkmate`);
       console.log(`----------xxxxxxxx-----Move Made----xxxxxxx----------\n`);
-    } else if (m[3] == undefine+-d && getIndex.sqaureToIndex(initial_Sq, m, color)) {
+    } else if (m[3] == undefine+-d && getIndex.squareToIndex(initial_Sq, m, color)) {
       console.log(`${arrOfPieces[pc]} moved to ${fl}${rk}`);
       console.log(`----------xxxxxxxx-----Move Made----xxxxxxx----------\n`);
     } else {
@@ -202,7 +202,7 @@ function pieceMove(initial_Sq, m, pc, color) {
 */
 function isCorrectMove(initial_Sq, move, color) {
   if (file.includes(move[0])) {
-    pawnMove(initial_Sq, move, color); 
+    pawnMove(initial_Sq, move, color);
   } else if (move[0] == "K" || move[0] == "k") {
     kingMove(initial_Sq, move, color);
   } else if (pieces.includes(move[0])) {
@@ -213,38 +213,36 @@ function isCorrectMove(initial_Sq, move, color) {
   }
 }
 
-          /* pinned  */
-getIndex.sqaureToIndex(1,"q","g1","Qh1+");
-getIndex.sqaureToIndex(0,"b","c8","bb7");
-getIndex.sqaureToIndex(1,"q","h1","Qg2");
-getIndex.sqaureToIndex(0,"b","b7","bc6");
-getIndex.sqaureToIndex(1,"p","a2","a3");
-getIndex.sqaureToIndex(0,"b","f7","bd5");
+/* pinned  */
+getIndex.squareToIndex(1,"r","f1","Re1+");
+getIndex.squareToIndex(0,"b","f6","be5");
+getIndex.squareToIndex(1,"r","e1","Re2");
+// getIndex.squareToIndex(0,"q","d8","qe7");
+// getIndex.squareToIndex(1,"r","e2","Re3");
 
 
 
-         /* Full game */
+
+
+/* Full game */
 /*
-getIndex.sqaureToIndex(1,"p","e2","e4");
-getIndex.sqaureToIndex(0,"p","d7","d5");
-getIndex.sqaureToIndex(1,"p","e4","exd5");
-getIndex.sqaureToIndex(0,"q","d8","qxd5");
-getIndex.sqaureToIndex(1,"n","b1","Nc3");
-getIndex.sqaureToIndex(0,"p","c7","c6");
-getIndex.sqaureToIndex(1,"n","c3","Nxd5");
-getIndex.sqaureToIndex(0,"p","c6","cxd5");
-getIndex.sqaureToIndex(1,"p","g2","g3");
-getIndex.sqaureToIndex(0,"p","b7","b6");
-getIndex.sqaureToIndex(1,"b","f1","Bh3");
-getIndex.sqaureToIndex(0,"b","c8","ba6");
-getIndex.sqaureToIndex(1,"p","d2","d4");
-getIndex.sqaureToIndex(0,"b","a6","bd3");
-getIndex.sqaureToIndex(1,"b","h3","Bd7+");
-getIndex.sqaureToIndex(0,"k","e8","kd8");
-getIndex.sqaureToIndex(1,"b","d7","Bc8");
+getIndex.squareToIndex(1,"p","e2","e4");
+getIndex.squareToIndex(0,"p","d7","d5");
+getIndex.squareToIndex(1,"p","e4","exd5");
+getIndex.squareToIndex(0,"q","d8","qxd5");
+getIndex.squareToIndex(1,"n","b1","Nc3");
+getIndex.squareToIndex(0,"p","c7","c6");
+getIndex.squareToIndex(1,"n","c3","Nxd5");
+getIndex.squareToIndex(0,"p","c6","cxd5");
+getIndex.squareToIndex(1,"p","g2","g3");
+getIndex.squareToIndex(0,"p","b7","b6");
+getIndex.squareToIndex(1,"b","f1","Bh3");
+getIndex.squareToIndex(0,"b","c8","ba6");
+getIndex.squareToIndex(1,"p","d2","d4");
+getIndex.squareToIndex(0,"b","a6","bd3");
+getIndex.squareToIndex(1,"b","h3","Bd7+");
+getIndex.squareToIndex(0,"k","e8","kd8");
+getIndex.squareToIndex(1,"b","d7","Bc8");
 */
-
-
-
 
 module.exports = isCorrectMove;
