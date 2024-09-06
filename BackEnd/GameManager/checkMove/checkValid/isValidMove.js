@@ -8,9 +8,8 @@ const los = require("../findLegalMove/squaresAfterCheck/lineOfsightSqs");
 const updPin = require("../findLegalMove/King/findPins/updatePins");
 const updLM = require("./updateLegalMoves");
 const newPin = require("../findLegalMove/King/findPins/checkNewPins");
-const rmvPin = require("../findLegalMove/King/findPins/removePins");
+/* const rmvPin = require("../findLegalMove/King/findPins/removePins"); */
 const showPin = require("../findLegalMove/King/findPins/showPinObjects");
-
 
 let LEGALMOVES = findlegal.createLegalMoves();
 let isInCheck = 0;
@@ -20,11 +19,10 @@ let checkPiecePos_OLD, checkPiecePos_NEW;
 
 function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
   /* Check for new Pins */
-  newPin.findExistingPins(color);
-  newPin.findExistingPins(1-color);
+  newPin.detectPins();
 
   /* Remove illegal Pins */
-  
+  /* rmvPin.removeUnpinnedPieces(); */         // Currently not removing illegal pins instead detecting all pins again
 
   const len = move.length;
   const inGamePcs = getBoard.createInGamePcs(getBoard.Board);
@@ -208,7 +206,7 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
       isInCheck,
       newPin.pinnedPcs
     );*/
-    
+
     updPin.updatePinnedPieceState(
       color,
       piece,
@@ -223,38 +221,6 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
     );
 
     if (isInCheck) {
-      /* If king Didn't move */
-    //  if (move[0] != "k" && move[0] != "K") {
-    //     /* If the checking piece is not captured */
-    //     if (move[1] != "x") {
-    //       /* Add piece that blocked check */
-    //       newPin.pinnedPcs[color][piece] = {
-    //         [`${new_row}${new_col}`]: [
-    //           whichPieceGaveCheck,
-    //           [new_row, new_col],
-    //           [`${not.FILE[new_col]}${not.RANK[new_row]}`],
-    //           [checkPiecePos_NEW[0], checkPiecePos_NEW[1]],
-    //           [
-    //             `${not.FILE[checkPiecePos_NEW[1]]}${
-    //               not.RANK[checkPiecePos_NEW[0]]
-    //             }`,
-    //           ],
-    //           /* For operating on all squares of the pinned direction */
-    //           [],     // Adding the pinned piece moves
-    //           [],     // Adding the pinning piece moves for maintaining Pin
-    //           []      // Adding the King move or to maintain Pin
-    //         ],
-    //       };
-    //       newPin.pinnedPcs[1 - color] = {
-    //         [`${whichPieceGaveCheck}`]: {
-    //           [`${checkPiecePos_NEW[0]}${checkPiecePos_NEW[1]}`]: [
-    //             piece,
-    //             `${new_row}${new_col}`,
-    //           ],
-    //         },
-    //       };
-    //     }
-    //   }
       isInCheck = 0;
     } else if (move[len - 1] == "+") {
       whichPieceGaveCheck = move[0].toLowerCase();
@@ -269,9 +235,8 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
         }->${not.FILE[checkPiecePos_NEW[1]]}${not.RANK[checkPiecePos_NEW[0]]}`
       ); */
     }
-      /* Check for new Pins */
-    newPin.findExistingPins(color);
-    newPin.findExistingPins(1-color);
+    /* Check for new Pins */
+    newPin.detectPins();
   } else {
     console.log("ILLEGAL MOVE");
     return false;

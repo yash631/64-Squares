@@ -217,8 +217,8 @@ function isCorrectMove(initial_Sq, move, color) {
 getIndex.squareToIndex(1,"r","f1","Re1+");
 getIndex.squareToIndex(0,"b","f6","be5");
 getIndex.squareToIndex(1,"r","e1","Re2");
-// getIndex.squareToIndex(0,"q","d8","qe7");
-// getIndex.squareToIndex(1,"r","e2","Re3");
+getIndex.squareToIndex(0,"q","d8","qe7");
+getIndex.squareToIndex(1,"r","e2","Re3");
 
 
 

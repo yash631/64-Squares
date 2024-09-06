@@ -4,55 +4,64 @@ const board = getBoard.Board;
 const inGamePcs = getBoard.createInGamePcs(board);
 const showPin = require("./showPinObjects");
 
+// Data structures to hold information about pinned and pinning pieces
 let pinnedPcs = {
-  0: {}, // Black
-  1: {}, // White
+  0: {}, // Black side
+  1: {}, // White side
 };
 
 let pinningPcs = {
-  0: {}, // Black
-  1: {}, // White
+  0: {}, // Black side
+  1: {}, // White side
 };
 
+// Function to find and store all existing pins on the board for a given color
 function findExistingPins(color) {
-  const king = not.KING[color];
-  const kingPos = [inGamePcs[king][0][0], inGamePcs[king][0][1]];
-  const directions = not.DIRECTIONS;
+  const king = not.KING[color]; // Get the king's notation based on color (0 for Black, 1 for White)
+  const kingPos = [inGamePcs[king][0][0], inGamePcs[king][0][1]]; // Get the king's position
+  const directions = not.DIRECTIONS; // Get all possible movement directions for pins
 
   directions.forEach((direction) => {
-    let row = kingPos[0] + direction.move[0];
+    let row = kingPos[0] + direction.move[0]; // Calculate the initial position in the current direction
     let col = kingPos[1] + direction.move[1];
 
-    let pinnedPiece = null;
+    let pinnedPiece = null; // Variable to keep track of the pinned piece
 
+    // Move in the current direction until we hit the edge of the board
     while (row >= 0 && row <= 7 && col >= 0 && col <= 7) {
-      const piece = board[row][col];
+      const piece = board[row][col]; // Get the piece at the current position
 
       if (piece === " ") {
+        // If the square is empty, move to the next square in the same direction
         row += direction.move[0];
         col += direction.move[1];
         continue;
       }
 
+      // Check if the piece belongs to the same color as the king
       if (
-        (color === 1 && /[PNBRQK]/.test(piece)) ||
-        (color === 0 && /[pnbrqk]/.test(piece))
+        (color === 1 && /[PNBRQK]/.test(piece)) || // White pieces
+        (color === 0 && /[pnbrqk]/.test(piece)) // Black pieces
       ) {
-        if (pinnedPiece !== null) break;
-        pinnedPiece = [row, col, piece.toLowerCase()];
+        if (pinnedPiece !== null) break; // If there was a pinned piece before, stop searching
+        pinnedPiece = [row, col, piece.toLowerCase()]; // Mark this piece as the pinned piece
       } else {
+        // Check if the current piece is capable of pinning
         if (isPinningPiece(piece, direction)) {
+          // Store the details of the pin if it's valid
           storePinDetails(pinnedPiece, [row, col, piece.toLowerCase()], color);
         }
-        break;
+        break; // Stop searching in this direction
       }
 
+      // Move to the next square in the same direction
       row += direction.move[0];
       col += direction.move[1];
     }
   });
 }
 
+// Helper function to determine if a piece can pin in a given direction
 function isPinningPiece(piece, direction) {
   const straight =
     (Math.abs(direction.move[0]) === 1 && direction.move[1] === 0) ||
@@ -61,7 +70,9 @@ function isPinningPiece(piece, direction) {
   const diagonal =
     Math.abs(direction.move[0]) === 1 && Math.abs(direction.move[1]) === 1;
 
+  // Check if the piece can be a pinning piece based on its type and the direction
   if (/[pnbrqk]/.test(piece)) {
+    // Black pieces
     if (
       piece === "q" ||
       (piece === "r" && straight) ||
@@ -71,6 +82,7 @@ function isPinningPiece(piece, direction) {
   }
 
   if (/[PNBRQK]/.test(piece)) {
+    // White pieces
     if (
       piece === "Q" ||
       (piece === "R" && straight) ||
@@ -79,38 +91,40 @@ function isPinningPiece(piece, direction) {
       return true;
   }
 
-  return false;
+  return false; // The piece cannot pin in this direction
 }
 
+// Function to store the details of a pin in the pinnedPcs and pinningPcs objects
 function storePinDetails(pinnedPiece, pinningPiece, color) {
-  if (pinnedPiece === null) return;
+  if (pinnedPiece === null) return; // No pinned piece to store
 
-  const [pinnedRow, pinnedCol, pinnedType] = pinnedPiece;
-  const [pinningRow, pinningCol, pinningType] = pinningPiece;
+  const [pinnedRow, pinnedCol, pinnedType] = pinnedPiece; // Unpack pinned piece details
+  const [pinningRow, pinningCol, pinningType] = pinningPiece; // Unpack pinning piece details
 
-  const pinnedKey = `${pinnedRow}${pinnedCol}`; 
-  const pinningKey = `${pinningRow}${pinningCol}`; 
+  const pinnedKey = `${pinnedRow}${pinnedCol}`; // Unique key for the pinned piece position
+  const pinningKey = `${pinningRow}${pinningCol}`; // Unique key for the pinning piece position
 
+  // Get the square notation (e.g., "e4") for both pieces
   const pinnedSquare = not.FILE[pinnedCol] + not.RANK[pinnedRow];
   const pinningSquare = not.FILE[pinningCol] + not.RANK[pinningRow];
 
-  // Add to pinnedPcs
+  // Add to pinnedPcs for the color of the pinned piece
   if (!pinnedPcs[color][pinnedType]) {
     pinnedPcs[color][pinnedType] = {};
   }
 
   pinnedPcs[color][pinnedType][pinnedKey] = [
-    pinningType,
-    [pinnedRow, pinnedCol],
-    [pinnedSquare],
-    [pinningRow, pinningCol],
-    [pinningSquare],
+    pinningType, // Type of the pinning piece
+    [pinnedRow, pinnedCol], // Position of the pinned piece
+    [pinnedSquare], // Square notation of the pinned piece
+    [pinningRow, pinningCol], // Position of the pinning piece
+    [pinningSquare], // Square notation of the pinning piece
     [],
     [],
-    [],
+    [], // Placeholder arrays (can be used for additional data)
   ];
 
-  // Add to pinningPcs of the opposite color
+  // Add to pinningPcs for the opposite color of the pinning piece
   const oppositeColor = 1 - color;
   if (!pinningPcs[oppositeColor][pinningType]) {
     pinningPcs[oppositeColor][pinningType] = {};
@@ -118,14 +132,28 @@ function storePinDetails(pinnedPiece, pinningPiece, color) {
 
   pinningPcs[oppositeColor][pinningType][pinningKey] = [pinnedType, pinnedKey];
 
+  // Output debug information
   console.log(
     `Pinned piece ${pinnedType} at ${pinnedSquare} by ${pinningType} at ${pinningSquare}`
   );
-  console.log("-->Pinned Pieces<--");
+}
+function detectPins() {
+  pinnedPcs = {
+    0 : {},
+    1 : {}
+  } 
+  pinningPcs = {
+    0 : {},
+    1 : {}
+  }
+  for (let i of [0, 1]) {
+    findExistingPins(i);
+  }
+  console.log("--> Pinned Pieces <--");
   showPin.printTableWithSpacing(pinnedPcs);
-  console.log("\n-->Pinning Pieces<--");
+  console.log("\n--> Pinning Pieces <--");
   showPin.printTableWithSpacing(pinningPcs);
   console.log("\n");
 }
 
-module.exports = { findExistingPins, pinnedPcs, pinningPcs };
+module.exports = { detectPins, pinnedPcs, pinningPcs };
