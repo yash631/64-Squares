@@ -42,8 +42,8 @@ function findMovesAfterPin(
       return (
         RNK.rank([rank, file], oppKing, color, "q") ||
         FL.file([rank, file], oppKing, color, "q") ||
-        right.rightDiag([rank, file], king, color, "q") ||
-        left.leftDiag([rank, file], king, color, "q")
+        right.rightDiag([rank, file], oppKing, color, "q") ||
+        left.leftDiag([rank, file], oppKing, color, "q")
       );
     } else {
       return (
@@ -121,7 +121,6 @@ function findMovesAfterPin(
     } else if (direction == "up" || direction == "down") {
       /* Add moves until pinned piece reaches king */
       while (row !== kingRow) {
-        console.log("running");
         if (direction === "up") {
           row++;
         } else {

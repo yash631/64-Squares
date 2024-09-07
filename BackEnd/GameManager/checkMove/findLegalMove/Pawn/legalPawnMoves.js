@@ -2,19 +2,10 @@ const not = require("../../notations");
 const prom = require("./findForCheck/atPromotion");
 const ltrt = require("./findForCheck/leftRightDiag");
 const getBoard = require("../../../Board/createBoard");
+const pin = require("./afterPinnedMoves");
 const newPin = require("../King/findPins/checkNewPins");
 
-function findPawn(
-  color,
-  lm,
-  ALLPCS,
-  iGP,
-  rk,
-  fl,
-  board,
-  prevMove,
-  isInCheck,
-) {
+function findPawn(color, lm, ALLPCS, iGP, rk, fl, board, prevMove, isInCheck) {
   let pinnedPcs = newPin.getPinnedPcs();
   const oppKing = not.KING[1 - color];
   let curr_piece;
@@ -50,9 +41,9 @@ function findPawn(
     1: 3,
   };
   const prmt_rank = {
-    0 : 7,
-    1 : 0
-  }
+    0: 7,
+    1: 0,
+  };
 
   for (const locOfPawn of iGP[pawn]) {
     let rank = locOfPawn[0],
@@ -65,8 +56,29 @@ function findPawn(
 
     /* Check if the Piece is pinned to the king */
     const pinPos = `${rank}${file}`;
-    if("p" in pinnedPcs[color]){
-      if(pinnedPcs[color]["p"][pinPos]){
+    if ("p" in pinnedPcs[color]) {
+      if (pinPos in pinnedPcs[color]["p"]) {
+        const pinnedPawn = pinnedPcs[color]["p"][pinPos];
+        const pinningPiece = pinnedPawn[0];
+        const pinningPieceRow = pinnedPawn[3][0];
+        const pinningPieceCol = pinnedPawn[3][1];
+        // console.log([pinningPieceRow, pinningPieceCol]);
+        if (
+          (pinningPiece === "r" || pinningPiece === "q") &&
+          file == pinningPieceCol
+        ) {
+          pin.findMovesAfterPin(
+            color,
+            pawn,
+            MOVE,
+            pinnedPcs,
+            oppKing,
+            lm,
+            board,
+            iGP,
+            [rank, file]
+          );
+        }
         continue;
       }
     }
@@ -142,7 +154,13 @@ function findPawn(
         board[locOfPawn[0]][locOfPawn[1]] = " ";
         for (let num = 0; num < 4; num++) {
           if (
-            prom.prom(prmt_pcs[color][num], [prmt_rank[color], file], oppKing, color, pawn)
+            prom.prom(
+              prmt_pcs[color][num],
+              [prmt_rank[color], file],
+              oppKing,
+              color,
+              pawn
+            )
           ) {
             lm.p[color][`${rank}${file}`].push(
               `${fl[file]}${rk[rank + MOVE[color]]}=${prmt_pcs[color][num]}+`
