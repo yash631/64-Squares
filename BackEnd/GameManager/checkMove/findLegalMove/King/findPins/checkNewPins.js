@@ -119,9 +119,6 @@ function storePinDetails(pinnedPiece, pinningPiece, color) {
     [pinnedSquare], // Square notation of the pinned piece
     [pinningRow, pinningCol], // Position of the pinning piece
     [pinningSquare], // Square notation of the pinning piece
-    [],
-    [],
-    [], // Placeholder arrays (can be used for additional data)
   ];
 
   // Add to pinningPcs for the opposite color of the pinning piece

@@ -1,5 +1,5 @@
 const getIndex = require("./checkValid/getBoardIndex");
-/* const testCases = require("../../ExperimentalCode/TestCases"); */
+const testCases = require("../../ExperimentalCode/TestCases"); 
 
 const arrOfPieces = {
   q: "black queen",
@@ -216,6 +216,6 @@ function isCorrectMove(initial_Sq, move, color) {
 
 
 /* Generate a complete game */
-// testCases.generateFullGame();
+testCases.generateFullGame();
 
 module.exports = {isCorrectMove};

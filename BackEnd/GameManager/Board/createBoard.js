@@ -1,16 +1,3 @@
-/*let Board = [
-  [" ", "n", "b", "q", "k", " ", "n", "r"],
-  [" ", " ", "n", " ", " ", " ", " ", " "],
-  [" ", " ", " ", " ", " ", "b", " ", " "],
-  ["r", " ", " ", " ", " ", " ", " ", " "],
-  [" ", " ", " ", " ", " ", " ", " ", " "],
-  [" ", " ", " ", " ", " ", " ", " ", " "],
-  ["P", "P", " ", "P", " ", " ", " ", " "],
-  ["R", "N", " ", "K", " ", "R", "Q", " "],
-];   */
-
-/*    New Board  */
-
 let Board = [
   ["r", "n", "b", "q", "k", "b", "n", "r"],
   ["p", "p", "p", "p", "p", "p", "p", "p"],
@@ -21,7 +8,6 @@ let Board = [
   ["P", "P", "P", "P", "P", "P", "P", "P"],
   ["R", "N", "B", "Q", "K", "B", "N", "R"],
 ];
-
 
 let Game_State = [],
   prevMove;
@@ -34,7 +20,7 @@ function createInGamePcs(board) {
     k: [],
     p: [],
     B: [],
-    R: [], 
+    R: [],
     N: [],
     Q: [],
     K: [],
@@ -52,14 +38,16 @@ function createInGamePcs(board) {
 }
 
 function showBoard(board) {
+  console.log("-|-----------------|-");
   for (let row = 0; row < board.length; row++) {
     process.stdout.write(8 - row + "| ");
     console.log(
-      board[row].map((piece) => (piece === " " ? "." : piece)).join(" ")
+      board[row].map((piece) => (piece === " " ? "." : piece)).join(" ") + " |"
     );
   }
-  console.log("  -----------------");
+  console.log("-|-----------------|-");
   console.log("   a b c d e f g h");
+  console.log(`\n-------xxxxx-----xxxxxxxx-----xxxxx--------\n`);
 }
 
 console.log(`-------xxxxx-----NEW GAME-----xxxxx--------\n`);
