@@ -1,6 +1,6 @@
 const not = require("../../notations");
 const dcrp = require("../../checkValid/decryptMove");
-const updLM = require("../../checkValid/updateLegalMoves");
+const updLM = require("./updateLegalMoves");
 const los = require("../squaresAfterCheck/lineOfsightSqs");
 const findBlocked = require("../squaresAfterCheck/findBlockedKingSqs");
 const getBoard = require("../../../Board/createBoard");

@@ -2,7 +2,7 @@ const findlegal = require("../findLegalMove/findLegal");
 const getBoard = require("../../Board/createBoard");
 const not = require("../notations");
 const gameSt = require("./updateGameState");
-const oppMoves = require("../findLegalMove/King/oppNextMoves");
+const oppMoves = require("../findLegalMove/King/removeNextMoves");
 const newPin = require("../findLegalMove/King/findPins/checkNewPins");
 const afterCheck = require("../findLegalMove/King/inCheckMoves");
 

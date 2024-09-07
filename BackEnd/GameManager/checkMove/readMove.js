@@ -1,4 +1,3 @@
-const getIndex = require("./checkValid/getBoardIndex");
 const testCases = require("../../ExperimentalCode/TestCases"); 
 
 const arrOfPieces = {
@@ -216,6 +215,7 @@ function isCorrectMove(initial_Sq, move, color) {
 
 
 /* Generate a complete game */
-testCases.generateFullGame();
+/* testCases.generateFullGame(); */
+/* testCases.testCastling(); */
 
 module.exports = {isCorrectMove};

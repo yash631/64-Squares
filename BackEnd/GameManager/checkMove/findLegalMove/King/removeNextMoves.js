@@ -1,7 +1,7 @@
 const getBoard = require("../../../Board/createBoard");
 const findlegal = require("../findLegal");
 const dcrp = require("../../checkValid/decryptMove");
-const updLM = require("../../checkValid/updateLegalMoves");
+const updLM = require("./updateLegalMoves");
 
 function findOppMoves(
   color,
