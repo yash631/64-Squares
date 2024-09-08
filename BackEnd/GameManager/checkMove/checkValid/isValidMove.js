@@ -5,10 +5,11 @@ const gameSt = require("./updateGameState");
 const oppMoves = require("../findLegalMove/King/removeNextMoves");
 const newPin = require("../findLegalMove/King/findPins/checkNewPins");
 const afterCheck = require("../findLegalMove/King/inCheckMoves");
+const sqsCovered = require("../findLegalMove/King/squaresCoveredByPinnedPcs");
+/* const doubleChk = require("./lookForDoubleCheck"); */
 
 let LEGALMOVES = findlegal.createLegalMoves();
 let isInCheck = 0;
-
 let whichPieceGaveCheck;
 let checkPiecePos_NEW;
 
@@ -50,6 +51,12 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
     isInCheck
   );
 
+  sqsCovered.findSquares(
+   newPin.getPinnedPcs(),
+   1-color,            // color of opponent side
+   blockedSquaresForKing,    // adding the squares covered by opponent pinned Piece to restrict own king to move
+  );
+
   oppMoves.findOppMoves(
     1 - color, // Color of opponent side
     king, // Own king
@@ -81,6 +88,7 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
   console.log(`-----------------------------------------------`);
   // showLegalMoves(LEGALMOVES, 1 - color);
   // console.log(`-----------------------------------------------`);
+
 
   /* Handle CheckMate Move */
   if (move[len - 1] === "#") {

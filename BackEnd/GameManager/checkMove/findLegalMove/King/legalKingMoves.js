@@ -119,6 +119,11 @@ function findKing(color, lm, ALLPCS, iGP, rk, fl, board, isInCheck) {
         }
         board[rank][file] = curr_piece;
         board[king_sq[0]][king_sq[1]] = king;
+      } else if (board[rank][file] !== " ") {
+        let curr_piece = board[rank][file];
+        lm["k"][color][`${king_sq[0]}${king_sq[1]}`].push(
+          `${curr_piece}${fl[file]}${rk[rank]}`
+        );
       }
     }
   }
