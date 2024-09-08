@@ -218,5 +218,9 @@ function isCorrectMove(initial_Sq, move, color) {
 /* testCases.generateFullGame(); */
 /* testCases.testCastling(); */
 /* testCases.testPin(); */
+/* testCases.testDiscoveredCheckByFreePieces(); */
+/* testCases.testDiscoveredCheckByPinnedPawn(); */
+/* testCases.testDiscoveredCheckByPinnedBishop(); */
+/* testCases.testDiscoveredCheckByPinnedRook(); */
 
 module.exports = {isCorrectMove};

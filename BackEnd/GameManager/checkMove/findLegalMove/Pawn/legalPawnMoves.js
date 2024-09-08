@@ -4,8 +4,12 @@ const ltrt = require("./findForCheck/leftRightDiag");
 const getBoard = require("../../../Board/createBoard");
 const pin = require("./afterPinnedMoves");
 const newPin = require("../King/findPins/checkNewPins");
-
+let pawnCaptureSquares = {
+  0 : [],
+  1 : []
+}
 function findPawn(color, lm, ALLPCS, iGP, rk, fl, board, prevMove, isInCheck) {
+  pawnCaptureSquares[color] = [];
   let pinnedPcs = newPin.getPinnedPcs();
   const oppKing = not.KING[1 - color];
   let curr_piece;
@@ -85,6 +89,8 @@ function findPawn(color, lm, ALLPCS, iGP, rk, fl, board, prevMove, isInCheck) {
 
     /* Promotion */
     if (rank == prmt_pcs[color][4]) {
+      pawnCaptureSquares[color].push(`${fl[file + square_left[1]]}${rk[rank + square_left[0]]}`);
+      pawnCaptureSquares[color].push(`${fl[file + square_right[1]]}${rk[rank + square_right[0]]}`);
       /* Capture on left to promote*/
       if (
         ALLPCS[1 - color].includes(
@@ -174,6 +180,8 @@ function findPawn(color, lm, ALLPCS, iGP, rk, fl, board, prevMove, isInCheck) {
         board[locOfPawn[0]][locOfPawn[1]] = pawn;
       }
     } else {
+      pawnCaptureSquares[color].push(`${fl[file + square_left[1]]}${rk[rank + square_left[0]]}`);
+      pawnCaptureSquares[color].push(`${fl[file + square_right[1]]}${rk[rank + square_right[0]]}`);
       /* Default Move */
       if (board[rank + MOVE[color]][file] == " ") {
         curr_piece = board[rank + MOVE[color]][file];
@@ -366,4 +374,4 @@ function findPawn(color, lm, ALLPCS, iGP, rk, fl, board, prevMove, isInCheck) {
   }
 }
 
-module.exports = { findPawn };
+module.exports = { findPawn,pawnCaptureSquares };

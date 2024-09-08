@@ -77,8 +77,8 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
   // console.log(LEGALMOVES);
 
   /* SHOW FINAL LEGAL MOVES */
-  // showLegalMoves(LEGALMOVES, color);
-  // console.log(`-----------------------------------------------`);
+  showLegalMoves(LEGALMOVES, color);
+  console.log(`-----------------------------------------------`);
   // showLegalMoves(LEGALMOVES, 1 - color);
   // console.log(`-----------------------------------------------`);
 

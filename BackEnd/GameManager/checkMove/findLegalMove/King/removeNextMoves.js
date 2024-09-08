@@ -2,6 +2,7 @@ const getBoard = require("../../../Board/createBoard");
 const findlegal = require("../findLegal");
 const dcrp = require("../../checkValid/decryptMove");
 const updLM = require("./updateLegalMoves");
+const pawn = require("../Pawn/legalPawnMoves");
 
 function findOppMoves(
   color,
@@ -25,11 +26,18 @@ function findOppMoves(
   );
 
   for (const allPieces in LEGALMOVES) {
+    if(allPieces === "p"){
+      continue;
+    }
     for (const singlePiece in LEGALMOVES[allPieces][color]) {
       for (const eachMove of LEGALMOVES[allPieces][color][singlePiece]) {
         blockedSquaresForKing.push(eachMove);
       }
     }
+  }
+  const pawnSquares = pawn.pawnCaptureSquares[color];
+  for(let i = 0;i < pawnSquares.length; i++){
+    blockedSquaresForKing.push(pawnSquares[i]);
   }
   dcrp.decryptMove(blockedSquaresForKing);
 
