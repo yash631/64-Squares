@@ -7,7 +7,7 @@ function rightDiag(square, king, color, piece) {
     file = square[1];
   while (--rank >= 0 && ++file <= 7) {
     if (getBoard.Board[rank][file] == king) {
-      return 1;
+      return {piece, rank : square[0], file : square[0]};
     } else if (getBoard.Board[rank][file] != " ") {
       break;
     }
@@ -16,7 +16,7 @@ function rightDiag(square, king, color, piece) {
   (rank = square[0]), (file = square[1]);
   while (++rank <= 7 && --file >= 0) {
     if (getBoard.Board[rank][file] == king) {
-      return 1;
+      return {piece, rank : square[0], file : square[1]};
     } else if (getBoard.Board[rank][file] != " ") {
       break;
     }
@@ -25,13 +25,14 @@ function rightDiag(square, king, color, piece) {
     /* Discovered checks */
     const inGamePcs = getBoard.createInGamePcs(getBoard.Board);
     /* Check for Discovered check from Bishop */
-    if (Rook.rookDiscovery(getBoard.Board, "r", inGamePcs, king, color)) {
-      return 1;
-    } else if (
-      /*  Check for Discovered check from Queen */
-      Rook.rookDiscovery(getBoard.Board, "q", inGamePcs, king, color)
-    ) {
-      return 1;
+    const r = Rook.rookDiscovery(getBoard.Board, "r", inGamePcs, king, color);
+    if (r) {
+      return r;
+    }
+    /*  Check for Discovered check from Queen */
+    const q = Rook.rookDiscovery(getBoard.Board, "q", inGamePcs, king, color);
+    if (q) {
+      return q;
     }
   }
   return 0;

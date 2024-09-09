@@ -5,13 +5,25 @@ const getBoard = require("../../../Board/createBoard");
 const pin = require("./afterPinnedMoves");
 const newPin = require("../King/findPins/checkNewPins");
 let pawnCaptureSquares = {
-  0 : [],
-  1 : []
-}
-function findPawn(color, lm, ALLPCS, iGP, rk, fl, board, prevMove, isInCheck) {
+  0: [],
+  1: [],
+};
+function findPawn(
+  color,
+  lm,
+  ALLPCS,
+  iGP,
+  rk,
+  fl,
+  board,
+  prevMove,
+  isInCheck,
+  checkInfo
+) {
   pawnCaptureSquares[color] = [];
   let pinnedPcs = newPin.getPinnedPcs();
   const oppKing = not.KING[1 - color];
+  let checkPieceInfo;
   let curr_piece;
   let pawn = "p";
   if (color) {
@@ -89,8 +101,12 @@ function findPawn(color, lm, ALLPCS, iGP, rk, fl, board, prevMove, isInCheck) {
 
     /* Promotion */
     if (rank == prmt_pcs[color][4]) {
-      pawnCaptureSquares[color].push(`${fl[file + square_left[1]]}${rk[rank + square_left[0]]}`);
-      pawnCaptureSquares[color].push(`${fl[file + square_right[1]]}${rk[rank + square_right[0]]}`);
+      pawnCaptureSquares[color].push(
+        `${fl[file + square_left[1]]}${rk[rank + square_left[0]]}`
+      );
+      pawnCaptureSquares[color].push(
+        `${fl[file + square_right[1]]}${rk[rank + square_right[0]]}`
+      );
       /* Capture on left to promote*/
       if (
         ALLPCS[1 - color].includes(
@@ -99,20 +115,23 @@ function findPawn(color, lm, ALLPCS, iGP, rk, fl, board, prevMove, isInCheck) {
       ) {
         board[locOfPawn[0]][locOfPawn[1]] = " ";
         for (let num = 0; num < 4; num++) {
-          if (
-            prom.prom(
-              prmt_pcs[color][num],
-              [rank + square_left[0], file + square_left[1]],
-              oppKing,
-              color,
-              pawn
-            )
-          ) {
-            lm.p[color][`${rank}${file}`].push(
-              `${fl[file]}x${fl[file + square_left[1]]}${
-                rk[rank + square_left[0]]
-              }=${prmt_pcs[color][num]}+`
-            );
+          checkPieceInfo = prom.prom(
+            prmt_pcs[color][num],
+            [rank + square_left[0], file + square_left[1]],
+            oppKing,
+            color,
+            pawn
+          );
+          if (checkPieceInfo) {
+            const move = `${fl[file]}x${fl[file + square_left[1]]}${
+              rk[rank + square_left[0]]
+            }=${prmt_pcs[color][num]}+`;
+            checkInfo[color][move] = {
+              checkPiece: checkPieceInfo.piece,
+              rank: checkPieceInfo.rank,
+              file: checkPieceInfo.file,
+            };
+            lm.p[color][`${rank}${file}`].push(move);
           } else {
             lm.p[color][`${rank}${file}`].push(
               `${fl[file]}x${fl[file + square_left[1]]}${
@@ -131,20 +150,23 @@ function findPawn(color, lm, ALLPCS, iGP, rk, fl, board, prevMove, isInCheck) {
       ) {
         board[locOfPawn[0]][locOfPawn[1]] = " ";
         for (let num = 0; num < 4; num++) {
-          if (
-            prom.prom(
-              prmt_pcs[color][num],
-              [rank + square_right[0], file + square_right[1]],
-              oppKing,
-              color,
-              pawn
-            )
-          ) {
-            lm.p[color][`${rank}${file}`].push(
-              `${fl[file]}x${fl[file + square_right[1]]}${
-                rk[rank + square_right[0]]
-              }=${prmt_pcs[color][num]}+`
-            );
+          checkPieceInfo = prom.prom(
+            prmt_pcs[color][num],
+            [rank + square_right[0], file + square_right[1]],
+            oppKing,
+            color,
+            pawn
+          );
+          if (checkPieceInfo) {
+            const move = `${fl[file]}x${fl[file + square_right[1]]}${
+              rk[rank + square_right[0]]
+            }=${prmt_pcs[color][num]}+`;
+            checkInfo[color][move] = {
+              checkPiece: checkPieceInfo.piece,
+              rank: checkPieceInfo.rank,
+              file: checkPieceInfo.file,
+            };
+            lm.p[color][`${rank}${file}`].push(move);
           } else {
             lm.p[color][`${rank}${file}`].push(
               `${fl[file]}x${fl[file + square_right[1]]}${
@@ -159,18 +181,23 @@ function findPawn(color, lm, ALLPCS, iGP, rk, fl, board, prevMove, isInCheck) {
       if (board[prmt_rank[color]][file] == " ") {
         board[locOfPawn[0]][locOfPawn[1]] = " ";
         for (let num = 0; num < 4; num++) {
-          if (
-            prom.prom(
-              prmt_pcs[color][num],
-              [prmt_rank[color], file],
-              oppKing,
-              color,
-              pawn
-            )
-          ) {
-            lm.p[color][`${rank}${file}`].push(
-              `${fl[file]}${rk[rank + MOVE[color]]}=${prmt_pcs[color][num]}+`
-            );
+          checkPieceInfo = prom.prom(
+            prmt_pcs[color][num],
+            [prmt_rank[color], file],
+            oppKing,
+            color,
+            pawn
+          );
+          if (checkPieceInfo) {
+            const move = `${fl[file]}${rk[rank + MOVE[color]]}=${
+              prmt_pcs[color][num]
+            }+`;
+            checkInfo[color][move] = {
+              checkPiece: checkPieceInfo.piece,
+              rank: checkPieceInfo.rank,
+              file: checkPieceInfo.file,
+            };
+            lm.p[color][`${rank}${file}`].push(move);
           } else {
             lm.p[color][`${rank}${file}`].push(
               `${fl[file]}${rk[rank + MOVE[color]]}=${prmt_pcs[color][num]}`
@@ -180,17 +207,31 @@ function findPawn(color, lm, ALLPCS, iGP, rk, fl, board, prevMove, isInCheck) {
         board[locOfPawn[0]][locOfPawn[1]] = pawn;
       }
     } else {
-      pawnCaptureSquares[color].push(`${fl[file + square_left[1]]}${rk[rank + square_left[0]]}`);
-      pawnCaptureSquares[color].push(`${fl[file + square_right[1]]}${rk[rank + square_right[0]]}`);
+      pawnCaptureSquares[color].push(
+        `${fl[file + square_left[1]]}${rk[rank + square_left[0]]}`
+      );
+      pawnCaptureSquares[color].push(
+        `${fl[file + square_right[1]]}${rk[rank + square_right[0]]}`
+      );
       /* Default Move */
       if (board[rank + MOVE[color]][file] == " ") {
         curr_piece = board[rank + MOVE[color]][file];
         board[locOfPawn[0]][locOfPawn[1]] = " ";
         board[rank + MOVE[color]][file] = pawn;
-        if (ltrt.leftRight(color, [rank + MOVE[color], file], oppKing, pawn)) {
-          lm.p[color][`${rank}${file}`].push(
-            `${fl[file]}${rk[rank + MOVE[color]]}+`
-          );
+        checkPieceInfo = ltrt.leftRight(
+          color,
+          [rank + MOVE[color], file],
+          oppKing,
+          pawn
+        );
+        if (checkPieceInfo) {
+          const move = `${fl[file]}${rk[rank + MOVE[color]]}+`;
+          checkInfo[color][move] = {
+            checkPiece: checkPieceInfo.piece,
+            rank: checkPieceInfo.rank,
+            file: checkPieceInfo.file,
+          };
+          lm.p[color][`${rank}${file}`].push(move);
         } else {
           lm.p[color][`${rank}${file}`].push(
             `${fl[file]}${rk[rank + MOVE[color]]}`
@@ -206,17 +247,20 @@ function findPawn(color, lm, ALLPCS, iGP, rk, fl, board, prevMove, isInCheck) {
           curr_piece = board[rank + MOVE[`start${color}`][1]][file];
           board[locOfPawn[0]][locOfPawn[1]] = " ";
           board[rank + MOVE[`start${color}`][1]][file] = pawn;
-          if (
-            ltrt.leftRight(
-              color,
-              [rank + MOVE[`start${color}`][1], file],
-              oppKing,
-              pawn
-            )
-          ) {
-            lm.p[color][`${rank}${file}`].push(
-              `${fl[file]}${rk[rank + MOVE[`start${color}`][1]]}+`
-            );
+          checkPieceInfo = ltrt.leftRight(
+            color,
+            [rank + MOVE[`start${color}`][1], file],
+            oppKing,
+            pawn
+          );
+          if (checkPieceInfo) {
+            const move = `${fl[file]}${rk[rank + MOVE[`start${color}`][1]]}+`;
+            checkInfo[color][move] = {
+              checkPiece: checkPieceInfo.piece,
+              rank: checkPieceInfo.rank,
+              file: checkPieceInfo.file,
+            };
+            lm.p[color][`${rank}${file}`].push(move);
           } else {
             lm.p[color][`${rank}${file}`].push(
               `${fl[file]}${rk[rank + MOVE[`start${color}`][1]]}`
@@ -236,19 +280,22 @@ function findPawn(color, lm, ALLPCS, iGP, rk, fl, board, prevMove, isInCheck) {
         curr_piece = board[rank + square_left[0]][file + square_left[1]];
         board[locOfPawn[0]][locOfPawn[1]] = " ";
         board[rank + square_left[0]][file + square_left[1]] = pawn;
-        if (
-          ltrt.leftRight(
-            color,
-            [rank + square_left[0], file + square_left[1]],
-            oppKing,
-            pawn
-          )
-        ) {
-          lm.p[color][`${rank}${file}`].push(
-            `${fl[file]}x${fl[file + square_left[1]]}${
-              rk[rank + square_left[0]]
-            }+`
-          );
+        checkPieceInfo = ltrt.leftRight(
+          color,
+          [rank + square_left[0], file + square_left[1]],
+          oppKing,
+          pawn
+        );
+        if (checkPieceInfo) {
+          const move = `${fl[file]}x${fl[file + square_left[1]]}${
+            rk[rank + square_left[0]]
+          }+`;
+          checkInfo[color][move] = {
+            checkPiece: checkPieceInfo.piece,
+            rank: checkPieceInfo.rank,
+            file: checkPieceInfo.file,
+          };
+          lm.p[color][`${rank}${file}`].push(move);
         } else {
           lm.p[color][`${rank}${file}`].push(
             `${fl[file]}x${fl[file + square_left[1]]}${
@@ -271,19 +318,22 @@ function findPawn(color, lm, ALLPCS, iGP, rk, fl, board, prevMove, isInCheck) {
         board[rank][file - 1] = " ";
         board[rank + square_left[0]][file + square_left[1]] = pawn;
 
-        if (
-          ltrt.leftRight(color, [
-            rank + square_left[0],
-            file + square_left[1],
-            oppKing,
-            pawn,
-          ])
-        ) {
-          lm.p[color][`${rank}${file}`].push(
-            `${fl[file]}x${fl[file + square_left[1]]}${
-              rk[rank + square_left[0]]
-            }ep+`
-          );
+        checkPieceInfo = ltrt.leftRight(color, [
+          rank + square_left[0],
+          file + square_left[1],
+          oppKing,
+          pawn,
+        ]);
+        if (checkPieceInfo) {
+          const move = `${fl[file]}x${fl[file + square_left[1]]}${
+            rk[rank + square_left[0]]
+          }ep+`;
+          checkInfo[color][move] = {
+            checkPiece: checkPieceInfo.piece,
+            rank: checkPieceInfo.rank,
+            file: checkPieceInfo.file,
+          };
+          lm.p[color][`${rank}${file}`].push(move);
         } else {
           lm.p[color][`${rank}${file}`].push(
             `${fl[file]}x${fl[file + square_left[1]]}${
@@ -308,19 +358,22 @@ function findPawn(color, lm, ALLPCS, iGP, rk, fl, board, prevMove, isInCheck) {
         curr_piece = board[rank + square_right[0]][file + square_right[1]];
         board[locOfPawn[0]][locOfPawn[1]] = " ";
         board[rank + square_right[0]][file + square_right[1]] = pawn;
-        if (
-          ltrt.leftRight(
-            color,
-            [rank + square_right[0], file + square_right[1]],
-            oppKing,
-            pawn
-          )
-        ) {
-          lm.p[color][`${rank}${file}`].push(
-            `${fl[file]}x${fl[file + square_right[1]]}${
-              rk[rank + square_right[0]]
-            }+`
-          );
+        checkPieceInfo = ltrt.leftRight(
+          color,
+          [rank + square_right[0], file + square_right[1]],
+          oppKing,
+          pawn
+        );
+        if (checkPieceInfo) {
+          const move = `${fl[file]}x${fl[file + square_right[1]]}${
+            rk[rank + square_right[0]]
+          }+`;
+          checkInfo[color][move] = {
+            checkPiece: checkPieceInfo.piece,
+            rank: checkPieceInfo.rank,
+            file: checkPieceInfo.file,
+          };
+          lm.p[color][`${rank}${file}`].push(move);
         } else {
           lm.p[color][`${rank}${file}`].push(
             `${fl[file]}x${fl[file + square_right[1]]}${
@@ -342,19 +395,22 @@ function findPawn(color, lm, ALLPCS, iGP, rk, fl, board, prevMove, isInCheck) {
         board[locOfPawn[0]][locOfPawn[1]] = " ";
         board[rank][file + 1] = " ";
         board[rank + square_right[0]][file + square_right[1]] = pawn;
-        if (
-          ltrt.leftRight(
-            color,
-            [rank + square_right[0], file + square_right[1]],
-            oppKing,
-            pawn
-          )
-        ) {
-          lm.p[color][`${rank}${file}`].push(
-            `${fl[file]}x${fl[file + square_right[1]]}${
-              rk[rank + square_right[0]]
-            }ep+`
-          );
+        checkPieceInfo = ltrt.leftRight(
+          color,
+          [rank + square_right[0], file + square_right[1]],
+          oppKing,
+          pawn
+        );
+        if (checkPieceInfo) {
+          const move = `${fl[file]}x${fl[file + square_right[1]]}${
+            rk[rank + square_right[0]]
+          }ep+`;
+          checkInfo[color][move] = {
+            checkPiece: checkPieceInfo.piece,
+            rank: checkPieceInfo.rank,
+            file: checkPieceInfo.file,
+          };
+          lm.p[color][`${rank}${file}`].push(move);
         } else {
           lm.p[color][`${rank}${file}`].push(
             `${fl[file]}x${fl[file + square_right[1]]}${
@@ -374,4 +430,4 @@ function findPawn(color, lm, ALLPCS, iGP, rk, fl, board, prevMove, isInCheck) {
   }
 }
 
-module.exports = { findPawn,pawnCaptureSquares };
+module.exports = { findPawn, pawnCaptureSquares };

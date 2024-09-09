@@ -6,14 +6,19 @@ const oppMoves = require("../findLegalMove/King/removeNextMoves");
 const newPin = require("../findLegalMove/King/findPins/checkNewPins");
 const afterCheck = require("../findLegalMove/King/inCheckMoves");
 const sqsCovered = require("../findLegalMove/King/squaresCoveredByPinnedPcs");
-/* const doubleChk = require("./lookForDoubleCheck"); */
+const doubleChk = require("./lookForDoubleCheck");
 
 let LEGALMOVES = findlegal.createLegalMoves();
 let isInCheck = 0;
 let whichPieceGaveCheck;
+let checkPiecePos_OLD;
 let checkPiecePos_NEW;
 
 function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
+  let checkInfo = {
+    0: {},
+    1: {},
+  };
   /* Check for new Pins */
   newPin.detectPins();
 
@@ -39,6 +44,7 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
   }
 
   /* Empty previous Legal moves of current color side */
+  console.log(checkInfo);
   for (const allPcs in LEGALMOVES) {
     LEGALMOVES[allPcs][color] = {};
   }
@@ -48,13 +54,14 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
     getBoard.createInGamePcs(getBoard.Board),
     color,
     getBoard.prevMove,
-    isInCheck
+    isInCheck,
+    checkInfo
   );
 
   sqsCovered.findSquares(
-   newPin.getPinnedPcs(),
-   1-color,            // color of opponent side
-   blockedSquaresForKing,    // adding the squares covered by opponent pinned Piece to restrict own king to move
+    newPin.getPinnedPcs(),
+    1 - color, // color of opponent side
+    blockedSquaresForKing // adding the squares covered by opponent pinned Piece to restrict own king to move
   );
 
   oppMoves.findOppMoves(
@@ -63,10 +70,21 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
     kingPos, // Position of own king
     LEGALMOVES, // LegalMoves object
     blockedSquaresForKing, // Squares restricted from opponent king to move
-    isInCheck
+    isInCheck,
+    checkInfo
   );
 
   if (isInCheck) {
+    if (doubleChk.isDoubleCheck(kingPos, getBoard.Board, color)) {
+      for (const singlePiece in LEGALMOVES) {
+        if (singlePiece == "k") {
+          continue;
+        }
+        for (const uniquePiece in LEGALMOVES[singlePiece][color]) {
+          LEGALMOVES[singlePiece][color][uniquePiece] = [];
+        }
+      }
+    }
     afterCheck.findMoves(
       color, // color of own side
       king, // king of own side
@@ -77,6 +95,7 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
       inGamePcs, // Object containing all current board pieces and positions
       blockedSquaresForKing // squares restricted from opponent king to move
     );
+    isInCheck = 0;
   }
   blockedSquaresForKing = []; // Empty the squares for later use if needed
 
@@ -88,7 +107,6 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
   console.log(`-----------------------------------------------`);
   // showLegalMoves(LEGALMOVES, 1 - color);
   // console.log(`-----------------------------------------------`);
-
 
   /* Handle CheckMate Move */
   if (move[len - 1] === "#") {
@@ -115,7 +133,8 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
       kingPos,
       LEGALMOVES,
       blockedSquaresForKing,
-      1
+      1,
+      checkInfo
     );
     /* Find piece moves of side who received checkmate move */
     afterCheck.findMoves(
@@ -128,10 +147,26 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
       inGamePcs,
       blockedSquaresForKing
     );
+    showLegalMoves(LEGALMOVES, 1 - color);
+    console.log(`-----------------------------------------------`);
     /* Find if there is not move left  */
     for (const singlePiece in LEGALMOVES) {
       for (const uniquePiece in LEGALMOVES[singlePiece][1 - color]) {
+        if (singlePiece == "k") {
+          let tMoves = 0;
+          for (const m of LEGALMOVES[singlePiece][1 - color][uniquePiece]) {
+            if (m[0] == not.KING[1 - color]) {
+              tMoves++;
+            }
+          }
+          if (tMoves.length > 0) {
+            console.log("IllegalMove");
+            return false;
+          }
+          continue;
+        }
         if (LEGALMOVES[singlePiece][1 - color][uniquePiece].length > 0) {
+          console.log(LEGALMOVES[singlePiece][1 - color][uniquePiece]);
           console.log("Illegal Move");
           return false;
         }
@@ -140,7 +175,7 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
     console.log("CheckMate");
     return true;
   }
-
+  console.log(checkInfo);
   if (LEGALMOVES[piece][color][`${curr_row}${curr_col}`].includes(move)) {
     gameSt.updateGS(
       move,
@@ -154,17 +189,14 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
       new_col
     );
 
-    if (isInCheck) {
-      isInCheck = 0;
-    } else if (move[len - 1] == "+") {
-      if (move.includes("=")) {
-        /* Check after promotion of a pawn */
-        whichPieceGaveCheck = move[len - 2];
-      } else {
-        /* Check by any other piece */
-        whichPieceGaveCheck = move[0].toLowerCase();
-      }
-      checkPiecePos_NEW = [new_row, new_col];
+    if (move[len - 1] == "+") {
+      console.log(checkInfo);
+      whichPieceGaveCheck = checkInfo[color][move].checkPiece;
+      checkPiecePos_NEW = [
+        checkInfo[color][move].rank,
+        checkInfo[color][move].file,
+      ];
+      // checkPiecePos_NEW = [new_row, new_col];
       isInCheck = 1;
     }
   } else {

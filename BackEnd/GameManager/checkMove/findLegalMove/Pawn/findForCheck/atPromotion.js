@@ -10,13 +10,13 @@ const Rook = require("../../Rook/findForCheck/discoveredCheck");
 function prom(piece, square, king, color, pawn) {
   if (piece === "q" || piece === "Q") {
     return (
-      LD.leftDiag(square, king) ||
-      RD.rightDiag(square, king) ||
-      RNK.rank(square, king) ||
-      FL.file(square, king)
+      LD.leftDiag(square, king, color, piece) ||
+      RD.rightDiag(square, king, color, piece) ||
+      RNK.rank(square, king, color, piece) ||
+      FL.file(square, king, piece)
     );
   } else if (piece === "r" || piece === "R") {
-    return RNK.rank(square, king) || FL.file(square, king);
+    return RNK.rank(square, king, color, piece) || FL.file(square, king, color, piece);
   } else if (piece === "n" || piece === "N") {
     return DIR.movesArray(
       square,
@@ -30,23 +30,36 @@ function prom(piece, square, king, color, pawn) {
         [1, -2],
         [2, -1],
       ],
-      king
+      king,
+      color
     );
   } else if (piece === "b" || piece === "B") {
-    return LD.leftDiag(square, king) || RD.rightDiag(square, king);
+    return LD.leftDiag(square, king, color, piece) || RD.rightDiag(square, king, color, piece);
   } else {
     /* Discovered checks */
     const inGamePcs = getBoard.createInGamePcs(getBoard.Board);
     /* Check for Discovered check from Bishop */
-    if (Bishop.bishopDiscovery(getBoard.Board,"b",inGamePcs, king,color)) {
-      return 1;
-    } else if (Rook.rookDiscovery(getBoard.Board,"r", inGamePcs, king,color)) {
-      /* Check for Discovered check from Rook */
-      return 1;
-    } else if (Bishop.bishopDiscovery(getBoard.Board,"q", inGamePcs, king,color) ||
-               Rook.rookDiscovery(getBoard.Board,"q", inGamePcs, king,color)) {
-      /* Check for Discovered check from Queen */
-      return 1;
+    const b = Bishop.bishopDiscovery(
+      getBoard.Board,
+      "b",
+      inGamePcs,
+      king,
+      color
+    );
+    if (b) {
+      return b;
+    }
+    /* Check for Discovered check from Rook */
+    const r = Rook.rookDiscovery(getBoard.Board, "r", inGamePcs, king, color);
+    if (r) {
+      return r;
+    }
+    /* Check for Discovered check from Queen */
+    const q =
+      Bishop.bishopDiscovery(getBoard.Board, "q", inGamePcs, king, color) ||
+      Rook.rookDiscovery(getBoard.Board, "q", inGamePcs, king, color);
+    if (q) {
+      return q;
     }
   }
 

@@ -7,7 +7,7 @@ function file(square, king, color, piece) {
     file = square[1];
   while (--rank >= 0) {
     if (getBoard.Board[rank][file] == king) {
-      return 1;
+      return { piece, rank : square[0], file : square[1] };
     } else if (getBoard.Board[rank][file] != " ") {
       break;
     }
@@ -16,7 +16,7 @@ function file(square, king, color, piece) {
   rank = square[0];
   while (++rank <= 7) {
     if (getBoard.Board[rank][file] == king) {
-      return 1;
+      return { piece, rank : square[0], file : square[1] };
     } else if (getBoard.Board[rank][file] != " ") {
       break;
     }
@@ -25,13 +25,26 @@ function file(square, king, color, piece) {
     /* Discovered checks */
     const inGamePcs = getBoard.createInGamePcs(getBoard.Board);
     /* Check for Discovered check from Bishop */
-    if (Bishop.bishopDiscovery(getBoard.Board, "b", inGamePcs, king, color)) {
-      return 1;
-    } else if (
-      /*  Check for Discovered check from Queen */
-      Bishop.bishopDiscovery(getBoard.Board, "q", inGamePcs, king, color)
-    ) {
-      return 1;
+    const b = Bishop.bishopDiscovery(
+      getBoard.Board,
+      "b",
+      inGamePcs,
+      king,
+      color
+    );
+    if (b) {
+      return b;
+    }
+    /*  Check for Discovered check from Queen */
+    const q = Bishop.bishopDiscovery(
+      getBoard.Board,
+      "q",
+      inGamePcs,
+      king,
+      color
+    );
+    if (q) {
+      return q;
     }
   }
   return 0;

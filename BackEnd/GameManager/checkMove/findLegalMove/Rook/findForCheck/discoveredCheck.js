@@ -1,16 +1,16 @@
-function rookDiscovery(Board, piece,inGamePcs, king, color){
+function rookDiscovery(Board, piece, inGamePcs, king, color) {
   if (piece == "r" && color) {
     piece = "R";
-  } else if( piece == "q" && color){
+  } else if (piece == "q" && color) {
     piece = "Q";
   }
-   for (const location of inGamePcs[piece]) {
+  for (const location of inGamePcs[piece]) {
     let rank = location[0],
       file = location[1];
     /* rank left*/
     while (--file >= 0) {
       if (Board[rank][file] == king) {
-        return 1;
+        return { piece, rank : location[0], file : location[1] };
       } else if (Board[rank][file] == " ") {
         continue;
       } else {
@@ -21,7 +21,7 @@ function rookDiscovery(Board, piece,inGamePcs, king, color){
     file = location[1];
     while (++file <= 7) {
       if (Board[rank][file] == king) {
-        return 1;
+        return { piece, rank : location[0], file : location[1] };
       } else if (Board[rank][file] == " ") {
         continue;
       } else {
@@ -32,7 +32,7 @@ function rookDiscovery(Board, piece,inGamePcs, king, color){
     file = location[1];
     while (--rank >= 0) {
       if (Board[rank][file] == king) {
-        return 1;
+        return { piece, rank : location[0], file : location[1] };
       } else if (Board[rank][file] == " ") {
         continue;
       } else {
@@ -43,7 +43,7 @@ function rookDiscovery(Board, piece,inGamePcs, king, color){
     rank = location[0];
     while (++rank <= 7) {
       if (Board[rank][file] == king) {
-        return 1;
+        return { piece, rank : location[0], file : location[1] };
       } else if (Board[rank][file] == " ") {
         continue;
       } else {

@@ -14,12 +14,11 @@ let Castling = {
   },
 };
 
-function findKing(color, lm, ALLPCS, iGP, rk, fl, board, isInCheck) {
+function findKing(color, lm, ALLPCS, iGP, rk, fl, board, isInCheck, checkInfo) {
   const opp_king = not.KING[1 - color];
   const king = not.KING[color];
   const king_sq = [iGP[king][0][0], iGP[king][0][1]];
   let curr_piece;
-
   const totalMoves = [
     [-1, -1],
     [-1, 0],
@@ -30,15 +29,23 @@ function findKing(color, lm, ALLPCS, iGP, rk, fl, board, isInCheck) {
     [1, 0],
     [1, 1],
   ];
-  function captureCheck(rank, file) {
-    lm["k"][color][`${king_sq[0]}${king_sq[1]}`].push(
-      `${king}x${fl[file]}${rk[rank]}+`
-    );
+  function captureCheck(rank, file, checkPieceInfo) {
+    const move = `${king}x${fl[file]}${rk[rank]}+`;
+    checkInfo[color][move] = {
+      checkPiece: checkPieceInfo.piece,
+      rank: checkPieceInfo.rank,
+      file: checkPieceInfo.file,
+    };
+    lm["k"][color][`${king_sq[0]}${king_sq[1]}`].push(move);
   }
-  function normalCheck(rank, file) {
-    lm["k"][color][`${king_sq[0]}${king_sq[1]}`].push(
-      `${king}${fl[file]}${rk[rank]}+`
-    );
+  function normalCheck(rank, file, checkPieceInfo) {
+    const move = `${king}${fl[file]}${rk[rank]}+`;
+    checkInfo[color][move] = {
+      checkPiece: checkPieceInfo.piece,
+      rank: checkPieceInfo.rank,
+      file: checkPieceInfo.file,
+    };
+    lm["k"][color][`${king_sq[0]}${king_sq[1]}`].push(move);
   }
   function captureMove(rank, file) {
     lm["k"][color][`${king_sq[0]}${king_sq[1]}`].push(
@@ -78,7 +85,7 @@ function findKing(color, lm, ALLPCS, iGP, rk, fl, board, isInCheck) {
       }
     }
   }
-
+  let checkPieceInfo;
   for (const move of totalMoves) {
     let rank = king_sq[0] + move[0],
       file = king_sq[1] + move[1];
@@ -87,15 +94,14 @@ function findKing(color, lm, ALLPCS, iGP, rk, fl, board, isInCheck) {
         curr_piece = board[rank][file];
         board[rank][file] = king;
         board[king_sq[0]][king_sq[1]] = " ";
-        if (
-          allDir.movesArray(
-            [king_sq[0], king_sq[0]],
-            totalMoves,
-            opp_king,
-            color
-          )
-        ) {
-          captureCheck(rank, file);
+        checkPieceInfo = allDir.movesArray(
+          [king_sq[0], king_sq[0]],
+          totalMoves,
+          opp_king,
+          color
+        );
+        if (checkPieceInfo) {
+          captureCheck(rank, file, checkPieceInfo);
         } else {
           captureMove(rank, file);
         }
@@ -105,15 +111,14 @@ function findKing(color, lm, ALLPCS, iGP, rk, fl, board, isInCheck) {
         curr_piece = board[rank][file];
         board[rank][file] = king;
         board[king_sq[0]][king_sq[1]] = " ";
-        if (
-          allDir.movesArray(
-            [king_sq[0], king_sq[0]],
-            totalMoves,
-            opp_king,
-            color
-          )
-        ) {
-          normalCheck(rank, file);
+        checkPieceInfo = allDir.movesArray(
+          [king_sq[0], king_sq[0]],
+          totalMoves,
+          opp_king,
+          color
+        );
+        if (checkPieceInfo) {
+          normalCheck(rank, file, checkPieceInfo);
         } else {
           normalMove(rank, file);
         }

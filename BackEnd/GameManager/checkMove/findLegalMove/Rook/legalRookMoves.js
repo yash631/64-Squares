@@ -6,7 +6,6 @@ const not = require("../../notations");
 const pin = require("./afterPinnedMoves");
 const newPin = require("../King/findPins/checkNewPins");
 
-
 function findRook(
   color,
   lm,
@@ -17,6 +16,7 @@ function findRook(
   board,
   piece,
   isInCheck,
+  checkInfo
 ) {
   const oppKing = not.KING[1 - color];
   let actual_piece = piece[1 - color];
@@ -32,15 +32,23 @@ function findRook(
       `${piece[1 - color]}x${fl[file]}${rk[rank]}`
     );
   }
-  function normalCheck(rank, file, rows, cols) {
-    lm[piece[1]][color][`${rows}${cols}`].push(
-      `${piece[1 - color]}${fl[file]}${rk[rank]}+`
-    );
+  function normalCheck(rank, file, rows, cols, checkPieceInfo) {
+    const move = `${piece[1 - color]}${fl[file]}${rk[rank]}+`;
+    checkInfo[color][move] = {
+      checkPiece: checkPieceInfo.piece,
+      rank: checkPieceInfo.rank,
+      file: checkPieceInfo.file,
+    };
+    lm[piece[1]][color][`${rows}${cols}`].push(move);
   }
-  function captureCheck(rank, file, rows, cols) {
-    lm[piece[1]][color][`${rows}${cols}`].push(
-      `${piece[1 - color]}x${fl[file]}${rk[rank]}+`
-    );
+  function captureCheck(rank, file, rows, cols, checkPieceInfo) {
+    const move = `${piece[1 - color]}x${fl[file]}${rk[rank]}+`;
+    checkInfo[color][move] = {
+      checkPiece: checkPieceInfo.piece,
+      rank: checkPieceInfo.rank,
+      file: checkPieceInfo.file,
+    };
+    lm[piece[1]][color][`${rows}${cols}`].push(move);
   }
 
   // Function to handle the movement processing
@@ -64,7 +72,7 @@ function findRook(
   ) {
     let [rank, file] = locOfPiece;
     const [rankChange, fileChange] = direction;
-
+    let checkPieceInfo;
     while (
       rank + rankChange >= 0 &&
       rank + rankChange <= 7 &&
@@ -82,11 +90,17 @@ function findRook(
 
       if (ALLPCS[1 - color].includes(board[rank][file])) {
         if (pieceType === "q") {
-          if (
+          checkPieceInfo =
             left.leftDiag([rank, file], oppKing, color, pieceType) ||
-            right.rightDiag([rank, file], oppKing, color, pieceType)
-          ) {
-            captureCheck(rank, file, locOfPiece[0], locOfPiece[1]);
+            right.rightDiag([rank, file], oppKing, color, pieceType);
+          if (checkPieceInfo) {
+            captureCheck(
+              rank,
+              file,
+              locOfPiece[0],
+              locOfPiece[1],
+              checkPieceInfo
+            );
             break;
           }
         }
@@ -94,11 +108,17 @@ function findRook(
         let curr_piece = board[rank][file];
         board[rank][file] = actual_piece;
         board[locOfPiece[0]][locOfPiece[1]] = " ";
-        if (
+        checkPieceInfo =
           RNK.rank([rank, file], oppKing, color, pieceType) ||
-          FL.file([rank, file], oppKing, color, pieceType)
-        ) {
-          captureCheck(rank, file, locOfPiece[0], locOfPiece[1]);
+          FL.file([rank, file], oppKing, color, pieceType);
+        if (checkPieceInfo) {
+          captureCheck(
+            rank,
+            file,
+            locOfPiece[0],
+            locOfPiece[1],
+            checkPieceInfo
+          );
           board[rank][file] = curr_piece;
           board[locOfPiece[0]][locOfPiece[1]] = actual_piece;
           break;
@@ -113,13 +133,13 @@ function findRook(
         );
         break;
       } else if (pieceType === "q") {
-        if (
+        checkPieceInfo =
           RNK.rank([rank, file], oppKing, color, pieceType) ||
           FL.file([rank, file], oppKing, color, pieceType) ||
-          left.leftDiag([rank,file],oppKing,color,pieceType) ||
-          right.rightDiag([rank,file],oppKing,color,pieceType)
-        ) {
-          normalCheck(rank, file, locOfPiece[0], locOfPiece[1]);
+          left.leftDiag([rank, file], oppKing, color, pieceType) ||
+          right.rightDiag([rank, file], oppKing, color, pieceType);
+        if (checkPieceInfo) {
+          normalCheck(rank, file, locOfPiece[0], locOfPiece[1], checkPieceInfo);
         } else {
           normalMove(rank, file, locOfPiece[0], locOfPiece[1]);
         }
@@ -127,9 +147,11 @@ function findRook(
         let curr_piece = board[rank][file];
         board[rank][file] = actual_piece;
         board[locOfPiece[0]][locOfPiece[1]] = " ";
-        if (RNK.rank([rank, file], oppKing, color, pieceType) ||
-            FL.file([rank,file],oppKing,color,pieceType)) {
-          normalCheck(rank, file, locOfPiece[0], locOfPiece[1]);
+        checkPieceInfo =
+          RNK.rank([rank, file], oppKing, color, pieceType) ||
+          FL.file([rank, file], oppKing, color, pieceType);
+        if (checkPieceInfo) {
+          normalCheck(rank, file, locOfPiece[0], locOfPiece[1], checkPieceInfo);
         } else {
           normalMove(rank, file, locOfPiece[0], locOfPiece[1]);
         }

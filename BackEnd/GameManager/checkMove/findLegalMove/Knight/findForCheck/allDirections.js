@@ -3,20 +3,25 @@ const Bishop = require("../../Bishop/findForCheck/discoveredCheck");
 const Rook = require("../../Rook/findForCheck/discoveredCheck");
 
 function movesArray(square, totalMoves, king, color) {
+  const piece = "n";
   /* Discovered checks */
   const inGamePcs = getBoard.createInGamePcs(getBoard.Board);
   /* Check for Discovered check from Bishop */
-  if (Bishop.bishopDiscovery(getBoard.Board, "b", inGamePcs, king, color)) {
-    return 1;
-  } else if (Rook.rookDiscovery(getBoard.Board, "r", inGamePcs, king, color)) {
-    /* Check for Discovered check from Rook */
-    return 1;
-  } else if (
+  const b = Bishop.bishopDiscovery(getBoard.Board, "b", inGamePcs, king, color);
+  if (b) {
+    return b;
+  }
+  /* Check for Discovered check from Rook */
+  const r = Rook.rookDiscovery(getBoard.Board, "r", inGamePcs, king, color);
+  if (r) {
+    return r;
+  }
   /* Check for Discovered check from Queen */
+  const q =
     Bishop.bishopDiscovery(getBoard.Board, "q", inGamePcs, king, color) ||
-    Rook.rookDiscovery(getBoard.Board, "q", inGamePcs, king, color)
-  ) {
-    return 1;
+    Rook.rookDiscovery(getBoard.Board, "q", inGamePcs, king, color);
+  if (q) {
+    return q;
   }
   for (const moves of totalMoves) {
     let rank = square[0] + moves[0],
@@ -28,7 +33,7 @@ function movesArray(square, totalMoves, king, color) {
       file <= 7 &&
       getBoard.Board[rank][file] == king
     ) {
-      return 1;
+      return { piece, rank : square[0], file : square[0] };
     }
   }
   return 0;

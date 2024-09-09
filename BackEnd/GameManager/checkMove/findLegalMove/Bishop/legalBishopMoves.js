@@ -6,7 +6,6 @@ const not = require("../../notations");
 const pin = require("./afterPinnedMoves");
 const newPin = require("../King/findPins/checkNewPins");
 
-
 function findBishop(
   color,
   lm,
@@ -17,6 +16,7 @@ function findBishop(
   board,
   piece,
   isInCheck,
+  checkInfo
 ) {
   const oppKing = not.KING[1 - color];
   const actual_piece = piece[1 - color];
@@ -32,15 +32,23 @@ function findBishop(
       `${piece[1 - color]}x${fl[file]}${rk[rank]}`
     );
   }
-  function normalCheck(rank, file, rows, cols) {
-    lm[piece[1]][color][`${rows}${cols}`].push(
-      `${piece[1 - color]}${fl[file]}${rk[rank]}+`
-    );
+  function normalCheck(rank, file, rows, cols, checkPieceInfo) {
+    const move = `${piece[1 - color]}${fl[file]}${rk[rank]}+`;
+    checkInfo[color][move] = {
+      checkPiece: checkPieceInfo.piece,
+      rank: checkPieceInfo.rank,
+      file: checkPieceInfo.file,
+    };
+    lm[piece[1]][color][`${rows}${cols}`].push(move);
   }
-  function captureCheck(rank, file, rows, cols) {
-    lm[piece[1]][color][`${rows}${cols}`].push(
-      `${piece[1 - color]}x${fl[file]}${rk[rank]}+`
-    );
+  function captureCheck(rank, file, rows, cols, checkPieceInfo) {
+    const move = `${piece[1 - color]}x${fl[file]}${rk[rank]}+`;
+    checkInfo[color][move] = {
+      checkPiece: checkPieceInfo.piece,
+      rank: checkPieceInfo.rank,
+      file: checkPieceInfo.file,
+    };
+    lm[piece[1]][color][`${rows}${cols}`].push(move);
   }
   function processDiagonal(
     board,
@@ -64,7 +72,7 @@ function findBishop(
   ) {
     let [rank, file] = locOfPiece;
     const [rankChange, fileChange] = direction;
-
+    let checkPieceInfo;
     while (
       rank + rankChange >= 0 &&
       rank + rankChange <= 7 &&
@@ -82,22 +90,34 @@ function findBishop(
 
       if (ALLPCS[1 - color].includes(board[rank][file])) {
         if (pieceType === "q") {
-          if (
+          checkPieceInfo =
             RNK.rank([rank, file], oppKing, color, pieceType) ||
-            FL.file([rank, file], oppKing, color, pieceType)
-          ) {
-            captureCheck(rank, file, locOfPiece[0], locOfPiece[1]);
+            FL.file([rank, file], oppKing, color, pieceType);
+          if (checkPieceInfo) {
+            captureCheck(
+              rank,
+              file,
+              locOfPiece[0],
+              locOfPiece[1],
+              checkPieceInfo
+            );
             break;
           }
         }
         let curr_piece = board[rank][file];
         board[rank][file] = actual_piece;
         board[locOfPiece[0]][locOfPiece[1]] = " ";
-        if (
+        checkPieceInfo =
           right.rightDiag([rank, file], oppKing, color, pieceType) ||
-          left.leftDiag([rank, file], oppKing, color, pieceType)
-        ) {
-          captureCheck(rank, file, locOfPiece[0], locOfPiece[1]);
+          left.leftDiag([rank, file], oppKing, color, pieceType);
+        if (checkPieceInfo) {
+          captureCheck(
+            rank,
+            file,
+            locOfPiece[0],
+            locOfPiece[1],
+            checkPieceInfo
+          );
           board[rank][file] = curr_piece;
           board[locOfPiece[0]][locOfPiece[1]] = actual_piece;
           break;
@@ -112,13 +132,13 @@ function findBishop(
         );
         break;
       } else if (pieceType === "q") {
-        if (
+        checkPieceInfo =
           RNK.rank([rank, file], oppKing, color, pieceType) ||
           FL.file([rank, file], oppKing, color, pieceType) ||
           right.rightDiag([rank, file], oppKing, color, pieceType) ||
-          left.leftDiag([rank,file],oppKing,color,pieceType)
-        ) {
-          normalCheck(rank, file, locOfPiece[0], locOfPiece[1]);
+          left.leftDiag([rank, file], oppKing, color, pieceType);
+        if (checkPieceInfo) {
+          normalCheck(rank, file, locOfPiece[0], locOfPiece[1], checkPieceInfo);
         } else {
           normalMove(rank, file, locOfPiece[0], locOfPiece[1]);
         }
@@ -126,9 +146,11 @@ function findBishop(
         let curr_piece = board[rank][file];
         board[rank][file] = actual_piece;
         board[locOfPiece[0]][locOfPiece[1]] = " ";
-        if (right.rightDiag([rank, file], oppKing, color, pieceType) ||
-            left.leftDiag([rank,file],oppKing,color,pieceType)) {
-          normalCheck(rank, file, locOfPiece[0], locOfPiece[1]);
+        checkPieceInfo =
+          right.rightDiag([rank, file], oppKing, color, pieceType) ||
+          left.leftDiag([rank, file], oppKing, color, pieceType);
+        if (checkPieceInfo) {
+          normalCheck(rank, file, locOfPiece[0], locOfPiece[1], checkPieceInfo);
         } else {
           normalMove(rank, file, locOfPiece[0], locOfPiece[1]);
         }
@@ -155,9 +177,15 @@ function findBishop(
         pinnedPieceType
       );
       const dir = {
-        "left" : [[-1,-1],[1,1]],
-        "right": [[-1,1],[1,-1]]
-      }
+        left: [
+          [-1, -1],
+          [1, 1],
+        ],
+        right: [
+          [-1, 1],
+          [1, -1],
+        ],
+      };
 
       if (
         isPinnedPieceBishopOrQueen &&
@@ -177,7 +205,7 @@ function findBishop(
         continue;
       }
     }
-      /* Process each diagonal */
+    /* Process each diagonal */
     // left diagonal up-left
     processDiagonal(
       board,

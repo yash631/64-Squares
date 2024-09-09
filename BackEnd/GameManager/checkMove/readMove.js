@@ -1,7 +1,6 @@
 const testCases = require("../../ExperimentalCode/TestCases"); 
 
-/* Generate a complete game */
-/* testCases.generateFullGame(); */
+testCases.generateFullGame();
 /* testCases.testCastling(); */
 /* testCases.testPin(); */
 /* testCases.testDiscoveredCheckByFreePieces(); */
@@ -11,5 +10,6 @@ const testCases = require("../../ExperimentalCode/TestCases");
 /* testCases.testBlockedSquaresFromKingByPinnedRook(); */
 /* testCases.testBlockedSquaresFromKingByPinnedBishop(); */
 /* testCases.testBlockedSquaresFromKingByPinnedKnight(); */
-testCases.testMoveAfterDoubleCheck();
 
+/* testCases.testMoveAfterDoubleCheck(); */
+/* testCases.testBlockedSquaresFromAPieceGivingDiscoveredCheck(); */

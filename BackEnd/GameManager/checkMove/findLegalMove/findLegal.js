@@ -26,7 +26,8 @@ function findAllLegalMoves(
   inGamePcs,
   color,
   prevMove,
-  isInCheck
+  isInCheck,
+  checkInfo
 ) {
   pawn.findPawn(
     color,
@@ -37,7 +38,8 @@ function findAllLegalMoves(
     not.FILE,
     Board,
     prevMove,
-    isInCheck
+    isInCheck,
+    checkInfo
   );
   bishop.findBishop(
     color,
@@ -48,7 +50,8 @@ function findAllLegalMoves(
     not.FILE,
     Board,
     ["B", "b"],
-    isInCheck
+    isInCheck,
+    checkInfo
   );
   rook.findRook(
     color,
@@ -59,7 +62,8 @@ function findAllLegalMoves(
     not.FILE,
     Board,
     ["R", "r"],
-    isInCheck
+    isInCheck,
+    checkInfo
   );
   knight.findKnight(
     color,
@@ -69,7 +73,8 @@ function findAllLegalMoves(
     not.RANK,
     not.FILE,
     Board,
-    isInCheck
+    isInCheck,
+    checkInfo
   );
   queen.findQueen(
     color,
@@ -80,7 +85,8 @@ function findAllLegalMoves(
     not.FILE,
     Board,
     ["Q", "q"],
-    isInCheck
+    isInCheck,
+    checkInfo
   );
   king.findKing(
     color,
@@ -90,7 +96,8 @@ function findAllLegalMoves(
     not.RANK,
     not.FILE,
     Board,
-    isInCheck
+    isInCheck,
+    checkInfo
   );
 }
 
