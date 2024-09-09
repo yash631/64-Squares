@@ -17,7 +17,7 @@ function findMovesAfterPin(
 ) {
   const board = getBoard.Board;
 
-  function captureCheck(rank, file, rows, cols, checkInfo) {
+  function captureCheck(rank, file, rows, cols, checkPieceInfo) {
     const move = `${actualPiece}x${not.FILE[cols]}${not.RANK[rows]}+`;
     checkInfo[color][move] = {
       checkPiece: checkPieceInfo.piece,
@@ -36,7 +36,7 @@ function findMovesAfterPin(
       `${actualPiece}${not.FILE[cols]}${not.RANK[rows]}`
     );
   }
-  function normalCheck(rank, file, rows, cols, checkInfo) {
+  function normalCheck(rank, file, rows, cols, checkPieceInfo) {
     const move = `${actualPiece}${not.FILE[cols]}${not.RANK[rows]}+`;
     checkInfo[color][move] = {
       checkPiece: checkPieceInfo.piece,

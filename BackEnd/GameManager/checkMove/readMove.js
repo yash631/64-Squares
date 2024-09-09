@@ -10,6 +10,7 @@ const testCases = require("../../ExperimentalCode/TestCases");
 /* testCases.testBlockedSquaresFromKingByPinnedRook(); */
 /* testCases.testBlockedSquaresFromKingByPinnedBishop(); */
 /* testCases.testBlockedSquaresFromKingByPinnedKnight(); */
-
-/* testCases.testMoveAfterDoubleCheck(); */
 /* testCases.testBlockedSquaresFromAPieceGivingDiscoveredCheck(); */
+
+/* testCases.testMoveAfterDoubleCheckByBishopAndRook(); */
+/* testCases.testMoveAfterDoubleCheckByQueenAndKnight(); */
