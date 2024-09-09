@@ -157,6 +157,7 @@ function detectPins() {
 
   console.log("\n--> Pinning Pieces <--");
   showPin.printTableWithSpacing(pinningPcs);
+  console.log(`-----------------------------------------------`);
 }
 
 // Make sure that when the module is accessed, it reflects the latest state

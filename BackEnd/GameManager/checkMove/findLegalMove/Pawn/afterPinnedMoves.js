@@ -11,29 +11,40 @@ function findMovesAfterPin(
   lm,
   board,
   inGamePcs,
-  pinnedPiecePos
+  pinnedPiecePos,
+  checkInfo
 ) {
-  let curr_piece;
   function normalMove(rank, file) {
     lm.p[color][`${rank}${file}`].push(
       `${not.FILE[file]}${not.RANK[rank + MOVE[color]]}`
     );
   }
-  function normalCheck(rank, file) {
-    lm.p[color][`${rank}${file}`].push(
-      `${not.FILE[file]}${not.RANK[rank + MOVE[color]]}+`
-    );
+  function normalCheck(rank, file, checkPieceInfo) {
+    const move = `${not.FILE[file]}${not.RANK[rank + MOVE[color]]}+`;
+    checkInfo[color][move] = {
+      checkPiece: checkPieceInfo.piece,
+      rank: checkPieceInfo.rank,
+      file: checkPieceInfo.file,
+    };
+    lm.p[color][`${rank}${file}`].push(move);
   }
 
   const [rank, file] = pinnedPiecePos;
-
+  let checkPieceInfo;
+  let curr_piece;
   /* Default Move */
   if (board[rank + MOVE[color]][file] == " ") {
     curr_piece = board[rank + MOVE[color]][file];
     board[rank][file] = " ";
     board[rank + MOVE[color]][file] = pawn;
-    if (ltrt.leftRight(color, [rank + MOVE[color], file], oppKing, pawn)) {
-      normalCheck(rank, file);
+    checkPieceInfo = ltrt.leftRight(
+      color,
+      [rank + MOVE[color], file],
+      oppKing,
+      pawn
+    );
+    if (checkPieceInfo) {
+      normalCheck(rank, file, checkPieceInfo);
     } else {
       normalMove(rank, file);
     }
@@ -48,18 +59,22 @@ function findMovesAfterPin(
       curr_piece = board[rank + MOVE[`start${color}`][1]][file];
       board[rank][file] = " ";
       board[rank + MOVE[`start${color}`][1]][file] = pawn;
-
-      if (
-        ltrt.leftRight(
-          color,
-          [rank + MOVE[`start${color}`][1], file],
-          oppKing,
-          pawn
-        )
-      ) {
-        lm.p[color][`${rank}${file}`].push(
-          `${not.FILE[file]}${not.RANK[rank + MOVE[`start${color}`][1]]}+`
-        );
+      checkPieceInfo = ltrt.leftRight(
+        color,
+        [rank + MOVE[`start${color}`][1], file],
+        oppKing,
+        pawn
+      );
+      if (checkPieceInfo) {
+        const move = `${not.FILE[file]}${
+          not.RANK[rank + MOVE[`start${color}`][1]]
+        }+`;
+        checkInfo[color][move] = {
+          checkPiece: checkPieceInfo.piece,
+          rank: checkPieceInfo.rank,
+          file: checkPieceInfo.file,
+        };
+        lm.p[color][`${rank}${file}`].push(move);
       } else {
         lm.p[color][`${rank}${file}`].push(
           `${not.FILE[file]}${not.RANK[rank + MOVE[`start${color}`][1]]}`

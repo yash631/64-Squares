@@ -1,6 +1,6 @@
 const testCases = require("../../ExperimentalCode/TestCases"); 
 
-testCases.generateFullGame();
+/* testCases.generateFullGame(); */
 /* testCases.testCastling(); */
 /* testCases.testPin(); */
 /* testCases.testDiscoveredCheckByFreePieces(); */

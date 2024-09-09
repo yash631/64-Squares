@@ -92,7 +92,8 @@ function findPawn(
             lm,
             board,
             iGP,
-            [rank, file]
+            [rank, file],
+            checkInfo,
           );
         }
         continue;

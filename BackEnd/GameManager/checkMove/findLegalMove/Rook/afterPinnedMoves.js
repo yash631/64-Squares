@@ -12,12 +12,17 @@ function findMovesAfterPin(
   pinnedPcs,
   lm,
   inGamePcs,
-  pinnedPiecePos
+  pinnedPiecePos,
+  checkInfo
 ) {
-  function captureCheck(rank, file, rows, cols) {
-    lm[pinnedPiece][color][`${rank}${file}`].push(
-      `${actualPiece}x${not.FILE[cols]}${not.RANK[rows]}+`
-    );
+  function captureCheck(rank, file, rows, cols, checkPieceInfo) {
+    const move = `${actualPiece}x${not.FILE[cols]}${not.RANK[rows]}+`;
+    checkInfo[color][move] = {
+      checkPiece: checkPieceInfo.piece,
+      rank: checkPieceInfo.rank,
+      file: checkPieceInfo.file,
+    };
+    lm[pinnedPiece][color][`${rank}${file}`].push(move);
   }
   function captureMove(rank, file, rows, cols) {
     lm[pinnedPiece][color][`${rank}${file}`].push(
@@ -29,10 +34,14 @@ function findMovesAfterPin(
       `${actualPiece}${not.FILE[cols]}${not.RANK[rows]}`
     );
   }
-  function normalCheck(rank, file, rows, cols) {
-    lm[pinnedPiece][color][`${rank}${file}`].push(
-      `${actualPiece}${not.FILE[cols]}${not.RANK[rows]}+`
-    );
+  function normalCheck(rank, file, rows, cols, checkPieceInfo) {
+    const move = `${actualPiece}${not.FILE[cols]}${not.RANK[rows]}+`;
+    checkInfo[color][move] = {
+      checkPiece: checkPieceInfo.piece,
+      rank: checkPieceInfo.rank,
+      file: checkPieceInfo.file,
+    };
+    lm[pinnedPiece][color][`${rank}${file}`].push(move);
   }
 
   function findForcheck(currPinnedPiecePos) {
@@ -78,6 +87,7 @@ function findMovesAfterPin(
     let row = startRow,
       col = startCol;
     let curr_piece;
+    let checkPieceInfo;
     if (direction == "right" || direction == "left") {
       /* Add moves until pinned piece reaches king */
       while (col !== kingCol) {
@@ -91,8 +101,9 @@ function findMovesAfterPin(
         curr_piece = board[row][col];
         board[row][col] = actualPiece;
         board[startRow][startCol] = " ";
-        if (findForcheck([row, col])) {
-          normalCheck(startRow, startCol, row, col);
+        checkPieceInfo = findForcheck([row, col]);
+        if (checkPieceInfo) {
+          normalCheck(startRow, startCol, row, col, checkPieceInfo);
         } else {
           normalMove(startRow, startCol, row, col);
         }
@@ -112,8 +123,9 @@ function findMovesAfterPin(
         curr_piece = board[row][col];
         board[row][col] = actualPiece;
         board[startRow][startCol] = " ";
-        if (findForcheck([row, col])) {
-          normalCheck(startRow, startCol, row, col);
+        checkPieceInfo = findForcheck([row, col]);
+        if (checkPieceInfo) {
+          normalCheck(startRow, startCol, row, col, checkPieceInfo);
         } else {
           normalMove(startRow, startCol, row, col);
         }
@@ -125,8 +137,9 @@ function findMovesAfterPin(
       board[startRow][startCol] = " ";
       if (row == endRow && col == endCol) {
         /* Add the capture move */
-        if (findForcheck(pinningPiecePos)) {
-          captureCheck(startRow, startCol, endRow, endCol);
+        checkPieceInfo = findForcheck(pinningPiecePos);
+        if (checkPieceInfo) {
+          captureCheck(startRow, startCol, endRow, endCol, checkPieceInfo);
         } else {
           captureMove(startRow, startCol, endRow, endCol);
         }
@@ -146,8 +159,9 @@ function findMovesAfterPin(
         curr_piece = board[row][col];
         board[row][col] = actualPiece;
         board[startRow][startCol] = " ";
-        if (findForcheck([row, col])) {
-          normalCheck(startRow, startCol, row, col);
+        checkPieceInfo = findForcheck([row, col]);
+        if (checkPieceInfo) {
+          normalCheck(startRow, startCol, row, col, checkPieceInfo);
         } else {
           normalMove(startRow, startCol, row, col);
         }
@@ -167,8 +181,9 @@ function findMovesAfterPin(
         curr_piece = board[row][col];
         board[row][col] = actualPiece;
         board[startRow][startCol] = " ";
-        if (findForcheck([row, col])) {
-          normalCheck(startRow, startCol, row, col);
+        checkPieceInfo = findForcheck([row, col]);
+        if (checkPieceInfo) {
+          normalCheck(startRow, startCol, row, col, checkPieceInfo);
         } else {
           normalMove(startRow, startCol, row, col);
         }
@@ -180,8 +195,9 @@ function findMovesAfterPin(
       board[startRow][startCol] = " ";
       if (row == endRow && col == endCol) {
         /* Add the capture move */
-        if (findForcheck(pinningPiecePos)) {
-          captureCheck(startRow, startCol, endRow, endCol);
+        checkPieceInfo = findForcheck(pinningPiecePos);
+        if (checkPieceInfo) {
+          captureCheck(startRow, startCol, endRow, endCol, checkPieceInfo);
         } else {
           captureMove(startRow, startCol, endRow, endCol);
         }

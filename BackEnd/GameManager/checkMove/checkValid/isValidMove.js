@@ -44,7 +44,6 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
   }
 
   /* Empty previous Legal moves of current color side */
-  console.log(checkInfo);
   for (const allPcs in LEGALMOVES) {
     LEGALMOVES[allPcs][color] = {};
   }
@@ -57,6 +56,13 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
     isInCheck,
     checkInfo
   );
+  console.log(
+    "ALL CHECK PIECES INFORMATION FOR ",
+    not.COLOR[color],
+    "\n",
+    checkInfo[color]
+  );
+  console.log(`-----------------------------------------------`);
 
   sqsCovered.findSquares(
     newPin.getPinnedPcs(),
@@ -175,7 +181,6 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
     console.log("CheckMate");
     return true;
   }
-  console.log(checkInfo);
   if (LEGALMOVES[piece][color][`${curr_row}${curr_col}`].includes(move)) {
     gameSt.updateGS(
       move,
@@ -190,8 +195,7 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
     );
 
     if (move[len - 1] == "+") {
-      console.log(checkInfo);
-      whichPieceGaveCheck = checkInfo[color][move].checkPiece;
+      whichPieceGaveCheck = checkInfo[color][move].checkPiece.toLowerCase();
       checkPiecePos_NEW = [
         checkInfo[color][move].rank,
         checkInfo[color][move].file,

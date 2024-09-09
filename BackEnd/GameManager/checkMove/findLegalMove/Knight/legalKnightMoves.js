@@ -25,8 +25,7 @@ function findKnight(color, lm, ALLPCS, iGP, rk, fl, board, isInCheck, checkInfo)
   function normalMove(rank, file, rows, cols) {
     lm.n[color][`${rows}${cols}`].push(`${knight}${fl[file]}${rk[rank]}`);
   }
-  function captureMove(rank, file, rows, cols,checkPieceInfo) {
-    console.log("CaptureCheckKnight : ",checkPieceInfo);
+  function captureMove(rank, file, rows, cols) {
     const move = `${knight}x${fl[file]}${rk[rank]}`;
     lm.n[color][`${rows}${cols}`].push(move);
   }

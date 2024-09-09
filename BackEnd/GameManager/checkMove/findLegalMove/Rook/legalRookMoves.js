@@ -194,7 +194,8 @@ function findRook(
           pinnedPcs,
           lm,
           iGP,
-          [rows, cols]
+          [rows, cols],
+          checkInfo
         );
         continue;
       }
