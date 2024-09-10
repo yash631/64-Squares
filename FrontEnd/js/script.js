@@ -1,9 +1,9 @@
-$(document).ready(function() {
+$(document).ready(function () {
   let board = ChessBoard("chessBoard", {
     draggable: false,
     position: "start",
     orientation: "white",
-    onDrop: handleMove
+    onDrop: handleMove,
   });
 
   const socket = io.connect("http://localhost:8000/");
@@ -13,6 +13,7 @@ $(document).ready(function() {
   let playerName = document.getElementById("playerName");
   let joinGame = document.getElementById("joinGame");
   let playerColor;
+  let isPlayerTurn = false;
 
   socket.on("connect", () => {
     userId = socket.id;
@@ -38,15 +39,38 @@ $(document).ready(function() {
     }
   });
 
-  function handleMove(source, target, piece, newPosition, oldPosition, orientation) {
-    const isWhitePiece = piece[0] === "w";
-    const isBlackPiece = piece[0] === "b";
-
-    if ((playerColor === "white" && !isWhitePiece) || (playerColor === "black" && !isBlackPiece)) {
+  function handleMove(
+    source,
+    target,
+    piece,
+    newPosition,
+    oldPosition,
+    orientation
+  ) {
+    if (!isPlayerTurn) {
       return "snapback";
     }
 
-    const moveData = { source, target, piece, userId, gameId };
+    const isWhitePiece = piece[0] === "w";
+    const isBlackPiece = piece[0] === "b";
+
+    if (
+      (playerColor === "white" && !isWhitePiece) ||
+      (playerColor === "black" && !isBlackPiece)
+    ) {
+      return "snapback";
+    }
+
+    const moveData = {
+      playerColor,
+      source,
+      target,
+      piece,
+      newPosition,
+      oldPosition,
+      userId,
+      gameId,
+    };
 
     const isValid = validateMove(source, target, piece);
 
@@ -56,8 +80,13 @@ $(document).ready(function() {
 
     makeMove(source, target);
 
+    // Emit the move to the server
     socket.emit("new_move", { gameid: gameId, move: moveData });
 
+    // Switch turns after making a move
+    isPlayerTurn = false;
+
+    // Check for game end conditions
     if (isCheckmate()) {
       alert("Checkmate!");
       board.position("start");
@@ -67,9 +96,20 @@ $(document).ready(function() {
     }
   }
 
+  // Listen for a move made by the opponent
   socket.on("move_made", (data) => {
     const { gameid, move } = data;
+
+    // Update the board with the opponent's move
     board.move(move.source + "-" + move.target);
+
+    // Enable player's turn after the opponent makes a move
+    if (
+      (playerColor === "white" && move.piece[0] === "b") ||
+      (playerColor === "black" && move.piece[0] === "w")
+    ) {
+      isPlayerTurn = true;
+    }
   });
 
   socket.on("Game_Aborted", () => {
@@ -96,12 +136,14 @@ $(document).ready(function() {
     console.log("Game ID received:", gameId);
     console.log("Player Color:", playerColor);
 
+    isPlayerTurn = playerColor === "white";
+
     board.destroy();
     board = ChessBoard("chessBoard", {
       draggable: true,
       position: "start",
       orientation: playerColor,
-      onDrop: handleMove
+      onDrop: handleMove,
     });
   });
 });
