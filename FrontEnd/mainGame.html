@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chess Game</title>
+    <link rel="stylesheet" href="css/chessboard-1.0.0.min.css" />
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+      #chessBoard {
+        width: 600px;
+      }
+      .button-container button {
+        display: block;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chessBoard"></div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="js/chessboard-1.0.0.min.js"></script>
+    <script src="js/yourChessLogic.js"></script>
+    <script src="http://localhost:8000/socket.io/socket.io.js"></script>
+    <script src="js/script.js"></script>
+    <div class="button-container">
+      <input id="playerName" type="text" placeholder="Type your name" />
+      <br />
+      <button id="joinGame" disabled>Start a Game</button>
+      <button id="resignGame " disabled>Resign</button>
+      <button id="undoMove" disabled>Undo Move</button>
+    </div>
+  </body>
+</html>
