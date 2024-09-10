@@ -3,9 +3,9 @@ const io = require("socket.io")(PORT, {
   cors: { origin: "http://127.0.0.1:5500" },
 }); // Allow connections from origin
 const uuid = require("uuid");
-const express = require('express');
+const express = require("express");
 const app = express();
-app.use(express.static('FrontEnd'));
+app.use(express.static("FrontEnd"));
 
 const isCorrectMove = require("./GameManager/checkMove/readMove");
 const not = require("./GameManager/checkMove/notations");
@@ -22,7 +22,9 @@ io.on("connection", (socket) => {
     let { Name, userID } = data;
     players[userID] = { id: userID, Name: Name };
     T_Ply++;
-    console.log(`A user with ID: ${userID} and Name: ${Name} joined the server.`);
+    console.log(
+      `A user with ID: ${userID} and Name: ${Name} joined the server.`
+    );
     console.log("Total Players in the server:", T_Ply);
 
     socket.broadcast.emit("player_joined_game", Name);
@@ -76,11 +78,11 @@ io.on("connection", (socket) => {
 
   // Handle moves from the client
   socket.on("new_move", (data) => {
-    const { gameid, move } = data;
-    const piece_color = players[data.userId]?.Color; // Use the userId to get the player's color
-
+    const { move, gameid } = data;
+    const piece_color = move.playerColor; // Use the userId to get the player's color
+    console.log("color :- ", piece_color);
     if (isCorrectMove.checkValidity(move, piece_color)) {
-      console.log("Move made:", move, piece_color);
+      console.log(`${move.piece} from ${move.source} to ${move.target}`);
       Games[gameid].Moves.push(move);
       io.emit("move_made", { gameid, move }); // Broadcast the move to all players
     } else {
