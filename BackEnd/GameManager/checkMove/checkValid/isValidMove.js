@@ -6,12 +6,12 @@ const oppMoves = require("../findLegalMove/King/removeNextMoves");
 const newPin = require("../findLegalMove/King/findPins/checkNewPins");
 const afterCheck = require("../findLegalMove/King/inCheckMoves");
 const sqsCovered = require("../findLegalMove/King/squaresCoveredByPinnedPcs");
+const sqsInDoubleCheck = require("../findLegalMove/squaresAfterCheck/doubleCheckSqs");
 const doubleChk = require("./lookForDoubleCheck");
 
 let LEGALMOVES = findlegal.createLegalMoves();
 let isInCheck = 0;
 let whichPieceGaveCheck;
-let checkPiecePos_OLD;
 let checkPiecePos_NEW;
 
 function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
@@ -23,10 +23,10 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
   newPin.detectPins();
 
   const len = move.length;
-  let inGamePcs = getBoard.createInGamePcs(getBoard.Board);
-  let king = not.KING[color];
-  let kingPos = inGamePcs[king][0];
-  let blockedSquaresForKing = [];
+  let inGamePcs = getBoard.createInGamePcs(getBoard.Board); // Current pieces object with posiitons
+  let king = not.KING[color]; // Own side King
+  let kingPos = inGamePcs[king][0]; // Position of own side king in the board
+  let blockedSquaresForKing = []; // Include squares to restrict the king to make move on them
 
   /* Print Legal Moves */
   function showLegalMoves(LEGALMOVES, C) {
@@ -56,13 +56,13 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
     isInCheck,
     checkInfo
   );
-  console.log(
+  /*console.log(
     "ALL CHECK PIECES INFORMATION FOR ",
     not.COLOR[color],
     "\n",
     checkInfo[color]
   );
-  console.log(`-----------------------------------------------`);
+  console.log(`-----------------------------------------------`);*/
 
   sqsCovered.findSquares(
     newPin.getPinnedPcs(),
@@ -81,7 +81,21 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
   );
 
   if (isInCheck) {
-    if (doubleChk.isDoubleCheck(kingPos, getBoard.Board, color)) {
+    doubleCheckPieceArray = doubleChk.isDoubleCheck(
+      kingPos,
+      getBoard.Board,
+      color
+    );
+    // console.log(doubleCheckPieceArray);
+    const checkPcs = doubleCheckPieceArray.checkingPieces;
+    if (doubleCheckPieceArray.isDoubleCheck) {
+      sqsInDoubleCheck.blockSquaresInDoubleCheck(
+        kingPos,
+        getBoard.Board,
+        checkPcs,
+        blockedSquaresForKing
+      );
+      // console.log("Checking Pieces : ", checkPcs);
       for (const singlePiece in LEGALMOVES) {
         if (singlePiece == "k") {
           continue;
@@ -109,8 +123,8 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
   // console.log(LEGALMOVES);
 
   /* SHOW FINAL LEGAL MOVES */
-  showLegalMoves(LEGALMOVES, color);
-  console.log(`-----------------------------------------------`);
+  // showLegalMoves(LEGALMOVES, color);
+  // console.log(`-----------------------------------------------`);
   // showLegalMoves(LEGALMOVES, 1 - color);
   // console.log(`-----------------------------------------------`);
 
@@ -200,7 +214,6 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
         checkInfo[color][move].rank,
         checkInfo[color][move].file,
       ];
-      // checkPiecePos_NEW = [new_row, new_col];
       isInCheck = 1;
     }
   } else {

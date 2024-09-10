@@ -11,6 +11,5 @@ const testCases = require("../../ExperimentalCode/TestCases");
 /* testCases.testBlockedSquaresFromKingByPinnedBishop(); */
 /* testCases.testBlockedSquaresFromKingByPinnedKnight(); */
 /* testCases.testBlockedSquaresFromAPieceGivingDiscoveredCheck(); */
-
 /* testCases.testMoveAfterDoubleCheckByBishopAndRook(); */
 /* testCases.testMoveAfterDoubleCheckByQueenAndKnight(); */

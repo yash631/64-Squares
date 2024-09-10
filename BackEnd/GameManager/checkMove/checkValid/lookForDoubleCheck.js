@@ -1,5 +1,3 @@
-const getBoard = require("../../Board/createBoard");
-
 function isDoubleCheck(kingPos, board, color) {
   const directions = {
     rook: [
@@ -14,7 +12,7 @@ function isDoubleCheck(kingPos, board, color) {
       [-1, 1], // up-right diagonal
       [-1, -1], // up-left diagonal
     ],
-    queen: [
+    queen: [ // Queen can move like both a rook and a bishop
       [0, 1], // right
       [0, -1], // left
       [1, 0], // down
@@ -38,7 +36,8 @@ function isDoubleCheck(kingPos, board, color) {
 
   const isValidSquare = (r, c) => r >= 0 && r < 8 && c >= 0 && c < 8;
 
-  let checkDirections = {};
+  let checkDirections = {}; // To store the pieces that are giving check
+  let checkingPieces = []; // To store the position and type of pieces giving check
 
   const checkDirectionForPiece = (r, c, dr, dc, pieceType) => {
     let row = r + dr;
@@ -58,8 +57,9 @@ function isDoubleCheck(kingPos, board, color) {
 
       if (pieceColor === color) break; // Stop if hitting own piece
 
-      if (pieceTypeOnBoard === pieceType) {
-        checkDirections[pieceType] = true; // Mark direction if it matches the piece type
+      if (pieceTypeOnBoard === pieceType || (pieceTypeOnBoard === 'q' && pieceType === 'r') || (pieceTypeOnBoard === 'q' && pieceType === 'b')) {
+        checkDirections[pieceTypeOnBoard] = true; // Mark direction if it matches the piece type
+        checkingPieces.push({ type: piece, position: [row, col] }); // Add piece and its position
         break;
       }
       break; // Stop if hitting other piece
@@ -67,12 +67,15 @@ function isDoubleCheck(kingPos, board, color) {
   };
 
   const checkForPieceTypes = (kingRow, kingCol) => {
+    // Check rook and queen directions (straight lines)
     for (const [dr, dc] of directions.rook) {
       checkDirectionForPiece(kingRow, kingCol, dr, dc, "r");
     }
+    // Check bishop and queen directions (diagonals)
     for (const [dr, dc] of directions.bishop) {
       checkDirectionForPiece(kingRow, kingCol, dr, dc, "b");
     }
+    // Check knight directions
     for (const [dr, dc] of directions.knight) {
       const row = kingRow + dr;
       const col = kingCol + dc;
@@ -81,6 +84,7 @@ function isDoubleCheck(kingPos, board, color) {
         const pieceColor = piece === piece.toUpperCase() ? 1 : 0;
         if (piece && piece.toLowerCase() === "n" && pieceColor !== color) {
           checkDirections["n"] = true;
+          checkingPieces.push({ type: piece, position: [row, col] });
         }
       }
     }
@@ -89,7 +93,10 @@ function isDoubleCheck(kingPos, board, color) {
   const [kingRow, kingCol] = kingPos;
   checkForPieceTypes(kingRow, kingCol);
 
-  return Object.keys(checkDirections).length >= 2;
+  return {
+    isDoubleCheck: Object.keys(checkDirections).length >= 2,
+    checkingPieces, // Return the pieces giving check with their positions
+  };
 }
 
 module.exports = { isDoubleCheck };
