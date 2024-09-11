@@ -81,13 +81,36 @@ io.on("connection", (socket) => {
     const { move, gameid } = data;
     const piece_color = move.playerColor;
     console.log("color :- ", piece_color);
-
+    const piece = move.piece;
     try {
       const isValid = await isCorrectMove.checkValidity(move, piece_color); // Await the result
       if (isValid) {
-        console.log(`${move.piece} from ${move.source} to ${move.target}`);
+        // console.log(`${move.piece} from ${move.source} to ${move.target}`);
         Games[gameid].Moves.push(move);
-        io.emit("move_made", { gameid, move }); // Notify all players of the valid move
+        if (
+          (piece === "wK" && move.source === "e1" && move.target === "g1") ||
+          (piece === "bK" && move.source === "e8" && move.target === "g8")
+        ) {
+          console.log("Doing king side castling");
+          io.emit("castlingMove", {
+            side: "king-side",
+            color: piece_color,
+            move : move,
+          });
+        } else if (
+          (piece === "wK" && move.source === "e1" && move.target === "c1") ||
+          (piece === "bK" && move.source === "e8" && move.target === "c8")
+        ) {
+          console.log("Doing queen side castling");
+          io.emit("castlingMove", {
+            side: "queen-side",
+            color: piece_color,
+            move : move,
+          });
+        }
+        else {
+          io.emit("move_made", { gameid, move }); // Notify all players of the valid move
+        }
       } else {
         socket.emit("invalid_move", { move }); // Notify the client that the move was invalid
         console.log("Invalid move");
