@@ -81,24 +81,21 @@ io.on("connection", (socket) => {
     const { move, gameid } = data;
     const piece_color = move.playerColor;
     console.log("color :- ", piece_color);
-  
+
     try {
       const isValid = await isCorrectMove.checkValidity(move, piece_color); // Await the result
-  
       if (isValid) {
         console.log(`${move.piece} from ${move.source} to ${move.target}`);
         Games[gameid].Moves.push(move);
         io.emit("move_made", { gameid, move }); // Notify all players of the valid move
       } else {
-        console.log("Invalid move");
         socket.emit("invalid_move", { move }); // Notify the client that the move was invalid
+        console.log("Invalid move");
       }
     } catch (error) {
       console.error("Error in move validation:", error);
     }
   });
-  
-  
 
   // Handle game abortion
   socket.on("gameAborted", (data) => {

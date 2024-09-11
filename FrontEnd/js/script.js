@@ -60,7 +60,6 @@ $(document).ready(function () {
     ) {
       return "snapback";
     }
-
     const moveData = {
       playerColor,
       source,
@@ -72,48 +71,44 @@ $(document).ready(function () {
       gameId,
     };
 
-    const isValid = validateMove(source, target, piece);
+    // Get current board state
+    let currentBoardState = board.fen();
+    console.log("Current Board State after move:", currentBoardState);
+    const isValid = validateMove(source, target, piece, board);
 
     // Handle invalid move
     if (!isValid) {
       return "snapback";
     }
+
     // Assuming you have a reference to your chessboard instance, e.g., 'board'
     socket.on("invalid_move", (data) => {
-      alert("Invalid move!");
-      // Snap the piece back to its original position
-      return "snapback";
+      board.position(currentBoardState);
+      isPlayerTurn = true;
     });
 
     // Emit the move to the server
     socket.emit("new_move", { gameid: gameId, move: moveData });
 
-    // Make the move
-    makeMove(source, target);
-
-    // Get current board state
-    let currentBoardState = board.fen();
-    console.log("Current Board State after move:", currentBoardState);
-
     // Switch turns after making a move
     isPlayerTurn = false;
 
     // Check for game end conditions
-    if (isCheckmate()) {
+    /*if (isCheckmate()) {
       alert("Checkmate!");
       board.position("start");
     } else if (isDraw()) {
       alert("Draw!");
       board.position("start");
-    }
+    }*/
   }
 
   // Listen for a move made by the opponent
   socket.on("move_made", (data) => {
     const { gameid, move } = data;
 
-    // Update the board with the opponent's move
-    board.move(move.source + "-" + move.target);
+    // Make the move
+    makeMove(board, move.source, move.target);
 
     // Enable player's turn after the opponent makes a move
     if (
