@@ -5,6 +5,8 @@ const ALLPIECES = {
 const COLOR = {
   1: "WHITE",
   0: "BLACK",
+  white: 1,
+  black: 0,
 };
 const PIECES = {
   p: "PAWN",
@@ -14,6 +16,34 @@ const PIECES = {
   q: "QUEEN",
   k: "KING",
 };
+const SYMBOLS = {
+  wP: "p",
+  bP: "p",
+  wR: "r",
+  bR: "r",
+  wB: "b",
+  bB: "b",
+  wN: "n",
+  bN: "n",
+  wQ: "q",
+  bQ: "q",
+  wK: "k",
+  bK: "k",
+};
+const COLORPCS = {
+  wP: "P",
+  bP: "p",
+  wR: "R",
+  bR: "r",
+  wB: "B",
+  bB: "b",
+  wN: "N",
+  bN: "n",
+  wQ: "Q",
+  bQ: "q",
+  wK: "K",
+  bK: "k",
+}
 /* for finding check */
 const KING = {
   0: "k",
@@ -34,14 +64,14 @@ const ROOK = {
   },
 };
 const DIRECTIONS = [
-  { dir: "LDU", move: [-1, -1] },    // left diagonal up
-  { dir: "LDD", move: [1, 1] },      // left diagonal down
-  { dir: "RDU", move: [-1, 1] },     // right diagonal up
-  { dir: "RDD", move: [1, -1] },     // right diagonal down
-  { dir: "FU", move: [-1, 0] },      // file up
-  { dir: "FD", move: [1, 0] },       // file down
-  { dir: "RL", move: [0, -1] },      // rank left
-  { dir: "RR", move: [0, 1] },       // rank right
+  { dir: "LDU", move: [-1, -1] }, // left diagonal up
+  { dir: "LDD", move: [1, 1] }, // left diagonal down
+  { dir: "RDU", move: [-1, 1] }, // right diagonal up
+  { dir: "RDD", move: [1, -1] }, // right diagonal down
+  { dir: "FU", move: [-1, 0] }, // file up
+  { dir: "FD", move: [1, 0] }, // file down
+  { dir: "RL", move: [0, -1] }, // rank left
+  { dir: "RR", move: [0, 1] }, // rank right
 ];
 const FILE = {
     0: "a",
@@ -88,7 +118,7 @@ function isSameDirection(square1, square2) {
 
   const [file1, rank1] = [FTI[square1[0]], parseInt(square1[1])];
   const [file2, rank2] = [FTI[square2[0]], parseInt(square2[1])];
-  
+
   const sameRank = rank1 === rank2;
   const sameFile = file1 === file2;
   const sameDiagonal = Math.abs(file1 - file2) === Math.abs(rank1 - rank2);
@@ -102,10 +132,12 @@ module.exports = {
   RANK,
   COLOR,
   PIECES,
+  SYMBOLS,
+  COLORPCS,
   KING,
   ROOK,
   RTI,
   FTI,
   DIRECTIONS,
-  isSameDirection
+  isSameDirection,
 };

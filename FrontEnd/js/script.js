@@ -74,14 +74,26 @@ $(document).ready(function () {
 
     const isValid = validateMove(source, target, piece);
 
+    // Handle invalid move
     if (!isValid) {
       return "snapback";
     }
-
-    makeMove(source, target);
+    // Assuming you have a reference to your chessboard instance, e.g., 'board'
+    socket.on("invalid_move", (data) => {
+      alert("Invalid move!");
+      // Snap the piece back to its original position
+      return "snapback";
+    });
 
     // Emit the move to the server
     socket.emit("new_move", { gameid: gameId, move: moveData });
+
+    // Make the move
+    makeMove(source, target);
+
+    // Get current board state
+    let currentBoardState = board.fen();
+    console.log("Current Board State after move:", currentBoardState);
 
     // Switch turns after making a move
     isPlayerTurn = false;

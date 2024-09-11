@@ -77,18 +77,28 @@ io.on("connection", (socket) => {
   });
 
   // Handle moves from the client
-  socket.on("new_move", (data) => {
+  socket.on("new_move", async (data) => {
     const { move, gameid } = data;
-    const piece_color = move.playerColor; // Use the userId to get the player's color
+    const piece_color = move.playerColor;
     console.log("color :- ", piece_color);
-    if (isCorrectMove.checkValidity(move, piece_color)) {
-      console.log(`${move.piece} from ${move.source} to ${move.target}`);
-      Games[gameid].Moves.push(move);
-      io.emit("move_made", { gameid, move }); // Broadcast the move to all players
-    } else {
-      console.log("Invalid move:", move);
+  
+    try {
+      const isValid = await isCorrectMove.checkValidity(move, piece_color); // Await the result
+  
+      if (isValid) {
+        console.log(`${move.piece} from ${move.source} to ${move.target}`);
+        Games[gameid].Moves.push(move);
+        io.emit("move_made", { gameid, move }); // Notify all players of the valid move
+      } else {
+        console.log("Invalid move");
+        socket.emit("invalid_move", { move }); // Notify the client that the move was invalid
+      }
+    } catch (error) {
+      console.error("Error in move validation:", error);
     }
   });
+  
+  
 
   // Handle game abortion
   socket.on("gameAborted", (data) => {
@@ -117,6 +127,5 @@ io.on("connection", (socket) => {
     console.log(`Player disconnected: ${socket.id}`);
     // Remove player and decrement player count
     delete players[socket.id];
-    T_Ply--;
   });
 });

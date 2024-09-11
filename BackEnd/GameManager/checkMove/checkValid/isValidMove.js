@@ -216,6 +216,7 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
       ];
       isInCheck = 1;
     }
+    return true;
   } else {
     console.log("ILLEGAL MOVE");
     return false;
