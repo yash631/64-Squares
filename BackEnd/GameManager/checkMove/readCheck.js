@@ -2,7 +2,7 @@ function findCheck(board, piece, source, oppKingPos) {
   const [srcRow, srcCol] = source;
   const [oppKingRow, oppKingCol] = oppKingPos;
 
-  const directions = {
+  const directions = {  
     R: [
       [1, 0],
       [-1, 0],
@@ -35,17 +35,27 @@ function findCheck(board, piece, source, oppKingPos) {
       [-1, 2],
       [-1, -2],
     ], // Knight
-    P: [
+    p: [
       [1, -1],
       [1, 1],
-    ], // Pawn attacking (diagonal capture)
-    p: [
+    ], // White pawn attacking (diagonal capture)
+    P: [
       [-1, -1],
       [-1, 1],
     ], // Black pawn attacking (reverse direction)
   };
 
-  const pieceUpper = piece.toUpperCase();
+  // Handle pawns separately to avoid converting them to uppercase
+  if (piece === "P" || piece === "p") {
+    return directions[piece].some(([dx, dy]) => {
+      const newRow = srcRow + dx;
+      const newCol = srcCol + dy;
+      return newRow === oppKingRow && newCol === oppKingCol;
+    });
+  }
+
+  // For other pieces, convert to uppercase for uniform handling
+  const pieceUpper = piece.toUpperCase(); 
 
   if (pieceUpper === "N") {
     return directions.N.some(([dx, dy]) => {
@@ -74,14 +84,6 @@ function findCheck(board, piece, source, oppKingPos) {
       row += dx;
       col += dy;
     }
-  }
-
-  if (pieceUpper === "P") {
-    return directions[piece].some(([dx, dy]) => {
-      const newRow = srcRow + dx;
-      const newCol = srcCol + dy;
-      return newRow === oppKingRow && newCol === oppKingCol;
-    });
   }
 
   return false;

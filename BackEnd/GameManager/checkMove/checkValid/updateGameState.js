@@ -106,7 +106,6 @@ function updateGS(
     new_col
   );
   getBoard.prevMove = `${curr_row}${curr_col}${move}`;
-  // console.log(getBoard.prevMove);
   getBoard.showBoard(getBoard.Board);
   console.log();
   return true;

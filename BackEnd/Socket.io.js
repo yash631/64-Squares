@@ -84,31 +84,32 @@ io.on("connection", (socket) => {
     const piece = move.piece;
     try {
       const isValid = await isCorrectMove.checkValidity(move, piece_color); // Await the result
+      console.log("isValid result : ", isValid);
       if (isValid) {
-        // console.log(`${move.piece} from ${move.source} to ${move.target}`);
+        const finalMove = isValid.finalMove;
         Games[gameid].Moves.push(move);
-        if (
-          (piece === "wK" && move.source === "e1" && move.target === "g1") ||
-          (piece === "bK" && move.source === "e8" && move.target === "g8")
-        ) {
-          console.log("Doing king side castling");
+        if (finalMove.includes("O-O")) {
           io.emit("castlingMove", {
             side: "king-side",
             color: piece_color,
-            move : move,
+            move: move,
           });
-        } else if (
-          (piece === "wK" && move.source === "e1" && move.target === "c1") ||
-          (piece === "bK" && move.source === "e8" && move.target === "c8")
-        ) {
-          console.log("Doing queen side castling");
+        } else if (finalMove.includes("O-O-O")) {
           io.emit("castlingMove", {
             side: "queen-side",
             color: piece_color,
-            move : move,
+            move: move,
           });
-        }
-        else {
+        } else if (finalMove.includes("ep")) {
+          const enPawn = isValid.enPassantCapturePawn;
+          console.log("enPassantPawnSquare : ", enPawn);
+          if (piece_color)
+            io.emit("enPassant", {
+              color: piece_color,
+              captureSquare: enPawn,
+              move: move,
+            });
+        } else {
           io.emit("move_made", { gameid, move }); // Notify all players of the valid move
         }
       } else {

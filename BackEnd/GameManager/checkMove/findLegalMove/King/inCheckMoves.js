@@ -25,7 +25,7 @@ function findMoves(
     LEGALMOVES[whichPieceGaveCheck][1 - color][
       `${checkPiecePos_NEW[0]}${checkPiecePos_NEW[1]}`
     ],
-    king[color],
+    not.KING[color],
     lineOfSight
   );
 

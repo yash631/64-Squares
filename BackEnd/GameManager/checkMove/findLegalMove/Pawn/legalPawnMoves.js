@@ -79,7 +79,12 @@ function findPawn(
         const pinningPiece = pinnedPawn[0];
         const pinningPieceRow = pinnedPawn[3][0];
         const pinningPieceCol = pinnedPawn[3][1];
-        // console.log([pinningPieceRow, pinningPieceCol]);
+        pawnCaptureSquares[color].push(
+          `Pp${fl[file + square_left[1]]}${rk[rank + square_left[0]]}`
+        );
+        pawnCaptureSquares[color].push(
+          `Pp${fl[file + square_right[1]]}${rk[rank + square_right[0]]}`
+        );
         if (
           (pinningPiece === "r" || pinningPiece === "q") &&
           file == pinningPieceCol
@@ -100,6 +105,9 @@ function findPawn(
           pinQB.findMovesAfterPin(
             color,
             pawn,
+            MOVE,
+            prevMove,
+            EP,
             square_left,
             square_right,
             oppKing,
@@ -117,10 +125,10 @@ function findPawn(
     /* Promotion */
     if (rank == prmt_pcs[color][4]) {
       pawnCaptureSquares[color].push(
-        `${fl[file + square_left[1]]}${rk[rank + square_left[0]]}`
+        `Pp${fl[file + square_left[1]]}${rk[rank + square_left[0]]}`
       );
       pawnCaptureSquares[color].push(
-        `${fl[file + square_right[1]]}${rk[rank + square_right[0]]}`
+        `Pp${fl[file + square_right[1]]}${rk[rank + square_right[0]]}`
       );
       /* Capture on left to promote*/
       if (
@@ -223,10 +231,10 @@ function findPawn(
       }
     } else {
       pawnCaptureSquares[color].push(
-        `${fl[file + square_left[1]]}${rk[rank + square_left[0]]}`
+        `Pp${fl[file + square_left[1]]}${rk[rank + square_left[0]]}`
       );
       pawnCaptureSquares[color].push(
-        `${fl[file + square_right[1]]}${rk[rank + square_right[0]]}`
+        `Pp${fl[file + square_right[1]]}${rk[rank + square_right[0]]}`
       );
       /* Default Move */
       if (board[rank + MOVE[color]][file] == " ") {

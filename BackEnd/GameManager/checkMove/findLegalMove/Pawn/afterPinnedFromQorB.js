@@ -5,6 +5,9 @@ const prom = require("./findForCheck/atPromotion");
 function findMovesAfterPin(
   color,
   pawn,
+  MOVE,
+  prevMove,
+  EP,
   square_left,
   square_right,
   oppKing,
@@ -14,6 +17,20 @@ function findMovesAfterPin(
   pinningPiecePos,
   checkInfo
 ) {
+  function normalEnPassant(rank, file, row, col) {
+    lm.p[color][`${rank}${file}`].push(
+      `${not.FILE[file]}x${not.FILE[col]}${not.RANK[row]}ep`
+    );
+  }
+  function EnPassantCheck(rank, file, row, col, checkPieceInfo) {
+    const move = `${not.FILE[file]}x${not.FILE[col]}${not.RANK[row]}ep+`;
+    checkInfo[color][move] = {
+      checkPiece: checkPieceInfo.piece,
+      rank: checkPieceInfo.rank,
+      file: checkPieceInfo.file,
+    };
+    lm.p[color][`${rank}${file}`].push(move);
+  }
   function captureMove(rank, file, row, col) {
     lm.p[color][`${rank}${file}`].push(
       `${not.FILE[file]}x${not.FILE[col]}${not.RANK[row]}`
@@ -28,35 +45,71 @@ function findMovesAfterPin(
     };
     lm.p[color][`${rank}${file}`].push(move);
   }
-  function handlePinCapture(rank, file, pnRank, pnFile, squareDir) {
+  
+  function handlePinCapture(rank, file, pngRank, pngFile, squareDir) {
     const [squareRank, squareFile] = squareDir;
     let checkPieceInfo;
     let curr_piece;
 
-    if (file + squareFile === pnFile) {
-      curr_piece = board[pnRank][pnFile];
+    // Regular capture
+    if (file + squareFile === pngFile) {
+      curr_piece = board[pngRank][pngFile];
       board[rank][file] = " ";
-      board[pnRank][pnFile] = pawn;
+      board[pngRank][pngFile] = pawn;
 
-      checkPieceInfo = ltrt.leftRight(color, [pnRank, pnFile], oppKing, pawn);
+      checkPieceInfo = ltrt.leftRight(color, [pngRank, pngFile], oppKing, pawn);
 
       if (checkPieceInfo) {
-        captureCheck(rank, file, pnRank, pnFile, checkPieceInfo);
+        captureCheck(rank, file, pngRank, pngFile, checkPieceInfo);
       } else {
-        captureMove(rank, file, pnRank, pnFile);
+        captureMove(rank, file, pngRank, pngFile);
       }
 
       board[rank][file] = pawn;
-      board[pnRank][pnFile] = curr_piece;
+      board[pngRank][pngFile] = curr_piece;
+    }
+
+    // En passant capture
+    const enPassantRank = rank + squareRank;
+    const enPassantFile = file + squareFile;
+
+    if (
+      EP[color] &&
+      EP[color] === rank &&
+      prevMove ==
+        `${rank + MOVE[`start${color}`][1]}${enPassantFile}${
+          not.FILE[enPassantFile]
+        }${not.RANK[rank]}`
+    ) {
+      curr_piece = board[enPassantRank][enPassantFile];
+      board[rank][file] = " ";
+      board[enPassantRank][enPassantFile] = pawn; // Move the pawn for en passant
+
+      checkPieceInfo = ltrt.leftRight(
+        color,
+        [enPassantRank, enPassantFile],
+        oppKing,
+        pawn
+      );
+      if (checkPieceInfo) {
+        EnPassantCheck(
+          rank,
+          file,
+          enPassantRank,
+          enPassantFile,
+          checkPieceInfo
+        );
+      } else {
+        normalEnPassant(rank, file, enPassantRank, enPassantFile);
+      }
+      board[rank][file] = pawn;
+      board[enPassantRank][enPassantFile] = curr_piece;
     }
   }
   const [rank, file] = pinnedPiecePos;
-  const [pnRank, pnFile] = pinningPiecePos;
-  if (file + square_left[1] !== pnFile && file + square_right[1] !== pnFile) {
-    return;
-  }
-  handlePinCapture(rank, file, pnRank, pnFile, square_left);
-  handlePinCapture(rank, file, pnRank, pnFile, square_right);
+  const [pngRank, pngFile] = pinningPiecePos;
+  handlePinCapture(rank, file, pngRank, pngFile, square_left);
+  handlePinCapture(rank, file, pngRank, pngFile, square_right);
   return;
 }
 module.exports = { findMovesAfterPin };
