@@ -17,8 +17,10 @@ let Castling = {
 function findKing(color, lm, ALLPCS, iGP, rk, fl, board, isInCheck, checkInfo) {
   const opp_king = not.KING[1 - color];
   const king = not.KING[color];
-  const king_sq = [iGP[king][0][0], iGP[king][0][1]];
+  const king_sq =  iGP[king][0];
+  const oppKing_sq = iGP[opp_king][0];
   let curr_piece;
+  let checkPieceInfo;
   const totalMoves = [
     [-1, -1],
     [-1, 0],
@@ -59,8 +61,28 @@ function findKing(color, lm, ALLPCS, iGP, rk, fl, board, isInCheck, checkInfo) {
   }
   function castlingMove(side) {
     if (side == "king") {
+      checkPieceInfo = castle.isCastleCheck(color, board, oppKing_sq, "k");
+      if (checkPieceInfo) {
+        const move = "O-O+";
+        checkInfo[color][move] = {
+          checkPiece: checkPieceInfo.piece,
+          rank: checkPieceInfo.rank,
+          file: checkPieceInfo.file,
+        };
+        lm["k"][color][`${king_sq[0]}${king_sq[1]}`].push(move);
+      }
       lm["k"][color][`${king_sq[0]}${king_sq[1]}`].push("O-O");
     } else if (side == "queen") {
+      checkPieceInfo = castle.isCastleCheck(color, board, oppKing_sq, "q");
+      if (checkPieceInfo) {
+        const move = "O-O-O+";
+        checkInfo[color][move] = {
+          checkPiece: checkPieceInfo.piece,
+          rank: checkPieceInfo.rank,
+          file: checkPieceInfo.file,
+        };
+        lm["k"][color][`${king_sq[0]}${king_sq[1]}`].push(move);
+      }
       lm["k"][color][`${king_sq[0]}${king_sq[1]}`].push("O-O-O");
     }
   }
@@ -85,7 +107,6 @@ function findKing(color, lm, ALLPCS, iGP, rk, fl, board, isInCheck, checkInfo) {
       }
     }
   }
-  let checkPieceInfo;
   for (const move of totalMoves) {
     let rank = king_sq[0] + move[0],
       file = king_sq[1] + move[1];

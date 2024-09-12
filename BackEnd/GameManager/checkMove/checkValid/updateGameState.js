@@ -19,7 +19,7 @@ function updateGS(
   }
   Game_State.push(move);
   console.log("MOVES : ", Game_State);
-  if (move == "O-O") {
+  if (move == "O-O" || move == "O-O+") {
     king.Castling[color].k = -1;
     king.Castling[color].q = -1;
     updateBoard.updateInGamePcs(
@@ -38,7 +38,7 @@ function updateGS(
       not.ROOK[`pos${color}`]["k"][0],
       not.ROOK[`pos${color}`]["k"][1] - 2
     );
-  } else if (move == "O-O-O") {
+  } else if (move == "O-O-O" || move == "O-O-O+") {
     king.Castling[color].k = -1;
     king.Castling[color].q = -1;
     updateBoard.updateInGamePcs(
