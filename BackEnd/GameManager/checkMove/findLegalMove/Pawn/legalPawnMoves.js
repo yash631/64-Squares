@@ -2,7 +2,8 @@ const not = require("../../notations");
 const prom = require("./findForCheck/atPromotion");
 const ltrt = require("./findForCheck/leftRightDiag");
 const getBoard = require("../../../Board/createBoard");
-const pin = require("./afterPinnedMoves");
+const pinQR = require("./afterPinnedFromQorR");
+const pinQB = require("./afterPinnedFromQorB");
 const newPin = require("../King/findPins/checkNewPins");
 let pawnCaptureSquares = {
   0: [],
@@ -83,7 +84,7 @@ function findPawn(
           (pinningPiece === "r" || pinningPiece === "q") &&
           file == pinningPieceCol
         ) {
-          pin.findMovesAfterPin(
+          pinQR.findMovesAfterPin(
             color,
             pawn,
             MOVE,
@@ -93,7 +94,20 @@ function findPawn(
             board,
             iGP,
             [rank, file],
-            checkInfo,
+            checkInfo
+          );
+        } else if (pinningPiece === "b" || pinningPiece === "q") {
+          pinQB.findMovesAfterPin(
+            color,
+            pawn,
+            square_left,
+            square_right,
+            oppKing,
+            lm,
+            board,
+            [rank, file],
+            [pinningPieceRow, pinningPieceCol],
+            checkInfo
           );
         }
         continue;

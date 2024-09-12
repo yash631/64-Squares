@@ -15,6 +15,7 @@ let whichPieceGaveCheck;
 let checkPiecePos_NEW;
 
 function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
+  let flagForCheck = false;
   let checkInfo = {
     0: {},
     1: {},
@@ -81,6 +82,7 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
   );
 
   if (isInCheck) {
+    flagForCheck = true;
     doubleCheckPieceArray = doubleChk.isDoubleCheck(
       kingPos,
       getBoard.Board,
@@ -115,7 +117,6 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
       inGamePcs, // Object containing all current board pieces and positions
       blockedSquaresForKing // squares restricted from opponent king to move
     );
-    isInCheck = 0;
   }
   blockedSquaresForKing = []; // Empty the squares for later use if needed
 
@@ -123,8 +124,8 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
   // console.log(LEGALMOVES);
 
   /* SHOW FINAL LEGAL MOVES */
-  // showLegalMoves(LEGALMOVES, color);
-  // console.log(`-----------------------------------------------`);
+  showLegalMoves(LEGALMOVES, color);
+  console.log(`-----------------------------------------------`);
   // showLegalMoves(LEGALMOVES, 1 - color);
   // console.log(`-----------------------------------------------`);
 
@@ -153,7 +154,7 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
       kingPos,
       LEGALMOVES,
       blockedSquaresForKing,
-      1,
+      true,
       checkInfo
     );
     /* Find piece moves of side who received checkmate move */
@@ -207,14 +208,16 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
       new_row,
       new_col
     );
-
+     if(isInCheck){
+      isInCheck = false;
+     }
     if (move[len - 1] == "+") {
       whichPieceGaveCheck = checkInfo[color][move].checkPiece.toLowerCase();
       checkPiecePos_NEW = [
         checkInfo[color][move].rank,
         checkInfo[color][move].file,
       ];
-      isInCheck = 1;
+      isInCheck = true;
     }
     return true;
   } else {
