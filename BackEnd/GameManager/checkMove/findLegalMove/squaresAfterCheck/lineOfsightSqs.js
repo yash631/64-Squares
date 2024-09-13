@@ -7,14 +7,18 @@ function LOS_Squares(
   piece_pos,
   Moves,
   king,
+  kingPos,
   squareArray
 ) {
-  //  console.log("Moves of piece giving Check : ",Moves);
+  if(whichPieceGaveCheck == "n" || whichPieceGaveCheck == "p"){
+    return;
+  }
   dcrp.decryptMove(Moves, whichPieceGaveCheck, color);
   if(!Moves){
     return;
   }
   for (let i = 0; i < Moves.length; i++) {
+    /* Check until our king is found */
     if (Moves[i][0] == king) {
       let isChecked = false;
       let kingPos = [not.RTI[Moves[i][2]], not.FTI[Moves[i][1]]];
@@ -129,7 +133,7 @@ function LOS_Squares(
       }
 
       /* Rank right */
-      while (kingPos == sqInd[0] && sqInd[1] - kingPos[1]) {
+      while (kingPos[0] == sqInd[0] && sqInd[1] - kingPos[1]) {
         isChecked = true;
         squareArray.push(Moves[i]);
         --i;

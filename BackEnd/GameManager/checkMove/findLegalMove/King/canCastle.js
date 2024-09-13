@@ -50,7 +50,7 @@ function isCastleCheck(color, board, oppKingPos, side) {
     while (currRank >= 0 && currRank <= 7 && currFile >= 0 && currFile <= 7) {
       const piece = board[currRank][currFile];
       if (piece === oppKing) {
-        return { piece: "r", rank: currRank, file: currFile };
+        return { piece: "r", rank: rookRank, file: rookFile };
       }
       if (piece !== " ") {
         break;

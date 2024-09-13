@@ -82,6 +82,7 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
   );
 
   if (isInCheck) {
+    console.log("Piece that Gave check : ", whichPieceGaveCheck,checkPiecePos_NEW);
     flagForCheck = true;
     doubleCheckPieceArray = doubleChk.isDoubleCheck(
       kingPos,

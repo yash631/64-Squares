@@ -33,7 +33,7 @@ function movesArray(square, totalMoves, king, color) {
       file <= 7 &&
       getBoard.Board[rank][file] == king
     ) {
-      return { piece, rank : square[0], file : square[0] };
+      return { piece, rank : square[0], file : square[1] };
     }
   }
   return 0;

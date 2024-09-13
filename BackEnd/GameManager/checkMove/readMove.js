@@ -17,8 +17,8 @@ async function readThisMove(move, color, promotedPiece) {
   const pcsSymbol = not.SYMBOLS[movePiece];
   const source = move.source;
   const target = move.target;
-  const sourceSq = [not.RTI[source[1]], not.FTI[source[0]]];
-  const targetSq = [not.RTI[target[1]], not.FTI[target[0]]];
+  let sourceSq = [not.RTI[source[1]], not.FTI[source[0]]];
+  let targetSq = [not.RTI[target[1]], not.FTI[target[0]]];
   let finalMove = "";
   let piece = not.COLORPCS[movePiece];
 
@@ -33,16 +33,22 @@ async function readThisMove(move, color, promotedPiece) {
     sourceSq,
     targetSq
   );
-  
-  if (
-    (piece === "K" && source === "e1" && target === "g1") ||
-    (piece === "k" && source === "e8" && target === "g8")
-  ) {
+
+  if (piece === "K" && source === "e1" && target === "g1") {
+    piece = "R";
+    targetSq = [not.RTI[1], not.FTI["f"]];
     finalMove = "O-O";
-  } else if (
-    (piece === "K" && source === "e1" && target === "c1") ||
-    (piece === "k" && source === "e8" && target === "c8")
-  ) {
+  } else if (piece === "k" && source === "e8" && target === "g8") {
+    piece = "R";
+    targetSq = [not.RTI[8], not.FTI["f"]];
+    finalMove = "O-O";
+  } else if (piece === "K" && source === "e1" && target === "c1") {
+    piece = "R";
+    targetSq = [not.RTI[1], not.FTI["d"]];
+    finalMove = "O-O-O";
+  } else if (piece === "k" && source === "e8" && target === "c8") {
+    piece = "R";
+    targetSq = [not.RTI[8], not.FTI["d"]];
     finalMove = "O-O-O";
   } else {
     let promotionRank = c === 1 ? 0 : 7;
@@ -52,7 +58,9 @@ async function readThisMove(move, color, promotedPiece) {
           targetSq[0] === promotionRank &&
           (targetSq[1] === sourceSq[1] - 1 || targetSq[1] === sourceSq[1] + 1)
         ) {
-          promotionSquare = `${not.FILE[targetSq[1]]}${not.RANK[promotionRank]}`;
+          promotionSquare = `${not.FILE[targetSq[1]]}${
+            not.RANK[promotionRank]
+          }`;
           if (!c) {
             promotedPiece = promotedPiece.toLowerCase();
           }
@@ -75,7 +83,9 @@ async function readThisMove(move, color, promotedPiece) {
         const enPassantCaptureRank = targetSq[0] + epDirection;
         const enPassantCaptureFile = targetSq[1];
         if (targetSq[0] === promotionRank && targetSq[1] === sourceSq[1]) {
-          promotionSquare = `${not.FILE[targetSq[1]]}${not.RANK[promotionRank]}`;
+          promotionSquare = `${not.FILE[targetSq[1]]}${
+            not.RANK[promotionRank]
+          }`;
           if (!c) {
             promotedPiece = promotedPiece.toLowerCase();
           }
@@ -124,7 +134,7 @@ async function checkValidity(move, color, promotionPiece) {
         enPassantCapturePawn,
         promotionSquare,
       ] = await readThisMove(move, color, promotionPiece);
-     /* console.log(
+      /* console.log(
         c,
         pcsSymb,
         piece,
@@ -136,7 +146,7 @@ async function checkValidity(move, color, promotionPiece) {
       if (getIndex.squareToIndex(c, pcsSymb, src, finalMove)) {
         resolve({
           promotionSquare: promotionSquare,
-          promotionPiece : piece,
+          promotionPiece: piece,
           enPassantCapturePawn: enPassantCapturePawn,
           finalMove: finalMove,
         }); // Resolves with true if the move is valid

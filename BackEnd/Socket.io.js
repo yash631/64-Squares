@@ -78,23 +78,27 @@ io.on("connection", (socket) => {
 
   // Handle moves from the client
   socket.on("new_move", async (data) => {
-    const { move, gameid,promotionPiece } = data;
+    const { move, gameid, promotionPiece } = data;
     const piece_color = move.playerColor;
     // console.log("color :- ", piece_color);
     const piece = move.piece;
     try {
-      const isValid = await isCorrectMove.checkValidity(move, piece_color, promotionPiece); // Await the result
+      const isValid = await isCorrectMove.checkValidity(
+        move,
+        piece_color,
+        promotionPiece
+      ); // Await the result
       console.log("isValid result : ", isValid);
       if (isValid) {
         const finalMove = isValid.finalMove;
         Games[gameid].Moves.push(move);
-        if (finalMove.includes("O-O")) {
+        if (finalMove === "O-O" || finalMove === "O-O+") {
           io.emit("castlingMove", {
             side: "king-side",
             color: piece_color,
             move: move,
           });
-        } else if (finalMove.includes("O-O-O")) {
+        } else if (finalMove === "O-O-O" || finalMove === "O-O-O+") {
           io.emit("castlingMove", {
             side: "queen-side",
             color: piece_color,
@@ -111,11 +115,11 @@ io.on("connection", (socket) => {
         } else if (finalMove.includes("=")) {
           const promSq = isValid.promotionSquare;
           const promPc = isValid.promotionPiece;
-          console.log("Promotion Square & Promotion Piece : ", promSq,promPc);
+          console.log("Promotion Square & Promotion Piece : ", promSq, promPc);
           io.emit("promotion", {
             color: piece_color,
             promotionSquare: promSq,
-            promotionPiece : promPc,
+            promotionPiece: promPc,
             move: move,
           });
         } else {
