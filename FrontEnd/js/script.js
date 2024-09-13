@@ -39,6 +39,35 @@ $(document).ready(function () {
     }
   });
 
+  function showPromotionModal(pawnPiece, targetSquare, moveData) {
+    const modal = document.getElementById("promotionModal");
+    modal.style.display = "block";
+
+    const promotionButtons = {
+      promoteQueen: "Q",
+      promoteRook: "R",
+      promoteBishop: "B",
+      promoteKnight: "N",
+    };
+
+    Object.keys(promotionButtons).forEach((btnId) => {
+      document.getElementById(btnId).onclick = function () {
+        const promotionPiece = promotionButtons[btnId];
+        modal.style.display = "none";
+
+        // Complete the promotion
+        socket.emit("new_move", {
+          gameid: gameId,
+          move: moveData,
+          promotionPiece: promotionPiece,
+        });
+
+        // Disable player's turn until server confirms
+        isPlayerTurn = false;
+      };
+    });
+  }
+
   function handleMove(
     source,
     target,
@@ -144,6 +173,15 @@ $(document).ready(function () {
       gameId,
     };
 
+    const promotionRank = playerColor === "white" ? "8" : "1";
+    if (
+      (piece === "wP" && target[1] === promotionRank) ||
+      (piece === "bP" && target[1] === promotionRank)
+    ) {
+      showPromotionModal(piece, target, moveData);
+      return;
+    }
+
     // Disable dragging after making a move
     board.draggable = false;
 
@@ -219,7 +257,7 @@ $(document).ready(function () {
 
   socket.on("enPassant", (data) => {
     const { color, captureSquare, move } = data;
-    
+
     makeMove(board, move.source, move.target);
     const currentPosition = board.position(); // Get the current position as an object
 
@@ -229,6 +267,31 @@ $(document).ready(function () {
     // Now set the updated position back to the board
     board.position(currentPosition);
 
+    // Enable player's turn after the opponent makes a move
+    if (
+      (playerColor === "white" && move.piece[0] === "b") ||
+      (playerColor === "black" && move.piece[0] === "w")
+    ) {
+      isPlayerTurn = true;
+    }
+  });
+
+  socket.on("promotion", (data) => {
+    const { color, promotionSquare, promotionPiece, move } = data;
+    let promPc = promotionPiece;
+    promPc = promPc.toUpperCase();
+    if (color == "white") {
+      promPc = "w" + promPc;
+    } else {
+      promPc = "b" + promPc;
+    }
+
+    makeMove(board, move.source, move.target);
+    const currentPosition = board.position();
+
+    currentPosition[promotionSquare] = promPc;
+
+    board.position(currentPosition);
     // Enable player's turn after the opponent makes a move
     if (
       (playerColor === "white" && move.piece[0] === "b") ||

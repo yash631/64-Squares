@@ -1,10 +1,9 @@
 const getBoard = require("../Board/createBoard");
 const chk = require("./readCheck");
-
 const not = require("./notations");
 const getIndex = require("../checkMove/checkValid/getBoardIndex");
 
-function readThisMove(move, color) {
+async function readThisMove(move, color, promotedPiece) {
   const board = getBoard.Board;
   const c = not.COLOR[color];
   const inGamePcs = getBoard.createInGamePcs(getBoard.Board);
@@ -12,7 +11,8 @@ function readThisMove(move, color) {
   const oppKing = not.KING[1 - c];
   const kingPos = inGamePcs[king][0];
   const oppKingPos = inGamePcs[oppKing][0];
-  let enPassantPawnSquare=undefined;
+  let enPassantPawnSquare = undefined;
+  let promotionSquare = undefined;
   const movePiece = move.piece;
   const pcsSymbol = not.SYMBOLS[movePiece];
   const source = move.source;
@@ -20,7 +20,8 @@ function readThisMove(move, color) {
   const sourceSq = [not.RTI[source[1]], not.FTI[source[0]]];
   const targetSq = [not.RTI[target[1]], not.FTI[target[0]]];
   let finalMove = "";
-  const piece = not.COLORPCS[movePiece];
+  let piece = not.COLORPCS[movePiece];
+
   console.log(
     c,
     pcsSymbol,
@@ -29,8 +30,10 @@ function readThisMove(move, color) {
     finalMove,
     source,
     target,
+    sourceSq,
     targetSq
   );
+  
   if (
     (piece === "K" && source === "e1" && target === "g1") ||
     (piece === "k" && source === "e8" && target === "g8")
@@ -42,58 +45,101 @@ function readThisMove(move, color) {
   ) {
     finalMove = "O-O-O";
   } else {
-    /* Check for en passant */
-    let epDirection = -1;
-    let enPassantCapturePawn = "P";
-    if (c) {
-      epDirection = 1;
-      enPassantCapturePawn = "p";
-    }
-    const enPassantCaptureRank = targetSq[0] + epDirection;
-    const enPassantCaptureFile = targetSq[1];
-    enPassantPawnSquare = `${not.FILE[enPassantCaptureFile]}${not.RANK[enPassantCaptureRank]}`;
-
-    // Check if it's an en passant move
-    if (
-      (movePiece === "wP" || movePiece === "bP") &&
-      source[0] !== target[0] &&
-      board[targetSq[0]][targetSq[1]] === " " &&
-      board[enPassantCaptureRank][enPassantCaptureFile] === enPassantCapturePawn
-    ) {
-      finalMove = `${source[0]}x${target}ep`; // En passant notation
-    } else if (board[targetSq[0]][targetSq[1]] !== " ") {
-      /* Capture Move */
+    let promotionRank = c === 1 ? 0 : 7;
+    if (board[targetSq[0]][targetSq[1]] !== " ") {
       if (movePiece === "wP" || movePiece === "bP") {
-        /* Pawn capture on a square */
-        finalMove = `${source[0]}x${target}`;
+        if (
+          targetSq[0] === promotionRank &&
+          (targetSq[1] === sourceSq[1] - 1 || targetSq[1] === sourceSq[1] + 1)
+        ) {
+          promotionSquare = `${not.FILE[targetSq[1]]}${not.RANK[promotionRank]}`;
+          if (!c) {
+            promotedPiece = promotedPiece.toLowerCase();
+          }
+          piece = promotedPiece;
+          finalMove = `${source[0]}x${target}=${promotedPiece}`;
+        } else {
+          finalMove = `${source[0]}x${target}`;
+        }
       } else {
-        /* Piece captures on a square */
         finalMove = `${piece}x${target}`;
       }
     } else if (board[targetSq[0]][targetSq[1]] === " ") {
       if (movePiece === "wP" || movePiece === "bP") {
-        finalMove = target;
+        let epDirection = -1;
+        let enPassantCapturePawn = "P";
+        if (c) {
+          epDirection = 1;
+          enPassantCapturePawn = "p";
+        }
+        const enPassantCaptureRank = targetSq[0] + epDirection;
+        const enPassantCaptureFile = targetSq[1];
+        if (targetSq[0] === promotionRank && targetSq[1] === sourceSq[1]) {
+          promotionSquare = `${not.FILE[targetSq[1]]}${not.RANK[promotionRank]}`;
+          if (!c) {
+            promotedPiece = promotedPiece.toLowerCase();
+          }
+          piece = promotedPiece;
+          finalMove = `${target}=${promotedPiece}`;
+        } else if (
+          source[0] !== target[0] &&
+          board[enPassantCaptureRank][enPassantCaptureFile] ===
+            enPassantCapturePawn
+        ) {
+          enPassantPawnSquare = `${not.FILE[enPassantCaptureFile]}${not.RANK[enPassantCaptureRank]}`;
+          finalMove = `${source[0]}x${target}ep`; // En passant notation
+        } else {
+          finalMove = target;
+        }
       } else {
         finalMove = `${piece}${target}`;
       }
     }
   }
-
   if (chk.findCheck(board, piece, targetSq, oppKingPos)) {
-    console.log(oppKing, "King is in check");
     finalMove += "+";
   }
-  console.log("FinalMove is : ", finalMove);
-  return [c, pcsSymbol , source, finalMove, enPassantPawnSquare];
+
+  // console.log("FinalMove is : ", finalMove);
+  return [
+    c,
+    pcsSymbol,
+    piece,
+    source,
+    finalMove,
+    enPassantPawnSquare,
+    promotionSquare,
+  ];
 }
 
-async function checkValidity(move, color) {
-  return new Promise((resolve, reject) => {
+async function checkValidity(move, color, promotionPiece) {
+  return new Promise(async (resolve, reject) => {
     try {
-      const [c, pcsSymb ,src, finalMove, enPassantCapturePawn] = readThisMove(move, color);
-      console.log(c, pcsSymb, src, finalMove, enPassantCapturePawn);
+      const [
+        c,
+        pcsSymb,
+        piece,
+        src,
+        finalMove,
+        enPassantCapturePawn,
+        promotionSquare,
+      ] = await readThisMove(move, color, promotionPiece);
+     /* console.log(
+        c,
+        pcsSymb,
+        piece,
+        src,
+        finalMove,
+        enPassantCapturePawn,
+        promotionSquare
+      ); */
       if (getIndex.squareToIndex(c, pcsSymb, src, finalMove)) {
-        resolve({enPassantCapturePawn : enPassantCapturePawn, finalMove : finalMove}); // Resolves with true if the move is valid
+        resolve({
+          promotionSquare: promotionSquare,
+          promotionPiece : piece,
+          enPassantCapturePawn: enPassantCapturePawn,
+          finalMove: finalMove,
+        }); // Resolves with true if the move is valid
       } else {
         resolve(false); // Resolves with false if the move is invalid
       }

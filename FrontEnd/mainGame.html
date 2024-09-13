@@ -20,6 +20,9 @@
         display: block;
         margin-bottom: 10px;
       }
+      #promotionModal {
+        display: none; /* Hidden by default */
+      }
     </style>
   </head>
   <body>
@@ -30,6 +33,15 @@
     <script src="js/movesLogic.js"></script>
     <script src="http://localhost:8000/socket.io/socket.io.js"></script>
     <script src="js/script.js"></script>
+    <div id="promotionModal" class="modal">
+      <div class="modal-content">
+        <h2>Select Promotion Piece</h2>
+        <button id="promoteQueen">Queen</button>
+        <button id="promoteRook">Rook</button>
+        <button id="promoteBishop">Bishop</button>
+        <button id="promoteKnight">Knight</button>
+      </div>
+    </div>
     <div class="button-container">
       <input id="playerName" type="text" placeholder="Type your name" />
       <br />

@@ -78,12 +78,12 @@ io.on("connection", (socket) => {
 
   // Handle moves from the client
   socket.on("new_move", async (data) => {
-    const { move, gameid } = data;
+    const { move, gameid,promotionPiece } = data;
     const piece_color = move.playerColor;
-    console.log("color :- ", piece_color);
+    // console.log("color :- ", piece_color);
     const piece = move.piece;
     try {
-      const isValid = await isCorrectMove.checkValidity(move, piece_color); // Await the result
+      const isValid = await isCorrectMove.checkValidity(move, piece_color, promotionPiece); // Await the result
       console.log("isValid result : ", isValid);
       if (isValid) {
         const finalMove = isValid.finalMove;
@@ -103,12 +103,21 @@ io.on("connection", (socket) => {
         } else if (finalMove.includes("ep")) {
           const enPawn = isValid.enPassantCapturePawn;
           console.log("enPassantPawnSquare : ", enPawn);
-          if (piece_color)
-            io.emit("enPassant", {
-              color: piece_color,
-              captureSquare: enPawn,
-              move: move,
-            });
+          io.emit("enPassant", {
+            color: piece_color,
+            captureSquare: enPawn,
+            move: move,
+          });
+        } else if (finalMove.includes("=")) {
+          const promSq = isValid.promotionSquare;
+          const promPc = isValid.promotionPiece;
+          console.log("Promotion Square & Promotion Piece : ", promSq,promPc);
+          io.emit("promotion", {
+            color: piece_color,
+            promotionSquare: promSq,
+            promotionPiece : promPc,
+            move: move,
+          });
         } else {
           io.emit("move_made", { gameid, move }); // Notify all players of the valid move
         }
