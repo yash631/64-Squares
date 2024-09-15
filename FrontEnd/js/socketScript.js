@@ -301,6 +301,34 @@ $(document).ready(function () {
     }
   });
 
+  socket.on("checkmate", (data) => {
+    const { won, lost, gameid, move } = data;
+    makeMove(board, move.source, move.target);
+
+    const currentPosition = board.position();
+    let winner;
+    let loser;
+
+    if (won === "1") {
+      winner = "White";
+      loser = "Black";
+    } else if (won === "0") {
+      winner = "Black";
+      loser = "White";
+    }
+    alert(`${winner} won by Checkmate`);
+    closeBoard(board, currentPosition);
+  });
+
+  socket.on("stalemate", (data) => {
+    const {move} = data;
+    makeMove(board, move.source, move.target);
+
+    const currentPosition = board.position();
+    alert("Stalemate");
+    closeBoard(board, currentPosition);
+  });
+
   socket.on("Game_Aborted", () => {
     alert("The game has been aborted.");
     board.position("start");

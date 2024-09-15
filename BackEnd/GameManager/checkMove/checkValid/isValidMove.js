@@ -13,6 +13,7 @@ let LEGALMOVES = findlegal.createLegalMoves();
 let isInCheck = 0;
 let whichPieceGaveCheck;
 let checkPiecePos_NEW;
+let lookForChkmtAndStlmt = false;
 
 function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
   let flagForCheck = false;
@@ -82,7 +83,6 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
   );
 
   if (isInCheck) {
-    console.log("Piece that Gave check : ", whichPieceGaveCheck,checkPiecePos_NEW);
     flagForCheck = true;
     doubleCheckPieceArray = doubleChk.isDoubleCheck(
       kingPos,
@@ -125,77 +125,14 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
   // console.log(LEGALMOVES);
 
   /* SHOW FINAL LEGAL MOVES */
-  showLegalMoves(LEGALMOVES, color);
-  console.log(`-----------------------------------------------`);
+  // showLegalMoves(LEGALMOVES, color);
+  // console.log(`-----------------------------------------------`);
   // showLegalMoves(LEGALMOVES, 1 - color);
   // console.log(`-----------------------------------------------`);
 
-  /* Handle CheckMate Move */
-  if (move[len - 1] === "#") {
-    gameSt.updateGS(
-      move,
-      len,
-      color,
-      piece,
-      getBoard.Game_State,
-      curr_row,
-      curr_col,
-      new_row,
-      new_col
-    );
-    inGamePcs = getBoard.createInGamePcs(getBoard.Board);
-    king = not.KING[1 - color]; // opponent side king
-    kingPos = inGamePcs[king][0]; // position of opponent side king
-    move[len - 1] = "+";
-
-    /* Find pieces moves of side who made chekmate move */
-    oppMoves.findOppMoves(
-      color, // color of own side
-      king,
-      kingPos,
-      LEGALMOVES,
-      blockedSquaresForKing,
-      true,
-      checkInfo
-    );
-    /* Find piece moves of side who received checkmate move */
-    afterCheck.findMoves(
-      1 - color,
-      king,
-      kingPos,
-      piece, // Piece who just made a move(the piece who made checkmate move)
-      [new_row, new_col],
-      LEGALMOVES,
-      inGamePcs,
-      blockedSquaresForKing
-    );
-    showLegalMoves(LEGALMOVES, 1 - color);
-    console.log(`-----------------------------------------------`);
-    /* Find if there is not move left  */
-    for (const singlePiece in LEGALMOVES) {
-      for (const uniquePiece in LEGALMOVES[singlePiece][1 - color]) {
-        if (singlePiece == "k") {
-          let tMoves = 0;
-          for (const m of LEGALMOVES[singlePiece][1 - color][uniquePiece]) {
-            if (m[0] == not.KING[1 - color]) {
-              tMoves++;
-            }
-          }
-          if (tMoves.length > 0) {
-            console.log("IllegalMove");
-            return false;
-          }
-          continue;
-        }
-        if (LEGALMOVES[singlePiece][1 - color][uniquePiece].length > 0) {
-          console.log(LEGALMOVES[singlePiece][1 - color][uniquePiece]);
-          console.log("Illegal Move");
-          return false;
-        }
-      }
-    }
-    console.log("CheckMate");
-    return true;
+  if (lookForChkmtAndStlmt) {
+    lookForChkmtAndStlmt = false;
+    return;
   }
   if (LEGALMOVES[piece][color][`${curr_row}${curr_col}`].includes(move)) {
     gameSt.updateGS(
@@ -209,10 +146,9 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
       new_row,
       new_col
     );
-     if(isInCheck){
+    if (isInCheck) {
       isInCheck = false;
-     }
-    if (move[len - 1] == "+") {
+    } else if (move[len - 1] == "+") {
       whichPieceGaveCheck = checkInfo[color][move].checkPiece.toLowerCase();
       checkPiecePos_NEW = [
         checkInfo[color][move].rank,
@@ -220,7 +156,40 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
       ];
       isInCheck = true;
     }
-    return true;
+
+    /* Finding next moves of other side pieces */
+    lookForChkmtAndStlmt = true;
+    isValid(piece, move, 1 - color, curr_row, curr_col, new_row, new_col);
+
+    let Tmoves = 0;
+    for (const allPcs in LEGALMOVES) {
+      for (const uniquePiece in LEGALMOVES[allPcs][1 - color]) {
+        for (const moves of LEGALMOVES[allPcs][1 - color][uniquePiece]) {
+          // console.log("Move: ", moves);
+          if (allPcs == "p") {
+            /* Finding playable moves for pawns */
+            if (moves[0] != "P" && move[1] != "p") {
+              Tmoves++;
+              break; // Breaking the loop just after a playable move is found
+            }
+          }
+          if (moves[0].toLowerCase() === allPcs) {
+            /* Finding playable moves for other pieces */
+            Tmoves++;
+            break; // Breaking the loop just after a playable move is found
+          }
+        }
+      }
+    }
+    if (Tmoves === 0 && isInCheck) {
+      console.log(`${not.COLOR[color]} delivered Checkmate`);
+      return `1${color}${1 - color}`;  // Return this for game ending in checkmate as 1 followed by winner color side followed by loser color side
+    } else if (Tmoves === 0 && !isInCheck) {
+      console.log("Stalemate");
+      return `1/2`;   // Return `1/2` for stalemate or draw
+    }
+     
+    return `0`;   // Return `0` if the move is legal and the game is still going
   } else {
     console.log("ILLEGAL MOVE");
     return false;

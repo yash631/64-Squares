@@ -143,19 +143,24 @@ async function checkValidity(move, color, promotionPiece) {
         enPassantCapturePawn,
         promotionSquare
       ); */
-      if (getIndex.squareToIndex(c, pcsSymb, src, finalMove)) {
+      const result = getIndex.squareToIndex(c, pcsSymb, src, finalMove);
+      if (result) {
+        // Resolves with true if the move is valid
         resolve({
+          result: result,
+          finalMove: finalMove,
+          enPassantCapturePawn: enPassantCapturePawn,
           promotionSquare: promotionSquare,
           promotionPiece: piece,
-          enPassantCapturePawn: enPassantCapturePawn,
-          finalMove: finalMove,
-        }); // Resolves with true if the move is valid
+        });
       } else {
-        resolve(false); // Resolves with false if the move is invalid
+        // Resolves with false if the move is invalid
+        resolve(false);
       }
     } catch (error) {
+      // Rejects if there's an error during validation
       console.error("Error in checkValidity:", error);
-      reject(error); // Rejects if there's an error during validation
+      reject(error);
     }
   });
 }

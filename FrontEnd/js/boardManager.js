@@ -1,3 +1,8 @@
+function closeBoard(board, position){
+   board.position = position;
+   board.draggable = false;
+}
+
 function validateMove(source, target, piece, board) {
   const targetPiece = board.position()[target];
   if (!targetPiece) {

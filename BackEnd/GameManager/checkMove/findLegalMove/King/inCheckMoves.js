@@ -30,12 +30,12 @@ function findMoves(
     lineOfSight
   );
 
-  console.log("LOS : ", lineOfSight);
+  // console.log("LOS : ", lineOfSight);
 
   let checkPieceSquare = `${not.FILE[checkPiecePos_NEW[1]]}${
     not.RANK[checkPiecePos_NEW[0]]
   }`;
-  console.log("checkPiece Square :",checkPieceSquare);
+  // console.log("checkPiece Square :",checkPieceSquare);
 
   /* Updating Legal Moves for capturing checking piece and blocking the check */
   for (const everyPiece in LEGALMOVES) {
@@ -45,7 +45,7 @@ function findMoves(
     for (const uniquePiece in LEGALMOVES[everyPiece][color]) {
       /* Include the playable moves by each piece in availableMoves */
       const availableMoves = [];
-      for (const singleMove of LEGALMOVES[everyPiece][color][uniquePiece]) {
+      for (const singleMove of LEGALMOVES[everyPiece][color][uniquePiece]) { 
         if (lineOfSight.length == 0) {
           if (singleMove.includes(`x${checkPieceSquare}`)) {
             availableMoves.push(singleMove);

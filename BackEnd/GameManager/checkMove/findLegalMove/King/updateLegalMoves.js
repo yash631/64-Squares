@@ -1,5 +1,3 @@
-const not = require("../../notations");
-
 function updateLM(color, king_pos, LEGALMOVES, blockedSquaresForKing) {
   let LegalMoves = LEGALMOVES["k"][color][`${king_pos[0]}${king_pos[1]}`];
   for (const bl_move of blockedSquaresForKing) {

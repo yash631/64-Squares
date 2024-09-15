@@ -8,7 +8,6 @@ const app = express();
 app.use(express.static("FrontEnd"));
 
 const isCorrectMove = require("./GameManager/checkMove/readMove");
-const not = require("./GameManager/checkMove/notations");
 
 let players = {}; // Store all players
 let T_Ply = 0; // Track the number of players
@@ -80,18 +79,34 @@ io.on("connection", (socket) => {
   socket.on("new_move", async (data) => {
     const { move, gameid, promotionPiece } = data;
     const piece_color = move.playerColor;
-    // console.log("color :- ", piece_color);
     const piece = move.piece;
+
     try {
       const isValid = await isCorrectMove.checkValidity(
         move,
         piece_color,
         promotionPiece
-      ); // Await the result
+      );
       console.log("isValid result : ", isValid);
       if (isValid) {
+        const result = isValid.result;
         const finalMove = isValid.finalMove;
         Games[gameid].Moves.push(move);
+
+        if (result[0] == "1") {
+          if (result[1] == "/" && result[2] == "2") {
+            io.emit("stalemate", {
+              move : move,
+            });
+          } else {
+            io.emit("checkmate", {
+              won: result[1],
+              lost: result[2],
+              gameid : gameid,
+              move : move,
+            });
+          }
+        }
         if (finalMove === "O-O" || finalMove === "O-O+") {
           io.emit("castlingMove", {
             side: "king-side",
