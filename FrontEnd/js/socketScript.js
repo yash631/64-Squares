@@ -14,6 +14,7 @@ $(document).ready(function () {
   let joinGame = document.getElementById("joinGame");
   let playerColor;
   let isPlayerTurn = false;
+  let isGameEnd = false;
 
   socket.on("connect", () => {
     userId = socket.id;
@@ -76,7 +77,7 @@ $(document).ready(function () {
     oldPosition,
     orientation
   ) {
-    if (!isPlayerTurn) {
+    if (!isPlayerTurn || isGameEnd) {
       return "snapback";
     }
 
@@ -89,73 +90,6 @@ $(document).ready(function () {
     ) {
       return "snapback";
     }
-
-    const validSquares = [
-      "a1",
-      "a2",
-      "a3",
-      "a4",
-      "a5",
-      "a6",
-      "a7",
-      "a8",
-      "b1",
-      "b2",
-      "b3",
-      "b4",
-      "b5",
-      "b6",
-      "b7",
-      "b8",
-      "c1",
-      "c2",
-      "c3",
-      "c4",
-      "c5",
-      "c6",
-      "c7",
-      "c8",
-      "d1",
-      "d2",
-      "d3",
-      "d4",
-      "d5",
-      "d6",
-      "d7",
-      "d8",
-      "e1",
-      "e2",
-      "e3",
-      "e4",
-      "e5",
-      "e6",
-      "e7",
-      "e8",
-      "f1",
-      "f2",
-      "f3",
-      "f4",
-      "f5",
-      "f6",
-      "f7",
-      "f8",
-      "g1",
-      "g2",
-      "g3",
-      "g4",
-      "g5",
-      "g6",
-      "g7",
-      "g8",
-      "h1",
-      "h2",
-      "h3",
-      "h4",
-      "h5",
-      "h6",
-      "h7",
-      "h8",
-    ];
 
     // Check if the target square is valid
     if (!validSquares.includes(target)) {
@@ -194,7 +128,7 @@ $(document).ready(function () {
       return "snapback";
     }
 
-    socket.emit("new_move", { gameid: gameId, move: moveData });
+    socket.emit("new_move", { gameid: gameId, move: moveData, promotionPiece : undefined });
 
     // Disable player's turn temporarily after making a move
     isPlayerTurn = false;
@@ -303,7 +237,7 @@ $(document).ready(function () {
 
   socket.on("checkmate", (data) => {
     const { won, lost, gameid, move } = data;
-    makeMove(board, move.source, move.target);
+    // makeMove(board, move.source, move.target);
 
     const currentPosition = board.position();
     let winner;
@@ -318,15 +252,17 @@ $(document).ready(function () {
     }
     alert(`${winner} won by Checkmate`);
     closeBoard(board, currentPosition);
+    isGameEnd = true;
   });
 
   socket.on("stalemate", (data) => {
-    const {move} = data;
-    makeMove(board, move.source, move.target);
+    const { move } = data;
+    // makeMove(board, move.source, move.target);
 
     const currentPosition = board.position();
     alert("Stalemate");
     closeBoard(board, currentPosition);
+    isGameEnd = true;
   });
 
   socket.on("Game_Aborted", () => {

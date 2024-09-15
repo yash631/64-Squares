@@ -78,52 +78,43 @@ io.on("connection", (socket) => {
   // Handle moves from the client
   socket.on("new_move", async (data) => {
     const { move, gameid, promotionPiece } = data;
-    const piece_color = move.playerColor;
-    const piece = move.piece;
+    const pcsColor = move.playerColor;
 
     try {
       const isValid = await isCorrectMove.checkValidity(
         move,
-        piece_color,
+        pcsColor,
         promotionPiece
       );
-      console.log("isValid result : ", isValid);
+
+      /* Return game status if any accidental move is made after the game has ended */
+      if (isValid.status === "gameEnd") {
+        io.emit("Game Status", { message: isValid.message });
+      }
+      console.log("Move Validity Result : ", isValid);
+
       if (isValid) {
         const result = isValid.result;
         const finalMove = isValid.finalMove;
         Games[gameid].Moves.push(move);
 
-        if (result[0] == "1") {
-          if (result[1] == "/" && result[2] == "2") {
-            io.emit("stalemate", {
-              move : move,
-            });
-          } else {
-            io.emit("checkmate", {
-              won: result[1],
-              lost: result[2],
-              gameid : gameid,
-              move : move,
-            });
-          }
-        }
         if (finalMove === "O-O" || finalMove === "O-O+") {
           io.emit("castlingMove", {
             side: "king-side",
-            color: piece_color,
+            color: pcsColor,
             move: move,
           });
         } else if (finalMove === "O-O-O" || finalMove === "O-O-O+") {
           io.emit("castlingMove", {
             side: "queen-side",
-            color: piece_color,
+            color: pcsColor,
             move: move,
           });
         } else if (finalMove.includes("ep")) {
           const enPawn = isValid.enPassantCapturePawn;
           console.log("enPassantPawnSquare : ", enPawn);
           io.emit("enPassant", {
-            color: piece_color,
+            color: pcsColor,
             captureSquare: enPawn,
             move: move,
           });
@@ -132,13 +123,29 @@ io.on("connection", (socket) => {
           const promPc = isValid.promotionPiece;
           console.log("Promotion Square & Promotion Piece : ", promSq, promPc);
           io.emit("promotion", {
-            color: piece_color,
+            color: pcsColor,
             promotionSquare: promSq,
             promotionPiece: promPc,
             move: move,
           });
         } else {
           io.emit("move_made", { gameid, move }); // Notify all players of the valid move
+        }
+
+        /* Check if the game ends in a stalemate or checkmate  */
+        if (result[0] == "1") {
+          if (result[1] == "/" && result[2] == "2") {
+            io.emit("stalemate", {
+              move: move,
+            });
+          } else {
+            io.emit("checkmate", {
+              won: result[1],
+              lost: result[2],
+              gameid: gameid,
+              move: move,
+            });
+          }
         }
       } else {
         socket.emit("invalid_move", { move }); // Notify the client that the move was invalid

@@ -2,15 +2,11 @@ const getBoard = require("../Board/createBoard");
 const chk = require("./readCheck");
 const not = require("./notations");
 const getIndex = require("../checkMove/checkValid/getBoardIndex");
+let gameEnd = false;
 
 async function readThisMove(move, color, promotedPiece) {
-  const board = getBoard.Board;
+  let board = getBoard.Board;
   const c = not.COLOR[color];
-  const inGamePcs = getBoard.createInGamePcs(getBoard.Board);
-  const king = not.KING[c];
-  const oppKing = not.KING[1 - c];
-  const kingPos = inGamePcs[king][0];
-  const oppKingPos = inGamePcs[oppKing][0];
   let enPassantPawnSquare = undefined;
   let promotionSquare = undefined;
   const movePiece = move.piece;
@@ -106,11 +102,22 @@ async function readThisMove(move, color, promotedPiece) {
       }
     }
   }
-  if (chk.findCheck(board, piece, targetSq, oppKingPos)) {
+
+  const curr_piece = board[targetSq[0]][targetSq[1]];
+  board[targetSq[0]][targetSq[1]] = piece;
+  board[sourceSq[0]][sourceSq[1]] = " ";
+
+  const inGamePcs = getBoard.createInGamePcs(getBoard.Board);
+  const oppKing = not.KING[1 - c];
+  const oppKingPos = inGamePcs[oppKing][0];
+
+  if (chk.findCheck(c, inGamePcs, board, piece, targetSq, oppKingPos)) {
     finalMove += "+";
   }
 
-  // console.log("FinalMove is : ", finalMove);
+  board[targetSq[0]][targetSq[1]] = curr_piece;
+  board[sourceSq[0]][sourceSq[1]] = piece;
+
   return [
     c,
     pcsSymbol,
@@ -119,13 +126,20 @@ async function readThisMove(move, color, promotedPiece) {
     finalMove,
     enPassantPawnSquare,
     promotionSquare,
+    promotedPiece,
   ];
 }
 
 async function checkValidity(move, color, promotionPiece) {
   return new Promise(async (resolve, reject) => {
+    /* Return any accidental moves if game has ended */
+    if (gameEnd) {
+      return { status: "gameEnd", message: "Game has ended." };
+    }
+
+    /* Create the move string using move object and color received */
     try {
-      const [
+      let [
         c,
         pcsSymb,
         piece,
@@ -133,25 +147,30 @@ async function checkValidity(move, color, promotionPiece) {
         finalMove,
         enPassantCapturePawn,
         promotionSquare,
+        promotedPiece,
       ] = await readThisMove(move, color, promotionPiece);
-      /* console.log(
-        c,
-        pcsSymb,
-        piece,
-        src,
-        finalMove,
-        enPassantCapturePawn,
-        promotionSquare
-      ); */
+      console.log("Final Move : ", finalMove);
+      /* Find that the move is valid or not */
       const result = getIndex.squareToIndex(c, pcsSymb, src, finalMove);
+
+      /* Change move string if checkmate occurs */
+      if (result[0] === "1") {
+        if (result[1] != "/") {
+          finalMove = finalMove.slice(0, -1) + "#";
+        }
+        gameEnd = true;
+      }
+
       if (result) {
         // Resolves with true if the move is valid
         resolve({
+          status: "validMove",
           result: result,
+          piece: piece,
           finalMove: finalMove,
           enPassantCapturePawn: enPassantCapturePawn,
           promotionSquare: promotionSquare,
-          promotionPiece: piece,
+          promotionPiece: promotedPiece,
         });
       } else {
         // Resolves with false if the move is invalid
