@@ -28,6 +28,9 @@ function findOppMoves(
   );
 
   for (const allPieces in LEGALMOVES) {
+    if(allPieces == "p"){
+      continue;
+    }
     for (const singlePiece in LEGALMOVES[allPieces][color]) {
       for (const eachMove of LEGALMOVES[allPieces][color][singlePiece]) {
         blockedSquaresForKing.push(eachMove);

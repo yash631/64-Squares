@@ -60,7 +60,6 @@ async function readThisMove(move, color, promotedPiece) {
           if (!c) {
             promotedPiece = promotedPiece.toLowerCase();
           }
-          piece = promotedPiece;
           finalMove = `${source[0]}x${target}=${promotedPiece}`;
         } else {
           finalMove = `${source[0]}x${target}`;
@@ -85,7 +84,6 @@ async function readThisMove(move, color, promotedPiece) {
           if (!c) {
             promotedPiece = promotedPiece.toLowerCase();
           }
-          piece = promotedPiece;
           finalMove = `${target}=${promotedPiece}`;
         } else if (
           source[0] !== target[0] &&

@@ -78,7 +78,6 @@ function findMoves(
     board, // Board
     inGamePcs // Current piece in the game with their position
   );
-
   // delete LEGALMOVES[whichPieceGaveCheck][1-color][`${checkPiecePos_NEW[0]}${checkPiecePos_NEW[1]}`];
 
   /*  Next move Squares of all pieces to block the king to move there */

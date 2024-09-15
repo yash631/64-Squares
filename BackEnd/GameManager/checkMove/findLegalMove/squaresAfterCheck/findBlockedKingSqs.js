@@ -2,6 +2,7 @@ const not = require("../../notations");
 
 function Bishop(locOfKing, piece_pos, blockedSqs, whichPiece) {
   if (locOfKing[0] + locOfKing[1] == piece_pos[0] + piece_pos[1]) {
+    console.log("Right diagonal running");
     /* Right Diagonal */
     blockedSqs.push(
       `${whichPiece}${not.FILE[locOfKing[1] - 1]}${not.RANK[locOfKing[0] + 1]}`,
@@ -88,9 +89,7 @@ function kingSqBlockedBypiece(
     Knight(locOfKing, piece_pos, blockedSqs, whichPiece);
   } else if (whichPiece == "q" || whichPiece == "Q") {
     Rook(locOfKing, piece_pos, blockedSqs, whichPiece);
-    if(blockedSqs.length === 0){
-      Bishop(locOfKing, piece_pos, blockedSqs, whichPiece);
-    }
+    Bishop(locOfKing, piece_pos, blockedSqs, whichPiece);
   }
 
   /* Remove the Square of the checking piece from blocking if is 1 square closer to king */
@@ -98,7 +97,6 @@ function kingSqBlockedBypiece(
     Math.abs(piece_pos[0] - locOfKing[0]) == 1 ||
     Math.abs(piece_pos[1] - locOfKing[1]) == 1
   ) {
-    `${whichPiece}${not.FILE[piece_pos[1]]}${not.RANK[piece_pos[0]]}`;
     const indexToRemove = blockedSqs.indexOf(
       `${whichPiece}${not.FILE[piece_pos[1]]}${not.RANK[piece_pos[0]]}`
     );

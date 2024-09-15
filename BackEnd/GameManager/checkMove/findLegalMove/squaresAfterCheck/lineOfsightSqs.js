@@ -18,7 +18,7 @@ function LOS_Squares(
     return;
   }
   for (let i = 0; i < Moves.length; i++) {
-    /* Check until our king is found */
+    /* Check until oppKing is found */
     if (Moves[i][0] == king) {
       let isChecked = false;
       let kingPos = [not.RTI[Moves[i][2]], not.FTI[Moves[i][1]]];
