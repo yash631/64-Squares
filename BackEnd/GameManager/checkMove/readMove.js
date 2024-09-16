@@ -7,8 +7,13 @@ let gameEnd = false;
 async function readThisMove(move, color, promotedPiece) {
   let board = getBoard.Board;
   const c = not.COLOR[color];
-  let enPassantPawnSquare = undefined;
   let promotionSquare = undefined;
+  let enPassantPawnSquare = undefined;
+  let enPassantCapturePawn = undefined;
+  let enPstPawnRank = undefined;
+  let enPstPawnFile = undefined;
+  let castleRookSq = undefined;
+  let initialRookSq = undefined;
   const movePiece = move.piece;
   const pcsSymbol = not.SYMBOLS[movePiece];
   const source = move.source;
@@ -32,19 +37,27 @@ async function readThisMove(move, color, promotedPiece) {
 
   if (piece === "K" && source === "e1" && target === "g1") {
     piece = "R";
-    targetSq = [not.RTI[1], not.FTI["f"]];
+    initialRookSq = [not.RTI[1], not.FTI["h"]];
+    castleRookSq = [not.RTI[1], not.FTI["f"]];
+    targetSq = [not.RTI[1], not.FTI["g"]];
     finalMove = "O-O";
   } else if (piece === "k" && source === "e8" && target === "g8") {
-    piece = "R";
-    targetSq = [not.RTI[8], not.FTI["f"]];
+    piece = "r";
+    initialRookSq = [not.RTI[8], not.FTI["h"]];
+    castleRookSq = [not.RTI[8], not.FTI["f"]];
+    targetSq = [not.RTI[8], not.FTI["g"]];
     finalMove = "O-O";
   } else if (piece === "K" && source === "e1" && target === "c1") {
     piece = "R";
-    targetSq = [not.RTI[1], not.FTI["d"]];
+    initialRookSq = [not.RTI[1], not.FTI["a"]];
+    castleRookSq = [not.RTI[1], not.FTI["d"]];
+    targetSq = [not.RTI[1], not.FTI["c"]];
     finalMove = "O-O-O";
   } else if (piece === "k" && source === "e8" && target === "c8") {
-    piece = "R";
-    targetSq = [not.RTI[8], not.FTI["d"]];
+    piece = "r";
+    initialRookSq = [not.RTI[8], not.FTI["a"]];
+    castleRookSq = [not.RTI[8], not.FTI["d"]];
+    targetSq = [not.RTI[8], not.FTI["c"]];
     finalMove = "O-O-O";
   } else {
     let promotionRank = c === 1 ? 0 : 7;
@@ -70,11 +83,13 @@ async function readThisMove(move, color, promotedPiece) {
     } else if (board[targetSq[0]][targetSq[1]] === " ") {
       if (movePiece === "wP" || movePiece === "bP") {
         let epDirection = -1;
-        let enPassantCapturePawn = "P";
+        enPassantCapturePawn = "P";
         if (c) {
           epDirection = 1;
           enPassantCapturePawn = "p";
         }
+        enPstPawnRank = sourceSq[0];
+        enPstPawnFile = targetSq[1];
         const enPassantCaptureRank = targetSq[0] + epDirection;
         const enPassantCaptureFile = targetSq[1];
         if (targetSq[0] === promotionRank && targetSq[1] === sourceSq[1]) {
@@ -102,16 +117,27 @@ async function readThisMove(move, color, promotedPiece) {
   }
 
   const curr_piece = board[targetSq[0]][targetSq[1]];
-
-  if(promotedPiece !== undefined){
+  const king = not.KING[c];
+  console.log("FinalMove : ", finalMove);
+  if (finalMove.includes("O-O")) {
+    board[initialRookSq[0]][initialRookSq[1]] = " ";
+    board[sourceSq[0]][sourceSq[1]] = " ";
+    board[castleRookSq[0]][castleRookSq[1]] = piece;
+    board[targetSq[0]][targetSq[1]] = king;
+  } else if (finalMove.includes("=")) {
     board[targetSq[0]][targetSq[1]] = promotedPiece;
     board[sourceSq[0]][sourceSq[1]] = " ";
-  } else{
-  board[targetSq[0]][targetSq[1]] = piece;
-  board[sourceSq[0]][sourceSq[1]] = " ";
+  } else if (finalMove.includes("ep")) {
+    board[targetSq[0]][targetSq[1]] = piece;
+    board[sourceSq[0]][sourceSq[1]] = " ";
+    board[enPstPawnRank][enPstPawnFile] = " ";
+  } else {
+    board[targetSq[0]][targetSq[1]] = piece;
+    board[sourceSq[0]][sourceSq[1]] = " ";
   }
 
   board = getBoard.Board;
+  getBoard.showBoard(board);
   const inGamePcs = getBoard.createInGamePcs(board);
   const oppKing = not.KING[1 - c];
   const oppKingPos = inGamePcs[oppKing][0];
@@ -120,9 +146,20 @@ async function readThisMove(move, color, promotedPiece) {
     finalMove += "+";
   }
 
-  board[targetSq[0]][targetSq[1]] = curr_piece;
-  board[sourceSq[0]][sourceSq[1]] = piece;
-
+  if (finalMove.includes("O-O")) {
+    board[initialRookSq[0]][initialRookSq[1]] = piece;
+    board[sourceSq[0]][sourceSq[1]] = king;
+    board[castleRookSq[0]][castleRookSq[1]] = " ";
+    board[targetSq[0]][targetSq[1]] = " ";
+  } else if (finalMove.includes("ep")) {
+    board[targetSq[0]][targetSq[1]] = " ";
+    board[sourceSq[0]][sourceSq[1]] = piece;
+    board[enPstPawnRank][enPstPawnFile] = enPassantCapturePawn;
+  } else {
+    board[targetSq[0]][targetSq[1]] = curr_piece;
+    board[sourceSq[0]][sourceSq[1]] = piece;
+  }
+  getBoard.showBoard(getBoard.Board);
   return [
     c,
     pcsSymbol,

@@ -341,12 +341,12 @@ function findPawn(
         board[rank][file - 1] = " ";
         board[rank + square_left[0]][file + square_left[1]] = pawn;
 
-        checkPieceInfo = ltrt.leftRight(color, [
-          rank + square_left[0],
-          file + square_left[1],
+        checkPieceInfo = ltrt.leftRight(
+          color,
+          [rank + square_left[0], file + square_left[1]],
           oppKing,
-          pawn,
-        ]);
+          pawn
+        );
         if (checkPieceInfo) {
           const move = `${fl[file]}x${fl[file + square_left[1]]}${
             rk[rank + square_left[0]]
