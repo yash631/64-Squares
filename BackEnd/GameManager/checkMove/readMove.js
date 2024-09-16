@@ -18,7 +18,7 @@ async function readThisMove(move, color, promotedPiece) {
   let finalMove = "";
   let piece = not.COLORPCS[movePiece];
 
-  console.log(
+  /*console.log(
     c,
     pcsSymbol,
     move.piece,
@@ -28,7 +28,7 @@ async function readThisMove(move, color, promotedPiece) {
     target,
     sourceSq,
     targetSq
-  );
+  );*/
 
   if (piece === "K" && source === "e1" && target === "g1") {
     piece = "R";
@@ -102,10 +102,17 @@ async function readThisMove(move, color, promotedPiece) {
   }
 
   const curr_piece = board[targetSq[0]][targetSq[1]];
+
+  if(promotedPiece !== undefined){
+    board[targetSq[0]][targetSq[1]] = promotedPiece;
+    board[sourceSq[0]][sourceSq[1]] = " ";
+  } else{
   board[targetSq[0]][targetSq[1]] = piece;
   board[sourceSq[0]][sourceSq[1]] = " ";
+  }
 
-  const inGamePcs = getBoard.createInGamePcs(getBoard.Board);
+  board = getBoard.Board;
+  const inGamePcs = getBoard.createInGamePcs(board);
   const oppKing = not.KING[1 - c];
   const oppKingPos = inGamePcs[oppKing][0];
 
@@ -147,7 +154,7 @@ async function checkValidity(move, color, promotionPiece) {
         promotionSquare,
         promotedPiece,
       ] = await readThisMove(move, color, promotionPiece);
-      console.log("Final Move : ", finalMove);
+
       /* Find that the move is valid or not */
       const result = getIndex.squareToIndex(c, pcsSymb, src, finalMove);
 

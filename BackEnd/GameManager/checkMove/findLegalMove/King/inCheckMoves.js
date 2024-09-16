@@ -16,20 +16,16 @@ function findMoves(
   blockedSquaresForKing
 ) {
   const board = getBoard.Board;
+
   /* Find the squares from king moves covered by the opponent checking piece in the line of sight with the king*/
   let lineOfSight = [];
   los.LOS_Squares(
-    1 - color,
     whichPieceGaveCheck,
     checkPiecePos_NEW,
-    LEGALMOVES[whichPieceGaveCheck][1 - color][
-      `${checkPiecePos_NEW[0]}${checkPiecePos_NEW[1]}`
-    ],
-    not.KING[color],
     kingPos,
     lineOfSight
   );
-
+ 
   // console.log("LOS : ", lineOfSight);
 
   let checkPieceSquare = `${not.FILE[checkPiecePos_NEW[1]]}${

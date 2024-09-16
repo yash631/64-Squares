@@ -7,7 +7,7 @@ function rightDiag(square, king, color, piece) {
     file = square[1];
   while (--rank >= 0 && ++file <= 7) {
     if (getBoard.Board[rank][file] == king) {
-      return {piece, rank : square[0], file : square[0]};
+      return {piece, rank : square[0], file : square[1]};
     } else if (getBoard.Board[rank][file] != " ") {
       break;
     }

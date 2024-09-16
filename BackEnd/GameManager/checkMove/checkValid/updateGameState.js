@@ -96,18 +96,18 @@ function updateGS(
     ) {
       piece = move[len - 2];
     }
+    updateBoard.updateInGamePcs(
+      getBoard.Board,
+      piece,
+      curr_row,
+      curr_col,
+      new_row,
+      new_col
+    );
   }
-  updateBoard.updateInGamePcs(
-    getBoard.Board,
-    piece,
-    curr_row,
-    curr_col,
-    new_row,
-    new_col
-  );
   getBoard.prevMove = `${curr_row}${curr_col}${move}`;
   getBoard.showBoard(getBoard.Board);
   console.log();
-  return true;
+  return true;     // Piece successfully updated on board and in inGamePcs object
 }
 module.exports = { updateGS };

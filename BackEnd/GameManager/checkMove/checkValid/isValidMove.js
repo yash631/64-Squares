@@ -58,13 +58,13 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
     isInCheck,
     checkInfo
   );
-  /*console.log(
+  console.log(
     "ALL CHECK PIECES INFORMATION FOR ",
     not.COLOR[color],
     "\n",
     checkInfo[color]
   );
-  console.log(`-----------------------------------------------`);*/
+  console.log(`-----------------------------------------------`);
 
   sqsCovered.findSquares(
     newPin.getPinnedPcs(),
