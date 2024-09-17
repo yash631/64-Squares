@@ -1,4 +1,5 @@
 $(document).ready(function () {
+  // Initialize the chessboard
   let board = ChessBoard("chessBoard", {
     draggable: false,
     position: "start",
@@ -6,84 +7,133 @@ $(document).ready(function () {
     onDrop: handleMove,
   });
 
+  // Connect to the socket server
   const socket = io.connect("http://localhost:8000/");
 
   let userId;
   let gameId;
   let playerName = document.getElementById("playerName");
   let joinGame = document.getElementById("joinGame");
+  let resign = document.getElementById("resignGame");
+  let abort = document.getElementById("abortGame");
+  let draw = document.getElementById("drawGame");
+  const modal = document.getElementById("drawModal");
+  const acceptButton = document.getElementById("acceptDraw");
+  const rejectButton = document.getElementById("rejectDraw");
+  const closeButton = document.getElementsByClassName("close")[0];
+  const drawMessage = document.getElementById("drawMessage");
+
   let playerColor;
   let isPlayerTurn = false;
   let isGameEnd = false;
 
+  // Handle socket connection
   socket.on("connect", () => {
     userId = socket.id;
     console.log("Your ID:", userId);
   });
 
+  // Handle a new player joining the game
   socket.on("player_joined_game", (name) => {
     console.log(name, "joined the game");
   });
 
+  // Enable/disable the join game button based on player name input
   playerName.addEventListener("input", () => {
     ply_name = playerName.value;
     joinGame.disabled = ply_name === "";
   });
 
+  // Handle join game button click
   joinGame.addEventListener("click", () => {
-    if (socket.connected) {
+    if (!socket.disconnected) {
+      // Check if socket is connected
       playerName.disabled = true;
       joinGame.disabled = true;
       playerName.style.backgroundColor = "lightgray";
       joinGame.style.backgroundColor = "lightgray";
       socket.emit("joinGame", { userID: userId, Name: playerName.value });
+    } else {
+      console.log("Socket is not connected. Cannot join game.");
     }
   });
 
-  function showPromotionModal(pawnPiece, targetSquare, moveData) {
-    /* Disable Player turn to prevent any accidental moves till any piece for promotion is selected */
-    isPlayerTurn = false;
+  resign.addEventListener("click", () => {
+    if (!socket.disconnected) {
+      socket.emit("playerResigned", {
+        resignUserID: userId,
+        resignPlayerName: playerName.value,
+        gameId: gameId,
+        color: playerColor,
+      });
+    } else {
+      console.log("Socket is not connected. Cannot perform resignation.");
+    }
+  });
+  abort.addEventListener("click", () => {
+    if (!socket.disconnected) {
+      socket.emit("gameAborted", {
+        abortUserID: userId,
+        abortPlayerName: playerName.value,
+        gameId: gameId,
+        color: playerColor,
+      });
+    } else {
+      console.log("Socket is not connected. Cannot abort game.");
+    }
+  });
+  draw.addEventListener("click", () => {
+    if (!socket.disconnected) {
+      resign.disabled = true;
+      abort.disabled = true;
+      draw.disabled = true;
 
-    const modal = document.getElementById("promotionModal");
-    modal.style.display = "block";
+      socket.emit("offerDraw", {
+        drawUserID: userId,
+        drawPlayerName: playerName.value,
+        gameId: gameId,
+        color: playerColor,
+      });
+    } else {
+      console.log("Socket is not connected. Cannot offer draw.");
+    }
+  });
 
-    const color = pawnPiece === "wP" ? "w" : "b";
-
-    document.getElementById(
-      "promoteQueen"
-    ).src = `/FrontEnd/img/chesspieces/Maurizio_fantasy/${color}Q.png`;
-    document.getElementById(
-      "promoteRook"
-    ).src = `/FrontEnd/img/chesspieces/Maurizio_fantasy/${color}R.png`;
-    document.getElementById(
-      "promoteKnight"
-    ).src = `/FrontEnd/img/chesspieces/Maurizio_fantasy/${color}N.png`;
-    document.getElementById(
-      "promoteBishop"
-    ).src = `/FrontEnd/img/chesspieces/Maurizio_fantasy/${color}B.png`;
-
-    const promotionButtons = {
-      promoteQueen: "Q",
-      promoteRook: "R",
-      promoteBishop: "B",
-      promoteKnight: "N",
-    };
-
-    Object.keys(promotionButtons).forEach((btnId) => {
-      document.getElementById(btnId).onclick = function () {
-        const promotionPiece = promotionButtons[btnId];
-        modal.style.display = "none";
-
-        // Emit the move with the selected promotion piece
-        socket.emit("new_move", {
-          gameid: gameId,
-          move: moveData,
-          promotionPiece: promotionPiece,
-        });
-      };
-    });
+  function disableButtons() {
+    resign.disabled = true;
+    abort.disabled = true;
+    draw.disabled = true;
   }
 
+  function showDrawModal(message, onAccept, onReject) {
+    drawMessage.textContent = message;
+    modal.style.display = "block";
+
+    acceptButton.onclick = function () {
+      modal.style.display = "none";
+      if (onAccept) onAccept();
+    };
+
+    rejectButton.onclick = function () {
+      modal.style.display = "none";
+      if (onReject) onReject();
+    };
+
+    closeButton.onclick = function () {
+      modal.style.display = "none";
+      if (onReject) onReject();
+    };
+
+    // Click outside the modal to close
+    window.onclick = function (event) {
+      if (event.target === modal) {
+        modal.style.display = "none";
+        if (onReject) onReject();
+      }
+    };
+  }
+
+  // Handle moves on the chessboard
   function handleMove(
     source,
     target,
@@ -127,9 +177,11 @@ $(document).ready(function () {
       (piece === "wP" && target[1] === promotionRank) ||
       (piece === "bP" && target[1] === promotionRank)
     ) {
-      showPromotionModal(piece, target, moveData);
+      /* Disable Player turn to prevent any accidental moves till any piece for promotion is selected */
+      isPlayerTurn = false;
+      showPromotionModal(socket, piece, target, gameId, moveData);
 
-      /* Return snapback to prevent displaying the pawn on promotional square */
+      // Prevent displaying the pawn on the promotional square
       return "snapback";
     }
 
@@ -181,6 +233,7 @@ $(document).ready(function () {
     }
   });
 
+  // Handle castling moves
   socket.on("castlingMove", (data) => {
     const { side, color, move } = data;
     if (side === "king-side") {
@@ -200,7 +253,7 @@ $(document).ready(function () {
         makeMove(board, "a8", "d8");
       }
     }
-    console.log(playerColor, move.piece[0]);
+
     // Enable player's turn after the opponent makes a move
     if (
       (playerColor === "white" && move.piece[0] === "b") ||
@@ -210,16 +263,17 @@ $(document).ready(function () {
     }
   });
 
+  // Handle en passant moves
   socket.on("enPassant", (data) => {
     const { color, captureSquare, move } = data;
 
     makeMove(board, move.source, move.target);
     const currentPosition = board.position(); // Get the current position as an object
 
-    // Assuming en passant occurs from e5 to d6, and we need to remove the black pawn on e5
-    delete currentPosition[captureSquare]; // Remove the captured pawn from its square
+    // Remove the captured pawn from its square
+    delete currentPosition[captureSquare];
 
-    // Now set the updated position back to the board
+    // Set the updated position back to the board
     board.position(currentPosition);
 
     // Enable player's turn after the opponent makes a move
@@ -231,11 +285,12 @@ $(document).ready(function () {
     }
   });
 
+  // Handle promotion moves
   socket.on("promotion", (data) => {
     const { color, promotionSquare, promotionPiece, move } = data;
-    let promPc = promotionPiece;
-    promPc = promPc.toUpperCase();
-    if (color == "white") {
+    let promPc = promotionPiece.toUpperCase();
+
+    if (color === "white") {
       promPc = "w" + promPc;
     } else {
       promPc = "b" + promPc;
@@ -245,8 +300,8 @@ $(document).ready(function () {
     const currentPosition = board.position();
 
     currentPosition[promotionSquare] = promPc;
-
     board.position(currentPosition);
+
     // Enable player's turn after the opponent makes a move
     if (
       (playerColor === "white" && move.piece[0] === "b") ||
@@ -256,44 +311,99 @@ $(document).ready(function () {
     }
   });
 
+  // Handle checkmate
   socket.on("checkmate", (data) => {
+    disableButtons();
+
     const { won, lost, gameid, move } = data;
-
     const currentPosition = board.position();
-    let winner;
-    let loser;
+    let winner = won === "1" ? "white" : "black";
+    winner = winner.toUpperCase();
 
-    if (won === "1") {
-      winner = "White";
-      loser = "Black";
-    } else if (won === "0") {
-      winner = "Black";
-      loser = "White";
-    }
     alert(`${winner} won by Checkmate`);
-    closeBoard(board, currentPosition);
+    closeBoard(ChessBoard, currentPosition, playerColor);
+
     isGameEnd = true;
   });
 
+  // Handle stalemate
   socket.on("stalemate", (data) => {
+    disableButtons();
+
     const { move } = data;
+    const currentPosition = board.position();
+
+    closeBoard(ChessBoard, currentPosition, playerColor);
+    alert("Stalemate");
+
+    isGameEnd = true;
+  });
+
+  // Handle game abortion
+  socket.on("Game_Aborted", () => {
+    disableButtons();
 
     const currentPosition = board.position();
-    alert("Stalemate");
-    closeBoard(board, currentPosition);
+
+    alert("The game was Aborted");
+    closeBoard(ChessBoard, currentPosition, playerColor);
+
     isGameEnd = true;
   });
 
-  socket.on("Game_Aborted", () => {
-    alert("The game has been aborted.");
-    board.position("start");
+  // Handle player resignation
+  socket.on("Resignation", (data) => {
+    disableButtons();
+
+    const { color } = data;
+    loser = color.toUpperCase();
+
+    const currentPosition = board.position();
+    let winner = loser === "WHITE" ? "BLACK" : "WHITE"; // color who lost by resignation
+
+    alert(`${loser} Resigned! ${winner} Won`);
+    closeBoard(ChessBoard, currentPosition, playerColor);
+
+    isGameEnd = true;
   });
 
-  socket.on("Resignation", (userName) => {
-    alert(`${userName} has resigned.`);
-    board.position("start");
+  socket.on("drawOffer", (data) => {
+    const { drawPlayerName, gameId } = data;
+    showDrawModal(
+      `${drawPlayerName} has offered a draw. Do you accept?`,
+      () => {
+        // Emit acceptance of the draw offer
+        socket.emit("drawResponse", { accepted: true, gameId: gameId });
+        disableButtons();
+        closeBoard(ChessBoard, currentPosition, playerColor);
+      },
+      () => {
+        // Emit rejection of the draw offer
+        socket.emit("drawResponse", { accepted: false, gameId: gameId });
+      }
+    );
   });
 
+  socket.on("drawAccepted", (data) => {
+    console.log("Draw accepted : ", data);
+    const currentPosition = board.position();
+
+    alert(data.message);
+    closeBoard(ChessBoard, currentPosition, playerColor);
+
+    isGameEnd = true;
+  });
+
+  socket.on("drawRejected", (data) => {
+    console.log("Draw rejected : ", data);
+
+    alert(data.message); // Notify both players that the draw was rejected
+    resign.disabled = false;
+    abort.disabled = false;
+    draw.disabled = false; // Re-enable buttons for the player who offered the draw
+  });
+
+  // Update player count in the lobby
   socket.on("player_count_update", (playerCount) => {
     Players = playerCount;
     console.log("Players in the lobby: ", Players);
@@ -302,11 +412,16 @@ $(document).ready(function () {
     }
   });
 
+  // Handle receiving game ID and player color
   socket.on("gameID", (data) => {
     gameId = data.gameId;
     playerColor = data.playerColor;
     console.log("Game ID received:", gameId);
     console.log("Player Color:", playerColor);
+
+    resign.style.display = "block";
+    abort.style.display = "block";
+    draw.style.display = "block";
 
     isPlayerTurn = playerColor === "white";
 

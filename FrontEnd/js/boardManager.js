@@ -1,6 +1,9 @@
-function closeBoard(board, position) {
-  board.position(position);
-  board.draggable = false;
+function closeBoard(ChessBoard, position, playerColor) {
+  board = ChessBoard("chessBoard", {
+    draggable: false, // Disable dragging after game ends
+    position: position, // Keep the current board position
+    orientation: playerColor,
+  });
 }
 
 function validateMove(source, target, piece, board) {
@@ -35,6 +38,47 @@ function checkBoard(board) {
 
 function makeMove(board, source, target) {
   board.move(source + "-" + target);
+}
+
+function showPromotionModal(socket, pawnPiece, targetSquare, gameId, moveData) {
+  const modal = document.getElementById("promotionModal");
+  modal.style.display = "block";
+
+  const color = pawnPiece === "wP" ? "w" : "b";
+
+  document.getElementById(
+    "promoteQueen"
+  ).src = `/FrontEnd/img/chesspieces/Maurizio_fantasy/${color}Q.png`;
+  document.getElementById(
+    "promoteRook"
+  ).src = `/FrontEnd/img/chesspieces/Maurizio_fantasy/${color}R.png`;
+  document.getElementById(
+    "promoteKnight"
+  ).src = `/FrontEnd/img/chesspieces/Maurizio_fantasy/${color}N.png`;
+  document.getElementById(
+    "promoteBishop"
+  ).src = `/FrontEnd/img/chesspieces/Maurizio_fantasy/${color}B.png`;
+
+  const promotionButtons = {
+    promoteQueen: "Q",
+    promoteRook: "R",
+    promoteBishop: "B",
+    promoteKnight: "N",
+  };
+
+  Object.keys(promotionButtons).forEach((btnId) => {
+    document.getElementById(btnId).onclick = function () {
+      const promotionPiece = promotionButtons[btnId];
+      modal.style.display = "none";
+
+      // Emit the move with the selected promotion piece
+      socket.emit("new_move", {
+        gameid: gameId,
+        move: moveData,
+        promotionPiece: promotionPiece,
+      });
+    };
+  });
 }
 
 const validSquares = [

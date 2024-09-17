@@ -5,46 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chess Game</title>
     <link rel="stylesheet" href="css/chessboard-1.0.0.min.css" />
-    <style>
-      body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-      }
-      #chessBoard {
-        width: 600px;
-      }
-      .button-container button {
-        display: block;
-        margin-bottom: 10px;
-      }
-      #promotionModal {
-        display: none; /* Hidden by default */
-      }
-      .modal-content {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .modal-content img {
-        margin: 10px 0; /* Adds space between images vertically */
-        width: 50px; /* Set a width for the images */
-        cursor: pointer; /* Makes the images behave like buttons */
-        transition: transform 0.2s; /* Adds a smooth hover effect */
-      }
-
-      .modal-content img:hover {
-        transform: scale(1.1); /* Slightly enlarges the image on hover */
-      }
-
-      .modal-content h2 {
-        margin-bottom: 20px;
-      }
-    </style>
   </head>
   <body>
     <div id="chessBoard"></div>
@@ -54,7 +14,7 @@
     <script src="js/boardManager.js"></script>
     <script src="http://localhost:8000/socket.io/socket.io.js"></script>
     <script src="js/socketScript.js"></script>
-    <script></script>
+    
     <div id="promotionModal" class="modal">
       <div class="modal-content">
         <img src="" id="promoteQueen" alt="Queen" />
@@ -63,13 +23,25 @@
         <img src="" id="promoteBishop" alt="Bishop" />
       </div>
     </div>
+
     <div class="button-container">
       <input id="playerName" type="text" placeholder="Type your name" />
-      <br />
+      <br></br>
       <button id="joinGame" disabled>Start a Game</button>
-      <button id="resignGame " disabled>Resign</button>
-      <button id="abortGame " disabled>Abort Game</button>
-      <button id="drawGame" disabled>Offer Draw</button>
+      <button id="resignGame" style="background-color: red;">Resign</button>
+      <button id="abortGame" style="background-color:burlywood;">Abort Game</button>
+      <button id="drawGame" style="background-color: darkseagreen;">Offer Draw</button>
     </div>
+
+    <!-- Modal structure -->
+   <div id="drawModal" class="modal">
+     <div class="modal-content">
+      <span class="close">&times;</span>
+     <p id="drawMessage"></p>
+    <button id="acceptDraw">Accept</button>
+    <button id="rejectDraw">Reject</button>
+  </div>
+</div>
+
   </body>
 </html>

@@ -1,7 +1,7 @@
 const PORT = 8000;
 const io = require("socket.io")(PORT, {
   cors: { origin: "http://127.0.0.1:5500" },
-}); // Allow connections from origin
+});
 const uuid = require("uuid");
 const express = require("express");
 const app = express();
@@ -12,7 +12,6 @@ const isCorrectMove = require("./GameManager/checkMove/readMove");
 let players = {}; // Store all players
 let T_Ply = 0; // Track the number of players
 const Games = {}; // Store all games
-let Total_games = Object.keys(Games).length;
 
 io.on("connection", (socket) => {
   console.log(`Player connected: ${socket.id}`);
@@ -37,9 +36,6 @@ io.on("connection", (socket) => {
 
     // If two players have joined, start a new game
     if (T_Ply % 2 === 0 && T_Ply >= 2) {
-      Total_games++;
-      console.log(`${Total_games} games are currently being played`);
-
       const gameID = uuid.v4(); // Generate a new game ID
 
       // Get the last two players to start the game
@@ -69,6 +65,10 @@ io.on("connection", (socket) => {
         playerColor: player2.Color, // Send black to player2
       });
 
+      // Join game room
+      io.sockets.sockets.get(player1.id).join(gameID);
+      io.sockets.sockets.get(player2.id).join(gameID);
+
       console.log(Games);
     }
 
@@ -89,7 +89,7 @@ io.on("connection", (socket) => {
 
       /* Return game status if any accidental move is made after the game has ended */
       if (isValid.status === "gameEnd") {
-        io.emit("Game Status", { message: isValid.message });
+        io.to(gameid).emit("Game Status", { message: isValid.message });
       }
       console.log("Move Validity Result : ", isValid);
 
@@ -99,13 +99,13 @@ io.on("connection", (socket) => {
         Games[gameid].Moves.push(move);
 
         if (finalMove === "O-O" || finalMove === "O-O+") {
-          io.emit("castlingMove", {
+          io.to(gameid).emit("castlingMove", {
             side: "king-side",
             color: pcsColor,
             move: move,
           });
         } else if (finalMove === "O-O-O" || finalMove === "O-O-O+") {
-          io.emit("castlingMove", {
+          io.to(gameid).emit("castlingMove", {
             side: "queen-side",
             color: pcsColor,
             move: move,
@@ -113,7 +113,7 @@ io.on("connection", (socket) => {
         } else if (finalMove.includes("ep")) {
           const enPawn = isValid.enPassantCapturePawn;
           console.log("enPassantPawnSquare : ", enPawn);
-          io.emit("enPassant", {
+          io.to(gameid).emit("enPassant", {
             color: pcsColor,
             captureSquare: enPawn,
             move: move,
@@ -122,14 +122,14 @@ io.on("connection", (socket) => {
           const promSq = isValid.promotionSquare;
           const promPc = isValid.promotionPiece;
           console.log("Promotion Square & Promotion Piece : ", promSq, promPc);
-          io.emit("promotion", {
+          io.to(gameid).emit("promotion", {
             color: pcsColor,
             promotionSquare: promSq,
             promotionPiece: promPc,
             move: move,
           });
         } else {
-          io.emit("move_made", { gameid, move }); // Notify all players of the valid move
+          io.to(gameid).emit("move_made", { gameid, move }); // Notify all players of the valid move
         }
 
         /* Check if the game ends in a stalemate or checkmate  */
@@ -138,10 +138,10 @@ io.on("connection", (socket) => {
             // Add a short delay before emitting checkmate or stalemate alert
             if (result[1] == "/" && result[2] == "2") {
               // Stalemate
-              io.emit("stalemate", { move: move });
+              io.to(gameid).emit("stalemate", { move: move });
             } else {
               // Checkmate
-              io.emit("checkmate", {
+              io.to(gameid).emit("checkmate", {
                 won: result[1],
                 lost: result[2],
                 gameid: gameid,
@@ -161,24 +161,51 @@ io.on("connection", (socket) => {
 
   // Handle game abortion
   socket.on("gameAborted", (data) => {
-    const { gameId } = data;
-    io.emit("Game_Aborted");
-    Reflect.deleteProperty(Games, gameId);
-    Total_games--;
-    T_Ply -= 2;
-    console.log(`The game with id: ${gameId} was aborted.`);
-    console.log(`Total Games in the server: ${Total_games}`);
+    const { abortUserID, abortPlayerName, gameId, color } = data;
+
+    io.to(gameId).emit("Game_Aborted");
+    delete Games[gameId];
+    console.log(
+      `The game ID: ${gameId} was aborted by ${abortPlayerName} ID: ${abortUserID}.`
+    );
+    console.log(`Total Games in the server: ${Object.keys(Games).length}`);
   });
 
   // Handle player resignation
   socket.on("playerResigned", (data) => {
-    const { userName, userID, gameId } = data;
-    io.emit("Resignation", userName);
-    Reflect.deleteProperty(Games, gameId);
-    Total_games--;
-    T_Ply -= 2;
-    console.log(`Player "${userName}" with ID: ${userID} resigned.`);
-    console.log(`Total Games in the server: ${Total_games}`);
+    const { resignUserID, resignPlayerName, gameId, color } = data;
+
+    io.to(gameId).emit("Resignation", { color: color });
+    delete Games[gameId];
+    console.log(
+      `Player "${resignPlayerName}" ID: ${resignUserID} resigned the game ID: ${gameId}`
+    );
+    console.log(`Total Games in the server: ${Object.keys(Games).length}`);
+  });
+
+  // Handle Draw offer
+  socket.on("offerDraw", (data) => {
+    const { drawUserID, drawPlayerName, gameId } = data;
+    console.log("Offered Draw:", data);
+
+    socket.broadcast.to(gameId).emit("drawOffer", {
+      drawPlayerName: drawPlayerName,
+      gameId: gameId,
+    });
+  });
+
+  // Handle Draw response
+  socket.on("drawResponse", (response) => {
+    console.log("Draw Response : ", response);
+    if (response.accepted) {
+      socket.broadcast.to(response.gameId).emit("drawAccepted", {
+        message: "Draw by Agreement",
+      });
+    } else {
+      socket.broadcast.to(response.gameId).emit("drawRejected", {
+        message: "Draw offer was rejected",
+      });
+    }
   });
 
   // Handle player disconnection
