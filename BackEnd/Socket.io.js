@@ -20,9 +20,9 @@ io.on("connection", (socket) => {
     let { Name, userID } = data;
     players[userID] = { id: userID, Name: Name };
     T_Ply++;
-    console.log(
+    /* console.log(
       `A user with ID: ${userID} and Name: ${Name} joined the server.`
-    );
+    ); */
     console.log("Total Players in the server:", T_Ply);
 
     socket.broadcast.emit("player_joined_game", Name);
@@ -91,45 +91,59 @@ io.on("connection", (socket) => {
       if (isValid.status === "gameEnd") {
         io.to(gameid).emit("Game Status", { message: isValid.message });
       }
-      console.log("Move Validity Result : ", isValid);
+      /* console.log("Move Validity Result : ", isValid); */
 
       if (isValid) {
         const result = isValid.result;
         const finalMove = isValid.finalMove;
         Games[gameid].Moves.push(move);
+        let totalMoves = Games[gameid].Moves.length;
 
         if (finalMove === "O-O" || finalMove === "O-O+") {
           io.to(gameid).emit("castlingMove", {
+            movemade: finalMove,
             side: "king-side",
             color: pcsColor,
             move: move,
+            totalMoves: totalMoves,
           });
         } else if (finalMove === "O-O-O" || finalMove === "O-O-O+") {
           io.to(gameid).emit("castlingMove", {
+            movemade: finalMove,
             side: "queen-side",
             color: pcsColor,
             move: move,
+            totalMoves: totalMoves,
           });
         } else if (finalMove.includes("ep")) {
           const enPawn = isValid.enPassantCapturePawn;
-          console.log("enPassantPawnSquare : ", enPawn);
+          /* console.log("enPassantPawnSquare : ", enPawn); */
           io.to(gameid).emit("enPassant", {
+            movemade: finalMove,
             color: pcsColor,
             captureSquare: enPawn,
             move: move,
+            totalMoves: totalMoves,
           });
         } else if (finalMove.includes("=")) {
           const promSq = isValid.promotionSquare;
           const promPc = isValid.promotionPiece;
-          console.log("Promotion Square & Promotion Piece : ", promSq, promPc);
+          /* console.log("Promotion Square & Promotion Piece : ", promSq, promPc); */
           io.to(gameid).emit("promotion", {
+            movemade: finalMove,
             color: pcsColor,
             promotionSquare: promSq,
             promotionPiece: promPc,
             move: move,
+            totalMoves: totalMoves,
           });
         } else {
-          io.to(gameid).emit("move_made", { gameid, move }); // Notify all players of the valid move
+          io.to(gameid).emit("move_made", {
+            movemade: finalMove,
+            gameid: gameid,
+            move: move,
+            totalMoves: totalMoves,
+          }); // Notify all players of the valid move
         }
 
         /* Check if the game ends in a stalemate or checkmate  */
@@ -186,7 +200,7 @@ io.on("connection", (socket) => {
   // Handle Draw offer
   socket.on("offerDraw", (data) => {
     const { drawUserID, drawPlayerName, gameId } = data;
-    console.log("Offered Draw:", data);
+    /* console.log("Offered Draw:", data); */
 
     socket.broadcast.to(gameId).emit("drawOffer", {
       drawPlayerName: drawPlayerName,
@@ -196,9 +210,10 @@ io.on("connection", (socket) => {
 
   // Handle Draw response
   socket.on("drawResponse", (response) => {
-    console.log("Draw Response : ", response);
+    /* console.log("Draw Response : ", response); */
+
     if (response.accepted) {
-      socket.broadcast.to(response.gameId).emit("drawAccepted", {
+      io.to(response.gameId).emit("drawAccepted", {
         message: "Draw by Agreement",
       });
     } else {

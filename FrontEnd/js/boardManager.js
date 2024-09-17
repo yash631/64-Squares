@@ -40,6 +40,31 @@ function makeMove(board, source, target) {
   board.move(source + "-" + target);
 }
 
+function updateMovesDisplay(move) {
+  const movesContainer = document.getElementById("movesContainer");
+
+  if (!movesContainer) {
+    console.error("Moves container not found!");
+    return;
+  }
+
+  const moveCount = movesContainer.children.length + 1; // Get the next move number
+
+  // Create a new move element for the latest move
+  const moveElement = document.createElement("div");
+  moveElement.style.padding = "10px";
+  moveElement.style.border = "1px solid #ccc";
+  moveElement.style.borderRadius = "5px";
+  moveElement.style.backgroundColor = "#f9f9f9";
+  moveElement.style.textAlign = "center";
+
+  // Set the text for the new move
+  moveElement.textContent = move;
+
+  // Append the new move to the moves container
+  movesContainer.appendChild(moveElement);
+}
+
 function showPromotionModal(socket, pawnPiece, targetSquare, gameId, moveData) {
   const modal = document.getElementById("promotionModal");
   modal.style.display = "block";

@@ -1,11 +1,12 @@
-/*! chessboard.js v1.0.0 | (c) 2019 Chris Oakman | MIT License chessboardjs.com/license */
 .clearfix-7da63 {
   clear: both;
 }
+
 .board-b72b1 {
   border: 2px solid #404040;
   box-sizing: content-box;
 }
+
 .square-55d63 {
   float: left;
   position: relative;
@@ -16,32 +17,39 @@
   -ms-user-select: none;
   user-select: none;
 }
+
 .white-1e1d7 {
   background-color: #f0d9b5;
   color: #b58863;
 }
+
 .black-3c85d {
   background-color: #b58863;
   color: #f0d9b5;
 }
+
 .highlight1-32417,
 .highlight2-9c5d2 {
   box-shadow: inset 0 0 3px 3px #ff0;
 }
+
 .notation-322f9 {
   cursor: default;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
   position: absolute;
 }
+
 .alpha-d2270 {
   bottom: 1px;
   right: 3px;
 }
+
 .numeric-fc462 {
   top: 2px;
   left: 2px;
 }
+
 body {
   display: flex;
   justify-content: center;
@@ -49,16 +57,22 @@ body {
   height: 100vh;
   margin: 0;
 }
+
 #chessBoard {
   width: 600px;
+  margin-bottom: 20px;
 }
+
 .button-container button {
   display: block;
   margin-bottom: 10px;
 }
+
 #promotionModal {
-  display: none; /* Hidden by default */
+  display: none;
+  margin-bottom: 20px;
 }
+
 .modal-content {
   display: flex;
   flex-direction: column;
@@ -67,50 +81,76 @@ body {
 }
 
 .modal-content img {
-  margin: 10px 0; /* Adds space between images vertically */
-  width: 50px; /* Set a width for the images */
-  cursor: pointer; /* Makes the images behave like buttons */
-  transition: transform 0.2s; /* Adds a smooth hover effect */
+  margin: 10px 0;
+  width: 50px;
+  cursor: pointer;
+  transition: transform 0.2s;
 }
 
 .modal-content img:hover {
-  transform: scale(1.1); /* Slightly enlarges the image on hover */
+  transform: scale(1.1);
 }
 
 .modal-content h2 {
   margin-bottom: 20px;
 }
 
-#resignGame {
-  display: none;
+.button-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-#abortGame {
-  display: none;
+.button-container button,
+.button-container input[type="text"] {
+  text-align: center;
+  width: 200px;
+  height: 50px;
+  font-size: 16px;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
 }
+
+.button-container button:hover,
+.button-container input[type="text"]:hover {
+  opacity: 0.8;
+  transform: scale(1.1);
+}
+
+#abortResignGame {
+  display: none;
+  background-color: rgb(226, 56, 56);
+  margin-bottom: 20px;
+}
+
 #drawGame {
   display: none;
+  background-color: burlywood;
+  margin-bottom: 20px;
 }
-/* Modal styles */
+
 .modal {
-  display: none; /* Hidden by default */
-  position: fixed; 
-  z-index: 1; 
+  display: none;
+  position: fixed;
+  z-index: 1;
   left: 0;
   top: 0;
-  width: 100%; 
-  height: 100%; 
-  overflow: auto; 
-  background-color: rgb(0,0,0); 
-  background-color: rgba(0,0,0,0.4); 
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
 }
 
 .modal-content {
   background-color: #fefefe;
-  margin: 15% auto; 
+  margin: 15% auto;
   padding: 20px;
   border: 1px solid #888;
-  width: 80%; 
+  width: 80%;
 }
 
 .close {
@@ -125,4 +165,26 @@ body {
   color: black;
   text-decoration: none;
   cursor: pointer;
+}
+
+#movesSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 10%;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+#movesContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+  background-color: #f8f9fa;
+  padding: 10px;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  max-height: 40vh;
+  overflow-y: auto;
 }

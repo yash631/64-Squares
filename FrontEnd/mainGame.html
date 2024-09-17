@@ -7,13 +7,18 @@
     <link rel="stylesheet" href="css/chessboard-1.0.0.min.css" />
   </head>
   <body>
+    <div id="movesSection">
+      <h2 style="color: rgb(132, 98, 53);">MOVES</h2>
+      <div id="movesContainer"></div>
+    </div>
+    
     <div id="chessBoard"></div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="js/chessboard-1.0.0.min.js"></script>
     <script src="js/boardManager.js"></script>
     <script src="http://localhost:8000/socket.io/socket.io.js"></script>
-    <script src="js/socketScript.js"></script>
+    <script src="js/eventHandler.js"></script>
     
     <div id="promotionModal" class="modal">
       <div class="modal-content">
@@ -27,21 +32,20 @@
     <div class="button-container">
       <input id="playerName" type="text" placeholder="Type your name" />
       <br></br>
-      <button id="joinGame" disabled>Start a Game</button>
-      <button id="resignGame" style="background-color: red;">Resign</button>
-      <button id="abortGame" style="background-color:burlywood;">Abort Game</button>
-      <button id="drawGame" style="background-color: darkseagreen;">Offer Draw</button>
+      <button id="joinGame" style="background-color: rgb(91, 237, 93);" disabled>Start a Game</button>
+      <button id="abortResignGame" >Abort Game</button>
+      <button id="drawGame" >Offer Draw</button>
     </div>
 
-    <!-- Modal structure -->
+
    <div id="drawModal" class="modal">
      <div class="modal-content">
       <span class="close">&times;</span>
-     <p id="drawMessage"></p>
-    <button id="acceptDraw">Accept</button>
-    <button id="rejectDraw">Reject</button>
-  </div>
-</div>
+      <p id="drawMessage"></p>
+      <button id="acceptDraw">Accept</button>
+      <button id="rejectDraw">Reject</button>
+     </div>
+   </div>
 
   </body>
 </html>

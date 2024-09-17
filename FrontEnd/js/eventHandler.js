@@ -14,8 +14,7 @@ $(document).ready(function () {
   let gameId;
   let playerName = document.getElementById("playerName");
   let joinGame = document.getElementById("joinGame");
-  let resign = document.getElementById("resignGame");
-  let abort = document.getElementById("abortGame");
+  let abortOrResign = document.getElementById("abortResignGame");
   let draw = document.getElementById("drawGame");
   const modal = document.getElementById("drawModal");
   const acceptButton = document.getElementById("acceptDraw");
@@ -50,7 +49,6 @@ $(document).ready(function () {
       // Check if socket is connected
       playerName.disabled = true;
       joinGame.disabled = true;
-      playerName.style.backgroundColor = "lightgray";
       joinGame.style.backgroundColor = "lightgray";
       socket.emit("joinGame", { userID: userId, Name: playerName.value });
     } else {
@@ -58,34 +56,31 @@ $(document).ready(function () {
     }
   });
 
-  resign.addEventListener("click", () => {
+  abortOrResign.addEventListener("click", () => {
     if (!socket.disconnected) {
-      socket.emit("playerResigned", {
-        resignUserID: userId,
-        resignPlayerName: playerName.value,
-        gameId: gameId,
-        color: playerColor,
-      });
+      if (abortOrResign.innerText === "Abort Game") {
+        socket.emit("gameAborted", {
+          abortUserID: userId,
+          abortPlayerName: playerName.value,
+          gameId: gameId,
+          color: playerColor,
+        });
+      } else if (abortOrResign.innerText === "Resign") {
+        socket.emit("playerResigned", {
+          resignUserID: userId,
+          resignPlayerName: playerName.value,
+          gameId: gameId,
+          color: playerColor,
+        });
+      }
     } else {
-      console.log("Socket is not connected. Cannot perform resignation.");
+      console.log("Socket is not connected.");
     }
   });
-  abort.addEventListener("click", () => {
-    if (!socket.disconnected) {
-      socket.emit("gameAborted", {
-        abortUserID: userId,
-        abortPlayerName: playerName.value,
-        gameId: gameId,
-        color: playerColor,
-      });
-    } else {
-      console.log("Socket is not connected. Cannot abort game.");
-    }
-  });
+
   draw.addEventListener("click", () => {
     if (!socket.disconnected) {
-      resign.disabled = true;
-      abort.disabled = true;
+      abortOrResign.disabled = true;
       draw.disabled = true;
 
       socket.emit("offerDraw", {
@@ -100,9 +95,13 @@ $(document).ready(function () {
   });
 
   function disableButtons() {
-    resign.disabled = true;
-    abort.disabled = true;
+    abortOrResign.disabled = true;
     draw.disabled = true;
+  }
+
+  function updateButtons() {
+    abortOrResign.innerText = "Resign";
+    draw.style.display = "block";
   }
 
   function showDrawModal(message, onAccept, onReject) {
@@ -220,8 +219,13 @@ $(document).ready(function () {
 
   // Listen for a move made by the opponent
   socket.on("move_made", (data) => {
-    const { gameid, move } = data;
+    const { movemade, gameid, move, totalMoves } = data;
     makeMove(board, move.source, move.target);
+    updateMovesDisplay(movemade);
+
+    if (totalMoves >= 2) {
+      updateButtons();
+    }
 
     // Enable player's turn after the opponent makes a move
     if (
@@ -235,7 +239,7 @@ $(document).ready(function () {
 
   // Handle castling moves
   socket.on("castlingMove", (data) => {
-    const { side, color, move } = data;
+    const { movemade, side, color, move, totalMoves } = data;
     if (side === "king-side") {
       if (color === "white") {
         makeMove(board, "e1", "g1");
@@ -253,7 +257,11 @@ $(document).ready(function () {
         makeMove(board, "a8", "d8");
       }
     }
+    updateMovesDisplay(movemade);
 
+    if (totalMoves >= 2) {
+      updateButtons();
+    }
     // Enable player's turn after the opponent makes a move
     if (
       (playerColor === "white" && move.piece[0] === "b") ||
@@ -265,9 +273,15 @@ $(document).ready(function () {
 
   // Handle en passant moves
   socket.on("enPassant", (data) => {
-    const { color, captureSquare, move } = data;
+    const { movemade, color, captureSquare, move, totalMoves } = data;
 
     makeMove(board, move.source, move.target);
+    updateMovesDisplay(movemade);
+
+    if (totalMoves >= 2) {
+      updateButtons();
+    }
+
     const currentPosition = board.position(); // Get the current position as an object
 
     // Remove the captured pawn from its square
@@ -287,7 +301,14 @@ $(document).ready(function () {
 
   // Handle promotion moves
   socket.on("promotion", (data) => {
-    const { color, promotionSquare, promotionPiece, move } = data;
+    const {
+      movemade,
+      color,
+      promotionSquare,
+      promotionPiece,
+      move,
+      totalMoves,
+    } = data;
     let promPc = promotionPiece.toUpperCase();
 
     if (color === "white") {
@@ -297,6 +318,12 @@ $(document).ready(function () {
     }
 
     makeMove(board, move.source, move.target);
+    updateMovesDisplay(movemade);
+
+    if (totalMoves >= 2) {
+      updateButtons();
+    }
+
     const currentPosition = board.position();
 
     currentPosition[promotionSquare] = promPc;
@@ -398,8 +425,7 @@ $(document).ready(function () {
     console.log("Draw rejected : ", data);
 
     alert(data.message); // Notify both players that the draw was rejected
-    resign.disabled = false;
-    abort.disabled = false;
+    abortOrResign.disabled = false;
     draw.disabled = false; // Re-enable buttons for the player who offered the draw
   });
 
@@ -419,9 +445,7 @@ $(document).ready(function () {
     console.log("Game ID received:", gameId);
     console.log("Player Color:", playerColor);
 
-    resign.style.display = "block";
-    abort.style.display = "block";
-    draw.style.display = "block";
+    abortOrResign.style.display = "block";
 
     isPlayerTurn = playerColor === "white";
 
