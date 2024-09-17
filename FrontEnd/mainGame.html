@@ -23,6 +23,27 @@
       #promotionModal {
         display: none; /* Hidden by default */
       }
+      .modal-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal-content img {
+        margin: 10px 0; /* Adds space between images vertically */
+        width: 50px; /* Set a width for the images */
+        cursor: pointer; /* Makes the images behave like buttons */
+        transition: transform 0.2s; /* Adds a smooth hover effect */
+      }
+
+      .modal-content img:hover {
+        transform: scale(1.1); /* Slightly enlarges the image on hover */
+      }
+
+      .modal-content h2 {
+        margin-bottom: 20px;
+      }
     </style>
   </head>
   <body>
@@ -33,14 +54,13 @@
     <script src="js/boardManager.js"></script>
     <script src="http://localhost:8000/socket.io/socket.io.js"></script>
     <script src="js/socketScript.js"></script>
-    <script src="js/interfaceManager.js"></script>
+    <script></script>
     <div id="promotionModal" class="modal">
       <div class="modal-content">
-        <h2>Select Promotion Piece</h2>
-        <button id="promoteQueen">Queen</button>
-        <button id="promoteRook">Rook</button>
-        <button id="promoteBishop">Bishop</button>
-        <button id="promoteKnight">Knight</button>
+        <img src="" id="promoteQueen" alt="Queen" />
+        <img src="" id="promoteRook" alt="Rook" />
+        <img src="" id="promoteKnight" alt="Knight" />
+        <img src="" id="promoteBishop" alt="Bishop" />
       </div>
     </div>
     <div class="button-container">

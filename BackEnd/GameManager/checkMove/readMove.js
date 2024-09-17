@@ -137,7 +137,6 @@ async function readThisMove(move, color, promotedPiece) {
   }
 
   board = getBoard.Board;
-  getBoard.showBoard(board);
   const inGamePcs = getBoard.createInGamePcs(board);
   const oppKing = not.KING[1 - c];
   const oppKingPos = inGamePcs[oppKing][0];
@@ -159,7 +158,6 @@ async function readThisMove(move, color, promotedPiece) {
     board[targetSq[0]][targetSq[1]] = curr_piece;
     board[sourceSq[0]][sourceSq[1]] = piece;
   }
-  getBoard.showBoard(getBoard.Board);
   return [
     c,
     pcsSymbol,

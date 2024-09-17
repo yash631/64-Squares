@@ -134,18 +134,21 @@ io.on("connection", (socket) => {
 
         /* Check if the game ends in a stalemate or checkmate  */
         if (result[0] == "1") {
-          if (result[1] == "/" && result[2] == "2") {
-            io.emit("stalemate", {
-              move: move,
-            });
-          } else {
-            io.emit("checkmate", {
-              won: result[1],
-              lost: result[2],
-              gameid: gameid,
-              move: move,
-            });
-          }
+          setTimeout(() => {
+            // Add a short delay before emitting checkmate or stalemate alert
+            if (result[1] == "/" && result[2] == "2") {
+              // Stalemate
+              io.emit("stalemate", { move: move });
+            } else {
+              // Checkmate
+              io.emit("checkmate", {
+                won: result[1],
+                lost: result[2],
+                gameid: gameid,
+                move: move,
+              });
+            }
+          }, 300); // Delay for 500ms (you can adjust this value)
         }
       } else {
         socket.emit("invalid_move", { move }); // Notify the client that the move was invalid

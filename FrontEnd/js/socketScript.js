@@ -41,8 +41,26 @@ $(document).ready(function () {
   });
 
   function showPromotionModal(pawnPiece, targetSquare, moveData) {
+    /* Disable Player turn to prevent any accidental moves till any piece for promotion is selected */
+    isPlayerTurn = false;
+
     const modal = document.getElementById("promotionModal");
     modal.style.display = "block";
+
+    const color = pawnPiece === "wP" ? "w" : "b";
+
+    document.getElementById(
+      "promoteQueen"
+    ).src = `/FrontEnd/img/chesspieces/Maurizio_fantasy/${color}Q.png`;
+    document.getElementById(
+      "promoteRook"
+    ).src = `/FrontEnd/img/chesspieces/Maurizio_fantasy/${color}R.png`;
+    document.getElementById(
+      "promoteKnight"
+    ).src = `/FrontEnd/img/chesspieces/Maurizio_fantasy/${color}N.png`;
+    document.getElementById(
+      "promoteBishop"
+    ).src = `/FrontEnd/img/chesspieces/Maurizio_fantasy/${color}B.png`;
 
     const promotionButtons = {
       promoteQueen: "Q",
@@ -56,15 +74,12 @@ $(document).ready(function () {
         const promotionPiece = promotionButtons[btnId];
         modal.style.display = "none";
 
-        // Complete the promotion
+        // Emit the move with the selected promotion piece
         socket.emit("new_move", {
           gameid: gameId,
           move: moveData,
           promotionPiece: promotionPiece,
         });
-
-        // Disable player's turn until server confirms
-        isPlayerTurn = false;
       };
     });
   }
@@ -113,7 +128,9 @@ $(document).ready(function () {
       (piece === "bP" && target[1] === promotionRank)
     ) {
       showPromotionModal(piece, target, moveData);
-      return;
+
+      /* Return snapback to prevent displaying the pawn on promotional square */
+      return "snapback";
     }
 
     // Disable dragging after making a move
@@ -128,7 +145,11 @@ $(document).ready(function () {
       return "snapback";
     }
 
-    socket.emit("new_move", { gameid: gameId, move: moveData, promotionPiece : undefined });
+    socket.emit("new_move", {
+      gameid: gameId,
+      move: moveData,
+      promotionPiece: undefined,
+    });
 
     // Disable player's turn temporarily after making a move
     isPlayerTurn = false;
@@ -237,7 +258,6 @@ $(document).ready(function () {
 
   socket.on("checkmate", (data) => {
     const { won, lost, gameid, move } = data;
-    // makeMove(board, move.source, move.target);
 
     const currentPosition = board.position();
     let winner;
@@ -257,7 +277,6 @@ $(document).ready(function () {
 
   socket.on("stalemate", (data) => {
     const { move } = data;
-    // makeMove(board, move.source, move.target);
 
     const currentPosition = board.position();
     alert("Stalemate");
