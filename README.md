@@ -10,6 +10,10 @@
 - [Installation](#installation)
 - [Usage](#usage)
 - [Screenshots](#screenshots)
+- [Technologies Used](#technologies-used)
+- [Contribution](#contribution)
+- [Contact](#contact)
+- [Acknowledgements](#acknowledgements)
 
 ## Installation
 
@@ -86,4 +90,60 @@ Once the development server is running:
 ![Black](Screenshots/checkMate/black.png)
 ![White](Screenshots/checkMate/white.png)
 
+## Technologies Used
 
+- **Frontend:**
+
+  - [JavaScript](https://www.javascript.com/)
+  - [CSS3](https://developer.mozilla.org/en-US/docs/Web/CSS)
+
+- **Backend:**
+
+  - [Node.js](https://nodejs.org/)
+  - [Express](https://expressjs.com/)
+  - [cors](https://www.npmjs.com/package/cors)
+  - [nodemon](https://www.npmjs.com/package/nodemon)
+  - [socket.io](https://socket.io/)
+  - [uuid](https://www.npmjs.com/package/uuid)
+
+- **Other Tools:**
+  - [Git](https://git-scm.com/)
+  - [GitHub](https://github.com/)
+
+## Contribution
+
+To contribute, please follow these steps:
+
+1. **Fork the repository.**
+2. **Create a new branch:**
+
+   ```bash
+   git checkout -b your-new-branch-name
+   ```
+
+3. **Make your changes and commit them:**
+
+   ```bash
+   git commit -m "Add some feature"
+   ```
+
+4. **Push to the branch:**
+
+   ```bash
+   git push -u origin your-new-branch-name
+   ```
+
+5. **Open a Pull Request.**
+
+Please ensure your code adheres to the project's coding standards and includes relevant tests for new features or functionality.
+
+## Contact
+
+  - **Email:** yash80763@gmail.com
+  - **GitHub:** [yash631](https://github.com/yash631)
+  - **LinkedIn:** [Yash Kumar](https://www.linkedin.com/in/yash-kumar-65122620b/)
+
+## Acknowledgements
+
+  - [Chessboard.js](https://github.com/oakmac/chessboardjs) for Chessboard interface.
+  - [Wikimedia](https://commons.wikimedia.org/wiki/Category:SVG_chess_pieces) for free chess piece images.
