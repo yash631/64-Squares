@@ -21,7 +21,6 @@ function findRook(
 ) {
   const oppKing = not.KING[1 - color];
   let actual_piece = piece[1 - color];
-  let curr_piece;
   let pinnedPcs = newPin.getPinnedPcs();
   function normalMove(rank, file, rows, cols) {
     lm[piece[1]][color][`${rows}${cols}`].push(
@@ -53,7 +52,7 @@ function findRook(
   }
 
   // Function to handle the movement processing
-  function processDirection(
+  function findDirection(
     board,
     locOfPiece,
     oppKing,
@@ -176,14 +175,14 @@ function findRook(
     const pinnedPiece = pinnedPcs[color]?.[piece[1]]?.[pinPos];
 
     if (pinnedPiece) {
-      const pinnedPieceType = pinnedPiece[0];
+      const pinningPiece = pinnedPiece[0];
       const pinnedPiecePosition = pinnedPiece[3];
-      const isPinnedPieceRookOrQueen = ["Q", "q", "R", "r"].includes(
-        pinnedPieceType
+      const isPinningPieceRookOrQueen = ["Q", "q", "R", "r"].includes(
+        pinningPiece
       );
 
       if (
-        isPinnedPieceRookOrQueen &&
+        isPinningPieceRookOrQueen &&
         rows !== pinnedPiecePosition[0] &&
         cols !== pinnedPiecePosition[1]
       ) {
@@ -206,7 +205,7 @@ function findRook(
 
     /* Process each direction */
     // File Up
-    processDirection(
+    findDirection(
       board,
       locOfPiece,
       oppKing,
@@ -226,7 +225,7 @@ function findRook(
       gameid,
     );
     // File Down
-    processDirection(
+    findDirection(
       board,
       locOfPiece,
       oppKing,
@@ -246,7 +245,7 @@ function findRook(
       gameid,
     );
     // Rank Left
-    processDirection(
+    findDirection(
       board,
       locOfPiece,
       oppKing,
@@ -266,7 +265,7 @@ function findRook(
       gameid,
     );
     // Rank Right
-    processDirection(
+    findDirection(
       board,
       locOfPiece,
       oppKing,

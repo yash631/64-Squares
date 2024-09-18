@@ -21,7 +21,6 @@ function findBishop(
 ) {
   const oppKing = not.KING[1 - color];
   const actual_piece = piece[1 - color];
-  let curr_piece;
   let pinnedPcs = newPin.getPinnedPcs();
   function normalMove(rank, file, rows, cols) {
     lm[piece[1]][color][`${rows}${cols}`].push(
@@ -51,7 +50,7 @@ function findBishop(
     };
     lm[piece[1]][color][`${rows}${cols}`].push(move);
   }
-  function processDiagonal(
+  function findDiagonal(
     board,
     locOfPiece,
     oppKing,
@@ -173,13 +172,13 @@ function findBishop(
     const pinnedPiece = pinnedPcs[color]?.[piece[1]]?.[pinPos];
     // console.log("rows,cols and pinnedPiecepos : ",[rows,cols],pinnedPiece);
     if (pinnedPiece) {
-      const pinnedPieceType = pinnedPiece[0];
+      const pinningPiece = pinnedPiece[0];
       const pinnedPiecePosition = pinnedPiece[3];
-      const isPinnedPieceBishopOrQueen = ["Q", "q", "B", "b"].includes(
-        pinnedPieceType
+      const isPinningPieceBishopOrQueen = ["Q", "q", "B", "b"].includes(
+        pinningPiece
       );
       if (
-        isPinnedPieceBishopOrQueen &&
+        isPinningPieceBishopOrQueen &&
         (rows == pinnedPiecePosition[0] || cols == pinnedPiecePosition[1])
       ) {
         continue;
@@ -198,9 +197,10 @@ function findBishop(
         continue;
       }
     }
+    
     /* Process each diagonal */
     // left diagonal up-left
-    processDiagonal(
+    findDiagonal(
       board,
       locOfPiece,
       oppKing,
@@ -223,7 +223,7 @@ function findBishop(
     );
 
     // left diagonal down-right
-    processDiagonal(
+    findDiagonal(
       board,
       locOfPiece,
       oppKing,
@@ -246,7 +246,7 @@ function findBishop(
     );
 
     // right diagonal down-left
-    processDiagonal(
+    findDiagonal(
       board,
       locOfPiece,
       oppKing,
@@ -269,7 +269,7 @@ function findBishop(
     );
 
     // right diagonal up-right
-    processDiagonal(
+    findDiagonal(
       board,
       locOfPiece,
       oppKing,

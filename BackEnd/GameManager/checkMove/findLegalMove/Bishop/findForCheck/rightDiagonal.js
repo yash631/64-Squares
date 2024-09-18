@@ -26,12 +26,12 @@ function rightDiag(square, king, color, piece, gameid) {
     /* Discovered checks */
     const inGamePcs = getBoard.createInGamePcs(board);
     /* Check for Discovered check from Bishop */
-    const r = Rook.rookDiscovery(board, "r", inGamePcs, king, color);
+    const r = Rook.rookDiscovery(board, "r", inGamePcs, king, color, gameid);
     if (r) {
       return r;
     }
     /*  Check for Discovered check from Queen */
-    const q = Rook.rookDiscovery(board, "q", inGamePcs, king, color);
+    const q = Rook.rookDiscovery(board, "q", inGamePcs, king, color, gameid);
     if (q) {
       return q;
     }
