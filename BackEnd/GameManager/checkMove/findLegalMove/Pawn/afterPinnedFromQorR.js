@@ -1,6 +1,5 @@
 const not = require("../../notations");
 const ltrt = require("./findForCheck/leftRightDiag");
-const prom = require("./findForCheck/atPromotion");
 
 function findMovesAfterPin(
   color,
@@ -12,7 +11,8 @@ function findMovesAfterPin(
   board,
   inGamePcs,
   pinnedPiecePos,
-  checkInfo
+  checkInfo,
+  gameid,
 ) {
   function normalMove(rank, file) {
     lm.p[color][`${rank}${file}`].push(
@@ -41,7 +41,9 @@ function findMovesAfterPin(
       color,
       [rank + MOVE[color], file],
       oppKing,
-      pawn
+      pawn,
+      gameid,
+
     );
     if (checkPieceInfo) {
       normalCheck(rank, file, checkPieceInfo);
@@ -63,7 +65,8 @@ function findMovesAfterPin(
         color,
         [rank + MOVE[`start${color}`][1], file],
         oppKing,
-        pawn
+        pawn,
+        gameid,
       );
       if (checkPieceInfo) {
         const move = `${not.FILE[file]}${

@@ -11,7 +11,8 @@ function findQueen(
   board,
   piece,
   isInCheck,
-  checkInfo
+  checkInfo,
+  gameid,
 ) {
   bishop.findBishop(
     col,
@@ -23,7 +24,8 @@ function findQueen(
     board,
     piece,
     isInCheck,
-    checkInfo
+    checkInfo,
+    gameid,
   );
   rook.findRook(
     col,
@@ -35,7 +37,8 @@ function findQueen(
     board,
     piece,
     isInCheck,
-    checkInfo
+    checkInfo,
+    gameid,
   );
 }
 module.exports = { findQueen };

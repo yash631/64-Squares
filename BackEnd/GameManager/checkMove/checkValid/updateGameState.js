@@ -1,6 +1,5 @@
 const updateBoard = require("../../Board/updateBoard");
 const getBoard = require("../../Board/createBoard");
-const king = require("../findLegalMove/King/legalKingMoves");
 const not = require("../notations");
 
 function updateGS(
@@ -12,18 +11,22 @@ function updateGS(
   curr_row,
   curr_col,
   new_row,
-  new_col
+  new_col,
+  gameid
 ) {
   if (color) {
     piece = piece.toUpperCase();
   }
+
+  let board = getBoard.getCurrentBoard(gameid);
   Game_State.push(move);
-  console.log("MOVES : ", Game_State);
+  /* console.log("MOVES : ", Game_State); */
+
   if (move == "O-O" || move == "O-O+") {
-    king.Castling[color].k = -1;
-    king.Castling[color].q = -1;
+    getBoard.removeFullCastle(gameid,color);
+
     updateBoard.updateInGamePcs(
-      getBoard.Board,
+      board,
       not.KING[color],
       not.KING[`pos${color}`][0],
       not.KING[`pos${color}`][1],
@@ -31,7 +34,7 @@ function updateGS(
       not.KING[`pos${color}`][1] + 2
     );
     updateBoard.updateInGamePcs(
-      getBoard.Board,
+      board,
       not.ROOK[color],
       not.ROOK[`pos${color}`]["k"][0],
       not.ROOK[`pos${color}`]["k"][1],
@@ -39,10 +42,10 @@ function updateGS(
       not.ROOK[`pos${color}`]["k"][1] - 2
     );
   } else if (move == "O-O-O" || move == "O-O-O+") {
-    king.Castling[color].k = -1;
-    king.Castling[color].q = -1;
+    getBoard.removeFullCastle(gameid,color);
+
     updateBoard.updateInGamePcs(
-      getBoard.Board,
+      board,
       not.KING[color],
       not.KING[`pos${color}`][0],
       not.KING[`pos${color}`][1],
@@ -50,7 +53,7 @@ function updateGS(
       not.KING[`pos${color}`][1] - 2
     );
     updateBoard.updateInGamePcs(
-      getBoard.Board,
+      board,
       not.ROOK[color],
       not.ROOK[`pos${color}`]["q"][0],
       not.ROOK[`pos${color}`]["q"][1],
@@ -59,19 +62,18 @@ function updateGS(
     );
   } else {
     if (move[0] == not.KING[color]) {
-      king.Castling[color].k = 0;
-      king.Castling[color].q = 0;
+      getBoard.removeFullCastle(gameid,color);
     } else if (move[0] == "r") {
       if (curr_row == 0 && curr_col == 0) {
-        king.Castling[0].q = 0;
+        getBoard.removeSingleCastle(gameid,0,"q");
       } else if (curr_row == 0 && curr_col == 7) {
-        king.Castling[0].k = 0;
+        getBoard.removeSingleCastle(gameid,0,"k");
       }
     } else if (move[0] == "R") {
       if (curr_row == 7 && curr_col == 0) {
-        king.Castling[1].q = 0;
+        getBoard.removeSingleCastle(gameid,1,"q");
       } else if (curr_row == 7 && curr_col == 7) {
-        king.Castling[1].k = 0;
+        getBoard.removeSingleCastle(gameid,1,"k");
       }
     }
 
@@ -80,14 +82,13 @@ function updateGS(
       /* Remove the pawn from board */
       if (new_col > curr_col) {
         /* En-passant on right side */
-        getBoard.Board[curr_row][curr_col + 1] = " ";
+        board[curr_row][curr_col + 1] = " ";
       } else {
         /* En-passant on left side */
-        getBoard.Board[curr_row][curr_col - 1] = " ";
+        board[curr_row][curr_col - 1] = " ";
       }
-    }
+    } else if (not.ALLPIECES[color].includes(move[len - 1])) {
     /* For Pawn's promotion */
-    if (not.ALLPIECES[color].includes(move[len - 1])) {
       piece = move[len - 1];
     } else if (
       /* For pawn's promotion with check or checkmate*/
@@ -97,7 +98,7 @@ function updateGS(
       piece = move[len - 2];
     }
     updateBoard.updateInGamePcs(
-      getBoard.Board,
+      getBoard.getCurrentBoard(gameid),
       piece,
       curr_row,
       curr_col,
@@ -105,9 +106,11 @@ function updateGS(
       new_col
     );
   }
-  getBoard.prevMove = `${curr_row}${curr_col}${move}`;
-  getBoard.showBoard(getBoard.Board);
+  getBoard.setPrevMove(gameid, `${curr_row}${curr_col}${move}`);
+  /* getBoard.showBoard(getBoard.getCurrentBoard(gameid)); */
   console.log();
-  return true;     // Piece successfully updated on board and in inGamePcs object
+
+  /* Piece successfully updated on board */
+  return true; 
 }
 module.exports = { updateGS };

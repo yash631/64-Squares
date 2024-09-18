@@ -29,38 +29,6 @@ function Rook(locOfKing, piece_pos, blockedSqs, whichPiece) {
     );
   }
 }
-function Knight(locOfKing, piece_pos, blockedSqs, whichPiece) {
-  // console.log("Knight");
-  if (
-    piece_pos[0] == locOfKing[0] - 2 &&
-    piece_pos[1] == locOfKing[1] - 1 &&
-    piece_pos[0] == locOfKing[0] + 1 &&
-    piece_pos[1] == locOfKing[1] + 2
-  ) {
-    `${whichPiece}${not.FILE[locOfKing[1] + 1]}${not.RANK[locOfKing[0] - 1]}`;
-  } else if (
-    piece_pos[0] == locOfKing[0] - 1 &&
-    piece_pos[1] == locOfKing[1] - 2 &&
-    piece_pos[0] == locOfKing[0] + 2 &&
-    piece_pos[1] == locOfKing[1] + 1
-  ) {
-    `${whichPiece}${not.FILE[locOfKing[1] - 1]}${not.RANK[locOfKing[0] + 1]}`;
-  } else if (
-    piece_pos[0] == locOfKing[0] - 2 &&
-    piece_pos[1] == locOfKing[1] + 1 &&
-    piece_pos[0] == locOfKing[0] + 1 &&
-    piece_pos[1] == locOfKing[1] - 2
-  ) {
-    `${whichPiece}${not.FILE[locOfKing[1] - 1]}${not.RANK[locOfKing[0] - 1]}`;
-  } else if (
-    piece_pos[0] == locOfKing[0] - 1 &&
-    piece_pos[1] == locOfKing[1] + 2 &&
-    piece_pos[0] == locOfKing[0] + 2 &&
-    piece_pos[1] == locOfKing[1] - 1
-  ) {
-    `${whichPiece}${not.FILE[locOfKing[1] + 1]}${not.RANK[locOfKing[0] + 1]}`;
-  }
-}
 
 function kingSqBlockedBypiece(
   color,
@@ -71,20 +39,19 @@ function kingSqBlockedBypiece(
   lineOfSight,
   king,
   board,
-  inGamePcs
+  inGamePcs,
 ) 
 {
   const locOfKing = [inGamePcs[king][0][0], inGamePcs[king][0][1]];
-  // console.log("locofking :", locOfKing);
-  // console.log("whichPiece : ", whichPiece);
-  // console.log("locOfpiece : ", piece_pos);
-  // console.log(blockedSqs);
+  
+  if(whichPiece =="p" ||  whichPiece == "n"){
+    return;
+  }
+  
   if (whichPiece == "b" || whichPiece == "B") {
     Bishop(locOfKing, piece_pos, blockedSqs, whichPiece);
   } else if (whichPiece == "r" || whichPiece == "R") {
     Rook(locOfKing, piece_pos, blockedSqs, whichPiece);
-  } else if (whichPiece == "n" || whichPiece == "N") {
-    Knight(locOfKing, piece_pos, blockedSqs, whichPiece);
   } else if (whichPiece == "q" || whichPiece == "Q") {
     let randomArray = [];
     Rook(locOfKing, piece_pos, randomArray, whichPiece);

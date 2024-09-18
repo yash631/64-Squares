@@ -3,7 +3,7 @@ const not = require("../../notations");
 const getBoard = require("../../../Board/createBoard");
 const newPin = require("../King/findPins/checkNewPins");
 
-function findKnight(color, lm, ALLPCS, iGP, rk, fl, board, isInCheck, checkInfo) {
+function findKnight(color, lm, ALLPCS, iGP, rk, fl, board, isInCheck, checkInfo, gameid) {
   const king = not.KING[1 - color];
   let knight = "n";
   if (color) {
@@ -66,7 +66,7 @@ function findKnight(color, lm, ALLPCS, iGP, rk, fl, board, isInCheck, checkInfo)
           curr_piece = board[rank][file];
           board[rank][file] = knight;
           board[locOfKnight[0]][locOfKnight[1]] = " ";
-          checkPieceInfo = allDir.movesArray([rank, file], totalMoves, king, color);
+          checkPieceInfo = allDir.movesArray([rank, file], totalMoves, king, color, gameid);
           if(checkPieceInfo) {
             captureCheck(rank, file, locOfKnight[0], locOfKnight[1],checkPieceInfo);
           } else {
@@ -78,7 +78,7 @@ function findKnight(color, lm, ALLPCS, iGP, rk, fl, board, isInCheck, checkInfo)
           curr_piece = board[rank][file];
           board[rank][file] = knight;
           board[locOfKnight[0]][locOfKnight[1]] = " ";
-          checkPieceInfo = allDir.movesArray([rank, file], totalMoves, king, color);
+          checkPieceInfo = allDir.movesArray([rank, file], totalMoves, king, color, gameid);
           if(checkPieceInfo) {
             normalCheck(rank, file, locOfKnight[0], locOfKnight[1], checkPieceInfo);
           } else {

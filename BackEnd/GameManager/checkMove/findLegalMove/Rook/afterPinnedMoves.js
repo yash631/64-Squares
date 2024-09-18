@@ -13,7 +13,8 @@ function findMovesAfterPin(
   lm,
   inGamePcs,
   pinnedPiecePos,
-  checkInfo
+  checkInfo,
+  gameid,
 ) {
   function captureCheck(rank, file, rows, cols, checkPieceInfo) {
     const move = `${actualPiece}x${not.FILE[cols]}${not.RANK[rows]}+`;
@@ -49,19 +50,19 @@ function findMovesAfterPin(
     const [rank, file] = currPinnedPiecePos;
     if (pinnedPiece == "q") {
       return (
-        RNK.rank([rank, file], oppKing, color, "q") ||
-        FL.file([rank, file], oppKing, color, "q") ||
-        right.rightDiag([rank, file], oppKing, color, "q") ||
-        left.leftDiag([rank, file], oppKing, color, "q")
+        RNK.rank([rank, file], oppKing, color, "q", gameid) ||
+        FL.file([rank, file], oppKing, color, "q", gameid) ||
+        right.rightDiag([rank, file], oppKing, color, "q", gameid) ||
+        left.leftDiag([rank, file], oppKing, color, "q",gameid)
       );
     } else {
       return (
-        RNK.rank([rank, file], oppKing, color, "r") ||
-        FL.file([rank, file], oppKing, color, "r")
+        RNK.rank([rank, file], oppKing, color, "r", gameid) ||
+        FL.file([rank, file], oppKing, color, "r", gameid)
       );
     }
   }
-  const board = getBoard.Board;
+  const board = getBoard.getCurrentBoard(gameid);
   const pinnedPieceKey = `${pinnedPiecePos[0]}${pinnedPiecePos[1]}`;
   const kingPos = inGamePcs[not.KING[color]][0];
   let pinningPiece = pinnedPcs[color][pinnedPiece][pinnedPieceKey][0];
@@ -82,7 +83,8 @@ function findMovesAfterPin(
     kingCol,
     endRow,
     endCol,
-    direction
+    direction,
+    gameid,
   ) {
     let row = startRow,
       col = startCol;
@@ -217,7 +219,8 @@ function findMovesAfterPin(
         kingPos[1],
         pinningPiecePos[0],
         pinningPiecePos[1],
-        "left"
+        "left",
+        gameid,
       );
     } else {
       /* Check from Rank left */
@@ -228,7 +231,8 @@ function findMovesAfterPin(
         kingPos[1],
         pinningPiecePos[0],
         pinningPiecePos[1],
-        "right"
+        "right",
+        gameid,
       );
     }
   } else if (kingPos[1] === pinnedPiecePos[1]) {
@@ -241,7 +245,8 @@ function findMovesAfterPin(
         kingPos[1],
         pinningPiecePos[0],
         pinningPiecePos[1],
-        "up"
+        "up",
+        gameid,
       );
     } else {
       /* Check from File down */
@@ -252,7 +257,8 @@ function findMovesAfterPin(
         kingPos[1],
         pinningPiecePos[0],
         pinningPiecePos[1],
-        "down"
+        "down",
+        gameid,
       );
     }
   }

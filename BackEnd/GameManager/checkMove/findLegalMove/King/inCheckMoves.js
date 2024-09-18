@@ -13,9 +13,10 @@ function findMoves(
   checkPiecePos_NEW,
   LEGALMOVES,
   inGamePcs,
-  blockedSquaresForKing
+  blockedSquaresForKing,
+  gameid,
 ) {
-  const board = getBoard.Board;
+  const board = getBoard.getCurrentBoard(gameid);
 
   /* Find the squares from king moves covered by the opponent checking piece in the line of sight with the king*/
   let lineOfSight = [];
@@ -23,7 +24,7 @@ function findMoves(
     whichPieceGaveCheck,
     checkPiecePos_NEW,
     kingPos,
-    lineOfSight
+    lineOfSight,
   );
  
   // console.log("LOS : ", lineOfSight);
@@ -72,7 +73,7 @@ function findMoves(
     lineOfSight,
     king, // King who is in check
     board, // Board
-    inGamePcs // Current piece in the game with their position
+    inGamePcs, // Current piece in the game with their position
   );
   // delete LEGALMOVES[whichPieceGaveCheck][1-color][`${checkPiecePos_NEW[0]}${checkPiecePos_NEW[1]}`];
 

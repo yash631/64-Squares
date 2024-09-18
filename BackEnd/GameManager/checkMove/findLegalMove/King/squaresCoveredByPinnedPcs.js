@@ -7,7 +7,7 @@ function calculateBlockedSquares(
   col,
   blockedSquares,
   color,
-  board
+  board,
 ) {
   const directions = {
     rook: [
@@ -124,8 +124,8 @@ function calculateBlockedSquares(
   }
 }
 
-function findSquares(pinnedPcs, color, blockedSquares) {
-  const board = getBoard.Board;
+function findSquares(pinnedPcs, color, blockedSquares, gameid) {
+  const board = getBoard.getCurrentBoard(gameid);
   for (const pinnedPiece in pinnedPcs[color]) {
     let row, col;
     for (const uniquePiece in pinnedPcs[color][pinnedPiece]) {

@@ -8,10 +8,18 @@ const app = express();
 app.use(express.static("FrontEnd"));
 
 const isCorrectMove = require("./GameManager/checkMove/readMove");
+const getBoard = require("./GameManager/Board/createBoard");
 
 let players = {}; // Store all players
 let T_Ply = 0; // Track the number of players
 const Games = {}; // Store all games
+
+function showGame(gameId) {
+  const board = getBoard.getCurrentBoard(gameId);
+  console.log(`CURRENT BOARD STATE WITH ID: ${gameId}`);
+  console.log("MOVES : ", getBoard.getGameState(gameId));
+  getBoard.showBoard(board);
+}
 
 io.on("connection", (socket) => {
   console.log(`Player connected: ${socket.id}`);
@@ -23,59 +31,57 @@ io.on("connection", (socket) => {
     /* console.log(
       `A user with ID: ${userID} and Name: ${Name} joined the server.`
     ); */
+
     console.log("Total Players in the server:", T_Ply);
 
     socket.broadcast.emit("player_joined_game", Name);
 
-    // Assign color based on player number (odd: White, even: Black)
-    if (T_Ply % 2 === 1) {
-      players[userID].Color = "white"; // Odd player gets white
-    } else {
-      players[userID].Color = "black"; // Even player gets black
-    }
+    players[userID].Color = T_Ply % 2 === 1 ? "white" : "black";
 
-    // If two players have joined, start a new game
+    /* start a new game if two players are idle or have joined */
     if (T_Ply % 2 === 0 && T_Ply >= 2) {
       const gameID = uuid.v4(); // Generate a new game ID
 
-      // Get the last two players to start the game
       const playerKeys = Object.keys(players);
       const player1 = players[playerKeys[playerKeys.length - 2]]; // The first player (white)
       const player2 = players[playerKeys[playerKeys.length - 1]]; // The second player (black)
 
-      // Create the new game
+      /* Initialize a new board for this game */
+      const newBoard = getBoard.createNewGame(gameID).Board;
+
+      /* Append a new game in Games Object */
       Games[gameID] = {
         Game_Players: {
           player1: player1,
           player2: player2,
         },
+        Board: newBoard,
         TimeFormat: 10,
         Moves: [],
         Result: 0,
       };
 
-      // Emit the game ID and player information to both players
+      /* Emit the game ID and player information to both players */
       io.to(player1.id).emit("gameID", {
         gameId: gameID,
-        playerColor: player1.Color, // Send white to player1
+        playerColor: player1.Color,
       });
 
       io.to(player2.id).emit("gameID", {
         gameId: gameID,
-        playerColor: player2.Color, // Send black to player2
+        playerColor: player2.Color,
       });
 
-      // Join game room
+      /* Join game room */
       io.sockets.sockets.get(player1.id).join(gameID);
       io.sockets.sockets.get(player2.id).join(gameID);
 
       console.log(Games);
     }
 
-    io.emit("player_count_update", T_Ply); // Update all clients with player count
+    io.emit("player_count_update", T_Ply);
   });
 
-  // Handle moves from the client
   socket.on("new_move", async (data) => {
     const { move, gameid, promotionPiece } = data;
     const pcsColor = move.playerColor;
@@ -84,7 +90,8 @@ io.on("connection", (socket) => {
       const isValid = await isCorrectMove.checkValidity(
         move,
         pcsColor,
-        promotionPiece
+        promotionPiece,
+        gameid
       );
 
       /* Return game status if any accidental move is made after the game has ended */
@@ -94,6 +101,16 @@ io.on("connection", (socket) => {
       /* console.log("Move Validity Result : ", isValid); */
 
       if (isValid) {
+        /* Update the board of each game in the Games object */
+        Games[gameid].Board = getBoard.getCurrentBoard(gameid);
+
+        /* Look current state of a game with gameid */
+        showGame(gameid);
+
+        /* Get current Game Object */
+        const gameObj = getBoard.getSingleGameObject(gameid);
+        /* console.log("Game Object with id :",gameid,"\n",gameObj); */
+
         const result = isValid.result;
         const finalMove = isValid.finalMove;
         Games[gameid].Moves.push(move);
@@ -117,7 +134,7 @@ io.on("connection", (socket) => {
           });
         } else if (finalMove.includes("ep")) {
           const enPawn = isValid.enPassantCapturePawn;
-          /* console.log("enPassantPawnSquare : ", enPawn); */
+
           io.to(gameid).emit("enPassant", {
             movemade: finalMove,
             color: pcsColor,
@@ -128,7 +145,7 @@ io.on("connection", (socket) => {
         } else if (finalMove.includes("=")) {
           const promSq = isValid.promotionSquare;
           const promPc = isValid.promotionPiece;
-          /* console.log("Promotion Square & Promotion Piece : ", promSq, promPc); */
+
           io.to(gameid).emit("promotion", {
             movemade: finalMove,
             color: pcsColor,
@@ -143,18 +160,18 @@ io.on("connection", (socket) => {
             gameid: gameid,
             move: move,
             totalMoves: totalMoves,
-          }); // Notify all players of the valid move
+          });
         }
 
         /* Check if the game ends in a stalemate or checkmate  */
         if (result[0] == "1") {
           setTimeout(() => {
-            // Add a short delay before emitting checkmate or stalemate alert
+            /* Add a short delay before emitting checkmate or stalemate alert */
             if (result[1] == "/" && result[2] == "2") {
-              // Stalemate
+              /* Stalemate */
               io.to(gameid).emit("stalemate", { move: move });
             } else {
-              // Checkmate
+              /* Checkmate */
               io.to(gameid).emit("checkmate", {
                 won: result[1],
                 lost: result[2],
@@ -162,10 +179,10 @@ io.on("connection", (socket) => {
                 move: move,
               });
             }
-          }, 300); // Delay for 500ms (you can adjust this value)
+          }, 300); // 300ms
         }
       } else {
-        socket.emit("invalid_move", { move }); // Notify the client that the move was invalid
+        socket.emit("invalid_move", { move });
         console.log("Invalid move");
       }
     } catch (error) {
@@ -173,7 +190,6 @@ io.on("connection", (socket) => {
     }
   });
 
-  // Handle game abortion
   socket.on("gameAborted", (data) => {
     const { abortUserID, abortPlayerName, gameId, color } = data;
 
@@ -185,22 +201,19 @@ io.on("connection", (socket) => {
     console.log(`Total Games in the server: ${Object.keys(Games).length}`);
   });
 
-  // Handle player resignation
   socket.on("playerResigned", (data) => {
     const { resignUserID, resignPlayerName, gameId, color } = data;
 
     io.to(gameId).emit("Resignation", { color: color });
     delete Games[gameId];
     console.log(
-      `Player "${resignPlayerName}" ID: ${resignUserID} resigned the game ID: ${gameId}`
+      `Player ${resignPlayerName} ID: ${resignUserID} resigned the game ID: ${gameId}`
     );
     console.log(`Total Games in the server: ${Object.keys(Games).length}`);
   });
 
-  // Handle Draw offer
   socket.on("offerDraw", (data) => {
     const { drawUserID, drawPlayerName, gameId } = data;
-    /* console.log("Offered Draw:", data); */
 
     socket.broadcast.to(gameId).emit("drawOffer", {
       drawPlayerName: drawPlayerName,
@@ -208,10 +221,7 @@ io.on("connection", (socket) => {
     });
   });
 
-  // Handle Draw response
   socket.on("drawResponse", (response) => {
-    /* console.log("Draw Response : ", response); */
-
     if (response.accepted) {
       io.to(response.gameId).emit("drawAccepted", {
         message: "Draw by Agreement",
@@ -223,10 +233,8 @@ io.on("connection", (socket) => {
     }
   });
 
-  // Handle player disconnection
   socket.on("disconnect", () => {
     console.log(`Player disconnected: ${socket.id}`);
-    // Remove player and decrement player count
     delete players[socket.id];
   });
 });

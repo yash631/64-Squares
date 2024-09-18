@@ -16,7 +16,8 @@ function findBishop(
   board,
   piece,
   isInCheck,
-  checkInfo
+  checkInfo,
+  gameid,
 ) {
   const oppKing = not.KING[1 - color];
   const actual_piece = piece[1 - color];
@@ -68,7 +69,8 @@ function findBishop(
     captureCheck,
     captureMove,
     normalCheck,
-    normalMove
+    normalMove,
+    gameid,
   ) {
     let [rank, file] = locOfPiece;
     const [rankChange, fileChange] = direction;
@@ -91,8 +93,8 @@ function findBishop(
       if (ALLPCS[1 - color].includes(board[rank][file])) {
         if (pieceType === "q") {
           checkPieceInfo =
-            RNK.rank([rank, file], oppKing, color, pieceType) ||
-            FL.file([rank, file], oppKing, color, pieceType);
+            RNK.rank([rank, file], oppKing, color, pieceType,gameid) ||
+            FL.file([rank, file], oppKing, color, pieceType,gameid);
           if (checkPieceInfo) {
             captureCheck(
               rank,
@@ -108,8 +110,8 @@ function findBishop(
         board[rank][file] = actual_piece;
         board[locOfPiece[0]][locOfPiece[1]] = " ";
         checkPieceInfo =
-          right.rightDiag([rank, file], oppKing, color, pieceType) ||
-          left.leftDiag([rank, file], oppKing, color, pieceType);
+          right.rightDiag([rank, file], oppKing, color, pieceType, gameid) ||
+          left.leftDiag([rank, file], oppKing, color, pieceType, gameid);
         if (checkPieceInfo) {
           captureCheck(
             rank,
@@ -133,10 +135,10 @@ function findBishop(
         break;
       } else if (pieceType === "q") {
         checkPieceInfo =
-          RNK.rank([rank, file], oppKing, color, pieceType) ||
-          FL.file([rank, file], oppKing, color, pieceType) ||
-          right.rightDiag([rank, file], oppKing, color, pieceType) ||
-          left.leftDiag([rank, file], oppKing, color, pieceType);
+          RNK.rank([rank, file], oppKing, color, pieceType, gameid) ||
+          FL.file([rank, file], oppKing, color, pieceType, gameid) ||
+          right.rightDiag([rank, file], oppKing, color, pieceType, gameid) ||
+          left.leftDiag([rank, file], oppKing, color, pieceType, gameid);
         if (checkPieceInfo) {
           normalCheck(rank, file, locOfPiece[0], locOfPiece[1], checkPieceInfo);
         } else {
@@ -147,8 +149,8 @@ function findBishop(
         board[rank][file] = actual_piece;
         board[locOfPiece[0]][locOfPiece[1]] = " ";
         checkPieceInfo =
-          right.rightDiag([rank, file], oppKing, color, pieceType) ||
-          left.leftDiag([rank, file], oppKing, color, pieceType);
+          right.rightDiag([rank, file], oppKing, color, pieceType, gameid) ||
+          left.leftDiag([rank, file], oppKing, color, pieceType, gameid);
         if (checkPieceInfo) {
           normalCheck(rank, file, locOfPiece[0], locOfPiece[1], checkPieceInfo);
         } else {
@@ -176,17 +178,6 @@ function findBishop(
       const isPinnedPieceBishopOrQueen = ["Q", "q", "B", "b"].includes(
         pinnedPieceType
       );
-      const dir = {
-        left: [
-          [-1, -1],
-          [1, 1],
-        ],
-        right: [
-          [-1, 1],
-          [1, -1],
-        ],
-      };
-
       if (
         isPinnedPieceBishopOrQueen &&
         (rows == pinnedPiecePosition[0] || cols == pinnedPiecePosition[1])
@@ -201,7 +192,8 @@ function findBishop(
           lm,
           iGP,
           [rows, cols],
-          checkInfo
+          checkInfo,
+          gameid,
         );
         continue;
       }
@@ -226,7 +218,8 @@ function findBishop(
       captureCheck,
       captureMove,
       normalCheck,
-      normalMove
+      normalMove,
+      gameid,
     );
 
     // left diagonal down-right
@@ -248,7 +241,8 @@ function findBishop(
       captureCheck,
       captureMove,
       normalCheck,
-      normalMove
+      normalMove,
+      gameid,
     );
 
     // right diagonal down-left
@@ -270,7 +264,8 @@ function findBishop(
       captureCheck,
       captureMove,
       normalCheck,
-      normalMove
+      normalMove,
+      gameid
     );
 
     // right diagonal up-right
@@ -292,7 +287,8 @@ function findBishop(
       captureCheck,
       captureMove,
       normalCheck,
-      normalMove
+      normalMove,
+      gameid,
     );
   }
 }

@@ -1,6 +1,5 @@
 const not = require("../../notations");
 const ltrt = require("./findForCheck/leftRightDiag");
-const prom = require("./findForCheck/atPromotion");
 
 function findMovesAfterPin(
   color,
@@ -15,7 +14,8 @@ function findMovesAfterPin(
   board,
   pinnedPiecePos,
   pinningPiecePos,
-  checkInfo
+  checkInfo,
+  gameid,
 ) {
   function normalEnPassant(rank, file, row, col) {
     lm.p[color][`${rank}${file}`].push(
@@ -57,7 +57,7 @@ function findMovesAfterPin(
       board[rank][file] = " ";
       board[pngRank][pngFile] = pawn;
 
-      checkPieceInfo = ltrt.leftRight(color, [pngRank, pngFile], oppKing, pawn);
+      checkPieceInfo = ltrt.leftRight(color, [pngRank, pngFile], oppKing, pawn, gameid);
 
       if (checkPieceInfo) {
         captureCheck(rank, file, pngRank, pngFile, checkPieceInfo);
@@ -89,7 +89,8 @@ function findMovesAfterPin(
         color,
         [enPassantRank, enPassantFile],
         oppKing,
-        pawn
+        pawn,
+        gameid,
       );
       if (checkPieceInfo) {
         EnPassantCheck(

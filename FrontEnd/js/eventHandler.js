@@ -399,13 +399,11 @@ $(document).ready(function () {
     showDrawModal(
       `${drawPlayerName} has offered a draw. Do you accept?`,
       () => {
-        // Emit acceptance of the draw offer
         socket.emit("drawResponse", { accepted: true, gameId: gameId });
         disableButtons();
         closeBoard(ChessBoard, currentPosition, playerColor);
       },
       () => {
-        // Emit rejection of the draw offer
         socket.emit("drawResponse", { accepted: false, gameId: gameId });
       }
     );
@@ -424,12 +422,11 @@ $(document).ready(function () {
   socket.on("drawRejected", (data) => {
     console.log("Draw rejected : ", data);
 
-    alert(data.message); // Notify both players that the draw was rejected
+    alert(data.message); 
     abortOrResign.disabled = false;
-    draw.disabled = false; // Re-enable buttons for the player who offered the draw
+    draw.disabled = false; 
   });
 
-  // Update player count in the lobby
   socket.on("player_count_update", (playerCount) => {
     Players = playerCount;
     console.log("Players in the lobby: ", Players);
@@ -438,7 +435,6 @@ $(document).ready(function () {
     }
   });
 
-  // Handle receiving game ID and player color
   socket.on("gameID", (data) => {
     gameId = data.gameId;
     playerColor = data.playerColor;

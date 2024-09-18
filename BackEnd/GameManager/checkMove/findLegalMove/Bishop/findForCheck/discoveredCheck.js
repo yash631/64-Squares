@@ -1,4 +1,4 @@
-function bishopDiscovery(Board, piece, inGamePcs, king, color) {
+function bishopDiscovery(Board, piece, inGamePcs, king, color, gameid) {
   if (piece == "b" && color) {
     piece = "B";
   } else if (piece == "q" && color) {

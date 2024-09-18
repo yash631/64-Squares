@@ -13,9 +13,10 @@ function findMovesAfterPin(
   lm,
   inGamePcs,
   pinnedPiecePos,
-  checkInfo
+  checkInfo,
+  gameid,
 ) {
-  const board = getBoard.Board;
+  const board = getBoard.getCurrentBoard(gameid);
 
   function captureCheck(rank, file, rows, cols, checkPieceInfo) {
     const move = `${actualPiece}x${not.FILE[cols]}${not.RANK[rows]}+`;

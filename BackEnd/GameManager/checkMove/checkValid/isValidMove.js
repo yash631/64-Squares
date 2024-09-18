@@ -15,17 +15,28 @@ let whichPieceGaveCheck;
 let checkPiecePos_NEW;
 let lookForChkmtAndStlmt = false;
 
-function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
+function isValid(
+  piece,
+  move,
+  color,
+  curr_row,
+  curr_col,
+  new_row,
+  new_col,
+  gameid
+) {
   let flagForCheck = false;
   let checkInfo = {
     0: {},
     1: {},
   };
   /* Check for new Pins */
-  newPin.detectPins();
+  newPin.detectPins(gameid);
 
   const len = move.length;
-  let inGamePcs = getBoard.createInGamePcs(getBoard.Board); // Current pieces object with posiitons
+  let board = getBoard.getCurrentBoard(gameid);
+  let prevMove = getBoard.getPrevMove(gameid);
+  let inGamePcs = getBoard.createInGamePcs(board); // Current pieces object with posiitons
   let king = not.KING[color]; // Own side King
   let kingPos = inGamePcs[king][0]; // Position of own side king in the board
   let blockedSquaresForKing = []; // Include squares to restrict the king to make move on them
@@ -51,12 +62,13 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
   }
   findlegal.findAllLegalMoves(
     LEGALMOVES,
-    getBoard.Board,
-    getBoard.createInGamePcs(getBoard.Board),
+    board,
+    inGamePcs,
     color,
-    getBoard.prevMove,
+    prevMove,
     isInCheck,
-    checkInfo
+    checkInfo,
+    gameid
   );
   /*
   console.log(
@@ -69,9 +81,10 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
   */
 
   sqsCovered.findSquares(
-    newPin.getPinnedPcs(),
+    newPin.getPinnedPcs(gameid),
     1 - color, // color of opponent side
-    blockedSquaresForKing // adding the squares covered by opponent pinned Piece to restrict own king to move
+    blockedSquaresForKing, // adding the squares covered by opponent pinned Piece to restrict own king to move
+    gameid
   );
 
   oppMoves.findOppMoves(
@@ -81,22 +94,20 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
     LEGALMOVES, // LegalMoves object
     blockedSquaresForKing, // Squares restricted from opponent king to move
     isInCheck,
-    checkInfo
+    checkInfo,
+    gameid
   );
 
   if (isInCheck) {
+    board = getBoard.getCurrentBoard(gameid);
     flagForCheck = true;
-    doubleCheckPieceArray = doubleChk.isDoubleCheck(
-      kingPos,
-      getBoard.Board,
-      color
-    );
+    doubleCheckPieceArray = doubleChk.isDoubleCheck(kingPos, board, color);
     // console.log(doubleCheckPieceArray);
     const checkPcs = doubleCheckPieceArray.checkingPieces;
     if (doubleCheckPieceArray.isDoubleCheck) {
       sqsInDoubleCheck.blockSquaresInDoubleCheck(
         kingPos,
-        getBoard.Board,
+        board,
         checkPcs,
         blockedSquaresForKing
       );
@@ -118,7 +129,8 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
       checkPiecePos_NEW, // square on which the piece made check
       LEGALMOVES, // legal moves object
       inGamePcs, // Object containing all current board pieces and positions
-      blockedSquaresForKing // squares restricted from opponent king to move
+      blockedSquaresForKing, // squares restricted from opponent king to move
+      gameid
     );
   }
   blockedSquaresForKing = []; // Empty the squares for later use if needed
@@ -142,11 +154,12 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
       len,
       color,
       piece,
-      getBoard.Game_State,
+      getBoard.getGameState(gameid),
       curr_row,
       curr_col,
       new_row,
-      new_col
+      new_col,
+      gameid
     );
     if (isInCheck) {
       isInCheck = false;
@@ -161,7 +174,16 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
 
     /* Finding next moves of other side pieces */
     lookForChkmtAndStlmt = true;
-    isValid(piece, move, 1 - color, curr_row, curr_col, new_row, new_col);
+    isValid(
+      piece,
+      move,
+      1 - color,
+      curr_row,
+      curr_col,
+      new_row,
+      new_col,
+      gameid
+    );
 
     let Tmoves = 0;
     for (const allPcs in LEGALMOVES) {
@@ -185,13 +207,13 @@ function isValid(piece, move, color, curr_row, curr_col, new_row, new_col) {
     }
     if (Tmoves === 0 && isInCheck) {
       console.log(`${not.COLOR[color]} delivered Checkmate`);
-      return `1${color}${1 - color}`;  // Return this for game ending in checkmate as 1 followed by winner color side followed by loser color side
+      return `1${color}${1 - color}`; // Return this for game ending in checkmate as 1 followed by winner color side followed by loser color side
     } else if (Tmoves === 0 && !isInCheck) {
       console.log("Stalemate");
-      return `1/2`;   // Return `1/2` for stalemate or draw
+      return `1/2`; // Return `1/2` for stalemate or draw
     }
-     
-    return `0`;   // Return `0` if the move is legal and the game is still going
+
+    return `0`; // Return `0` if the move is legal and the game is still going
   } else {
     console.log("ILLEGAL MOVE");
     return false;

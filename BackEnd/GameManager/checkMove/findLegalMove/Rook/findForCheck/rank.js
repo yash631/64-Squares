@@ -1,47 +1,50 @@
 const getBoard = require("../../../../Board/createBoard");
 const Bishop = require("../../Bishop/findForCheck/discoveredCheck");
 
-function rank(square, king, color, piece) {
+function rank(square, king, color, piece, gameid) {
   /* Left Rank */
   let rank = square[0],
     file = square[1];
+  const board = getBoard.getCurrentBoard(gameid);
   while (--file >= 0) {
-    if (getBoard.Board[rank][file] == king) {
+    if (board[rank][file] == king) {
       return { piece, rank : square[0], file : square[1] };
-    } else if (getBoard.Board[rank][file] != " ") {
+    } else if (board[rank][file] != " ") {
       break;
     }
   }
   /* Right Rank */
   file = square[1];
   while (++file <= 7) {
-    if (getBoard.Board[rank][file] == king) {
+    if (board[rank][file] == king) {
       return { piece, rank : square[0], file : square[1] };
-    } else if (getBoard.Board[rank][file] != " ") {
+    } else if (board[rank][file] != " ") {
       break;
     }
   }
   if (piece != "q") {
     /* Discovered checks */
-    const inGamePcs = getBoard.createInGamePcs(getBoard.Board);
+    const inGamePcs = getBoard.createInGamePcs(board);
     /* Check for Discovered check from Bishop */
     const b = Bishop.bishopDiscovery(
-      getBoard.Board,
+      board,
       "b",
       inGamePcs,
       king,
-      color
+      color,
+      gameid,
     );
     if (b) {
       return b;
     }
     /*  Check for Discovered check from Queen */
     const q = Bishop.bishopDiscovery(
-      getBoard.Board,
+      board,
       "q",
       inGamePcs,
       king,
-      color
+      color,
+      gameid,
     );
     if (q) {
       return q;

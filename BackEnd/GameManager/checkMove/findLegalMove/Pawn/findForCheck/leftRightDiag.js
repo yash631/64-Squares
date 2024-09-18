@@ -2,8 +2,9 @@ const getBoard = require("../../../../Board/createBoard");
 const Bishop = require("../../Bishop/findForCheck/discoveredCheck");
 const Rook = require("../../Rook/findForCheck/discoveredCheck");
 
-function leftRight(color, square, king, pawn) {
+function leftRight(color, square, king, pawn, gameid) {
   const piece = "p";
+  const board = getBoard.getCurrentBoard(gameid);
   let rank, file;
   let trgtSqLeft, trgtSqRight;
   if (color) {
@@ -15,40 +16,41 @@ function leftRight(color, square, king, pawn) {
   }
   if (
     trgtSqLeft[1] >= 0 &&
-    getBoard.Board[trgtSqLeft[0]][trgtSqLeft[1]] == king
+    board[trgtSqLeft[0]][trgtSqLeft[1]] == king
   ) {
     (rank = trgtSqLeft[0]), (file = trgtSqRight[1]);
     return { piece, rank, file };
   }
   if (
     trgtSqRight[1] <= 7 &&
-    getBoard.Board[trgtSqRight[0]][trgtSqRight[1]] == king
+    board[trgtSqRight[0]][trgtSqRight[1]] == king
   ) {
     (rank = trgtSqRight[0]), (file = trgtSqRight[1]);
     return { piece, rank, file };
   } else {
     /* Discovered checks */
-    const inGamePcs = getBoard.createInGamePcs(getBoard.Board);
+    const inGamePcs = getBoard.createInGamePcs(board);
     /* Check for Discovered check from Bishop */
     const b = Bishop.bishopDiscovery(
-      getBoard.Board,
+      board,
       "b",
       inGamePcs,
       king,
-      color
+      color,
+      gameid,
     );
     if (b) {
       return b;
     }
     /* Check for Discovered check from Rook */
-    const r = Rook.rookDiscovery(getBoard.Board, "r", inGamePcs, king, color);
+    const r = Rook.rookDiscovery(board, "r", inGamePcs, king, color, gameid);
     if (r) {
       return r;
     }
     /* Check for Discovered check from Queen */
     const q =
-      Bishop.bishopDiscovery(getBoard.Board, "q", inGamePcs, king, color) ||
-      Rook.rookDiscovery(getBoard.Board, "q", inGamePcs, king, color);
+      Bishop.bishopDiscovery(board, "q", inGamePcs, king, color, gameid) ||
+      Rook.rookDiscovery(board, "q", inGamePcs, king, color, gameid);
     if (q) {
       return q;
     }

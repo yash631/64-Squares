@@ -1,4 +1,4 @@
-function rookDiscovery(Board, piece, inGamePcs, king, color) {
+function rookDiscovery(Board, piece, inGamePcs, king, color, gameid) {
   if (piece == "r" && color) {
     piece = "R";
   } else if (piece == "q" && color) {

@@ -11,7 +11,8 @@ function findOppMoves(
   LEGALMOVES,
   blockedSquaresForKing,
   isInCheck,
-  checkInfo
+  checkInfo,
+  gameid,
 ) {
   /* Get the next Legal of opponent to block the king movement to those squares (Imp.)*/
   for (const allPcs in LEGALMOVES) {
@@ -19,12 +20,13 @@ function findOppMoves(
   }
   findlegal.findAllLegalMoves(
     LEGALMOVES,
-    getBoard.Board,
-    getBoard.createInGamePcs(getBoard.Board),
+    getBoard.getCurrentBoard(gameid),
+    getBoard.createInGamePcs(getBoard.getCurrentBoard(gameid)),
     color,
-    getBoard.prevMove,
+    getBoard.getPrevMove(gameid),
     isInCheck,
-    checkInfo
+    checkInfo,
+    gameid,
   );
 
   for (const allPieces in LEGALMOVES) {

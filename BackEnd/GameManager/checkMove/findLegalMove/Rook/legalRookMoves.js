@@ -16,7 +16,8 @@ function findRook(
   board,
   piece,
   isInCheck,
-  checkInfo
+  checkInfo,
+  gameid,
 ) {
   const oppKing = not.KING[1 - color];
   let actual_piece = piece[1 - color];
@@ -68,7 +69,8 @@ function findRook(
     captureCheck,
     captureMove,
     normalCheck,
-    normalMove
+    normalMove,
+    gameid,
   ) {
     let [rank, file] = locOfPiece;
     const [rankChange, fileChange] = direction;
@@ -91,8 +93,8 @@ function findRook(
       if (ALLPCS[1 - color].includes(board[rank][file])) {
         if (pieceType === "q") {
           checkPieceInfo =
-            left.leftDiag([rank, file], oppKing, color, pieceType) ||
-            right.rightDiag([rank, file], oppKing, color, pieceType);
+            left.leftDiag([rank, file], oppKing, color, pieceType, gameid) ||
+            right.rightDiag([rank, file], oppKing, color, pieceType, gameid);
           if (checkPieceInfo) {
             captureCheck(
               rank,
@@ -109,8 +111,8 @@ function findRook(
         board[rank][file] = actual_piece;
         board[locOfPiece[0]][locOfPiece[1]] = " ";
         checkPieceInfo =
-          RNK.rank([rank, file], oppKing, color, pieceType) ||
-          FL.file([rank, file], oppKing, color, pieceType);
+          RNK.rank([rank, file], oppKing, color, pieceType, gameid) ||
+          FL.file([rank, file], oppKing, color, pieceType, gameid);
         if (checkPieceInfo) {
           captureCheck(
             rank,
@@ -134,10 +136,10 @@ function findRook(
         break;
       } else if (pieceType === "q") {
         checkPieceInfo =
-          RNK.rank([rank, file], oppKing, color, pieceType) ||
-          FL.file([rank, file], oppKing, color, pieceType) ||
-          left.leftDiag([rank, file], oppKing, color, pieceType) ||
-          right.rightDiag([rank, file], oppKing, color, pieceType);
+          RNK.rank([rank, file], oppKing, color, pieceType, gameid) ||
+          FL.file([rank, file], oppKing, color, pieceType, gameid) ||
+          left.leftDiag([rank, file], oppKing, color, pieceType, gameid) ||
+          right.rightDiag([rank, file], oppKing, color, pieceType, gameid);
         if (checkPieceInfo) {
           normalCheck(rank, file, locOfPiece[0], locOfPiece[1], checkPieceInfo);
         } else {
@@ -148,8 +150,8 @@ function findRook(
         board[rank][file] = actual_piece;
         board[locOfPiece[0]][locOfPiece[1]] = " ";
         checkPieceInfo =
-          RNK.rank([rank, file], oppKing, color, pieceType) ||
-          FL.file([rank, file], oppKing, color, pieceType);
+          RNK.rank([rank, file], oppKing, color, pieceType, gameid) ||
+          FL.file([rank, file], oppKing, color, pieceType, gameid);
         if (checkPieceInfo) {
           normalCheck(rank, file, locOfPiece[0], locOfPiece[1], checkPieceInfo);
         } else {
@@ -195,7 +197,8 @@ function findRook(
           lm,
           iGP,
           [rows, cols],
-          checkInfo
+          checkInfo,
+          gameid,
         );
         continue;
       }
@@ -219,7 +222,8 @@ function findRook(
       captureCheck,
       captureMove,
       normalCheck,
-      normalMove
+      normalMove,
+      gameid,
     );
     // File Down
     processDirection(
@@ -238,7 +242,8 @@ function findRook(
       captureCheck,
       captureMove,
       normalCheck,
-      normalMove
+      normalMove,
+      gameid,
     );
     // Rank Left
     processDirection(
@@ -257,7 +262,8 @@ function findRook(
       captureCheck,
       captureMove,
       normalCheck,
-      normalMove
+      normalMove,
+      gameid,
     );
     // Rank Right
     processDirection(
@@ -276,7 +282,8 @@ function findRook(
       captureCheck,
       captureMove,
       normalCheck,
-      normalMove
+      normalMove,
+      gameid,
     );
   }
 }

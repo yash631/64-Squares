@@ -1,7 +1,6 @@
 const not = require("../../notations");
 const prom = require("./findForCheck/atPromotion");
 const ltrt = require("./findForCheck/leftRightDiag");
-const getBoard = require("../../../Board/createBoard");
 const pinQR = require("./afterPinnedFromQorR");
 const pinQB = require("./afterPinnedFromQorB");
 const newPin = require("../King/findPins/checkNewPins");
@@ -19,7 +18,8 @@ function findPawn(
   board,
   prevMove,
   isInCheck,
-  checkInfo
+  checkInfo,
+  gameid
 ) {
   pawnCaptureSquares[color] = [];
   let pinnedPcs = newPin.getPinnedPcs();
@@ -99,7 +99,8 @@ function findPawn(
             board,
             iGP,
             [rank, file],
-            checkInfo
+            checkInfo,
+            gameid,
           );
         } else if (pinningPiece === "b" || pinningPiece === "q") {
           pinQB.findMovesAfterPin(
@@ -115,7 +116,8 @@ function findPawn(
             board,
             [rank, file],
             [pinningPieceRow, pinningPieceCol],
-            checkInfo
+            checkInfo,
+            gameid,
           );
         }
         continue;
@@ -143,7 +145,8 @@ function findPawn(
             [rank + square_left[0], file + square_left[1]],
             oppKing,
             color,
-            pawn
+            pawn,
+            gameid
           );
           if (checkPieceInfo) {
             const move = `${fl[file]}x${fl[file + square_left[1]]}${
@@ -178,7 +181,8 @@ function findPawn(
             [rank + square_right[0], file + square_right[1]],
             oppKing,
             color,
-            pawn
+            pawn,
+            gameid
           );
           if (checkPieceInfo) {
             const move = `${fl[file]}x${fl[file + square_right[1]]}${
@@ -209,7 +213,8 @@ function findPawn(
             [prmt_rank[color], file],
             oppKing,
             color,
-            pawn
+            pawn,
+            gameid
           );
           if (checkPieceInfo) {
             const move = `${fl[file]}${rk[rank + MOVE[color]]}=${
@@ -245,7 +250,8 @@ function findPawn(
           color,
           [rank + MOVE[color], file],
           oppKing,
-          pawn
+          pawn,
+          gameid
         );
         if (checkPieceInfo) {
           const move = `${fl[file]}${rk[rank + MOVE[color]]}+`;
@@ -274,7 +280,8 @@ function findPawn(
             color,
             [rank + MOVE[`start${color}`][1], file],
             oppKing,
-            pawn
+            pawn,
+            gameid
           );
           if (checkPieceInfo) {
             const move = `${fl[file]}${rk[rank + MOVE[`start${color}`][1]]}+`;
@@ -307,7 +314,8 @@ function findPawn(
           color,
           [rank + square_left[0], file + square_left[1]],
           oppKing,
-          pawn
+          pawn,
+          gameid
         );
         if (checkPieceInfo) {
           const move = `${fl[file]}x${fl[file + square_left[1]]}${
@@ -345,7 +353,8 @@ function findPawn(
           color,
           [rank + square_left[0], file + square_left[1]],
           oppKing,
-          pawn
+          pawn,
+          gameid
         );
         if (checkPieceInfo) {
           const move = `${fl[file]}x${fl[file + square_left[1]]}${
@@ -385,7 +394,8 @@ function findPawn(
           color,
           [rank + square_right[0], file + square_right[1]],
           oppKing,
-          pawn
+          pawn,
+          gameid
         );
         if (checkPieceInfo) {
           const move = `${fl[file]}x${fl[file + square_right[1]]}${
@@ -422,7 +432,8 @@ function findPawn(
           color,
           [rank + square_right[0], file + square_right[1]],
           oppKing,
-          pawn
+          pawn,
+          gameid
         );
         if (checkPieceInfo) {
           const move = `${fl[file]}x${fl[file + square_right[1]]}${

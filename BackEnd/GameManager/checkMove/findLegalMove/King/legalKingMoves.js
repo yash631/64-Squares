@@ -1,20 +1,10 @@
+const getBoard = require("../../../Board/createBoard");
 const not = require("../../notations");
 const allDir = require("./findForCheck/allDirections");
 const castle = require("./canCastle");
-const oppponent = require("../../checkValid/isValidMove");
 
-let Castling = {
-  0: {
-    q: 1, // Queen side castling O-O-O for black
-    k: 1, // King side castling O-O for black
-  },
-  1: {
-    q: 1, // Queen side castling O-O-O for white
-    k: 1, // King side castling O-O for white
-  },
-};
-
-function findKing(color, lm, ALLPCS, iGP, rk, fl, board, isInCheck, checkInfo) {
+function findKing(color, lm, ALLPCS, iGP, rk, fl, board, isInCheck, checkInfo, gameid) {
+  let Castling = getBoard.getCastleState(gameid);
   const opp_king = not.KING[1 - color];
   const king = not.KING[color];
   const king_sq = iGP[king][0];
@@ -121,7 +111,8 @@ function findKing(color, lm, ALLPCS, iGP, rk, fl, board, isInCheck, checkInfo) {
           [king_sq[0], king_sq[0]],
           totalMoves,
           opp_king,
-          color
+          color,
+          gameid,
         );
         if (checkPieceInfo) {
           captureCheck(rank, file, checkPieceInfo);
@@ -138,7 +129,8 @@ function findKing(color, lm, ALLPCS, iGP, rk, fl, board, isInCheck, checkInfo) {
           [king_sq[0], king_sq[0]],
           totalMoves,
           opp_king,
-          color
+          color,
+          gameid,
         );
         if (checkPieceInfo) {
           normalCheck(rank, file, checkPieceInfo);
@@ -156,4 +148,4 @@ function findKing(color, lm, ALLPCS, iGP, rk, fl, board, isInCheck, checkInfo) {
     }
   }
 }
-module.exports = { findKing, Castling };
+module.exports = { findKing };

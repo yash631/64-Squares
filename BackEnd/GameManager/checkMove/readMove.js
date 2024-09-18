@@ -4,8 +4,8 @@ const not = require("./notations");
 const getIndex = require("../checkMove/checkValid/getBoardIndex");
 let gameEnd = false;
 
-async function readThisMove(move, color, promotedPiece) {
-  let board = getBoard.Board;
+async function readThisMove(move, color, promotedPiece, gameid) {
+  let board = getBoard.getCurrentBoard(gameid);
   const c = not.COLOR[color];
   let promotionSquare = undefined;
   let enPassantPawnSquare = undefined;
@@ -118,7 +118,8 @@ async function readThisMove(move, color, promotedPiece) {
 
   const curr_piece = board[targetSq[0]][targetSq[1]];
   const king = not.KING[c];
-  console.log("FinalMove : ", finalMove);
+  /* console.log("FinalMove : ", finalMove); */
+  
   if (finalMove.includes("O-O")) {
     board[initialRookSq[0]][initialRookSq[1]] = " ";
     board[sourceSq[0]][sourceSq[1]] = " ";
@@ -136,7 +137,7 @@ async function readThisMove(move, color, promotedPiece) {
     board[sourceSq[0]][sourceSq[1]] = " ";
   }
 
-  board = getBoard.Board;
+  board = getBoard.getCurrentBoard(gameid);
   const inGamePcs = getBoard.createInGamePcs(board);
   const oppKing = not.KING[1 - c];
   const oppKingPos = inGamePcs[oppKing][0];
@@ -158,6 +159,7 @@ async function readThisMove(move, color, promotedPiece) {
     board[targetSq[0]][targetSq[1]] = curr_piece;
     board[sourceSq[0]][sourceSq[1]] = piece;
   }
+
   return [
     c,
     pcsSymbol,
@@ -170,7 +172,7 @@ async function readThisMove(move, color, promotedPiece) {
   ];
 }
 
-async function checkValidity(move, color, promotionPiece) {
+async function checkValidity(move, color, promotionPiece, gameid) {
   return new Promise(async (resolve, reject) => {
     /* Return any accidental moves if game has ended */
     if (gameEnd) {
@@ -188,10 +190,10 @@ async function checkValidity(move, color, promotionPiece) {
         enPassantCapturePawn,
         promotionSquare,
         promotedPiece,
-      ] = await readThisMove(move, color, promotionPiece);
+      ] = await readThisMove(move, color, promotionPiece, gameid);
 
       /* Find that the move is valid or not */
-      const result = getIndex.squareToIndex(c, pcsSymb, src, finalMove);
+      const result = getIndex.squareToIndex(c, pcsSymb, src, finalMove, gameid);
 
       /* Change move string if checkmate occurs */
       if (result[0] === "1") {

@@ -1,7 +1,7 @@
 const { isValid } = require("./isValidMove");
 const not = require("../notations");
 
-function squareToIndex(color, piece, initial_Sq, move) {
+function squareToIndex(color, piece, initial_Sq, move,gameid) {
   let curr_sq = [],
     target_sq = [];
   curr_sq[0] = not.RTI[initial_Sq[1]];
@@ -34,7 +34,8 @@ function squareToIndex(color, piece, initial_Sq, move) {
     curr_sq[0],
     curr_sq[1],
     target_sq[0],
-    target_sq[1]
+    target_sq[1],
+    gameid
   );
 }
 module.exports = { squareToIndex };
