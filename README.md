@@ -47,7 +47,7 @@ Once the development server is running:
 
 1. **Start a New Game**
 
-   - Open the platform in two browser windows or tabs by navigating to http://localhost:5500/FrontEnd/mainGame.html. This will allow two idle players to join the same game.
+   - To run the game, open `FrontEnd/mainGame.html` with live server in two separate browser windows or tabs. This allows two players to join the same game session and interact in real-time.
    - Type your name and click on the "Start a game" button to join a new chess match.
 
 2. **Multiplayer Mode**
