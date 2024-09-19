@@ -1,4 +1,4 @@
-# 64Sqaures
+# 64Squares
 
 ## Description
 
@@ -20,7 +20,7 @@
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/yash631/64Sqaures.git
+   git clone https://github.com/yash631/64-Squares.git
    ```
 
 2. **Navigate to the project directory:**
@@ -47,7 +47,7 @@ Once the development server is running:
 
 1. **Start a New Game**
 
-   - To run the game, open [file](FrontEnd/mainGame.html) with live server in two separate browser windows or tabs. This allows two players to join the same game session and interact in real-time.
+   - To run the game, open [FrontEnd/mainGame.html](FrontEnd/mainGame.html) with live server in two separate browser windows or tabs. This allows two players to join the same game session and interact in real-time.
    - Type your name and click on the "Start a game" button to join a new chess match.
 
 2. **Multiplayer Mode**
