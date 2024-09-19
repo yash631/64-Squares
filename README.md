@@ -47,7 +47,7 @@ Once the development server is running:
 
 1. **Start a New Game**
 
-   - To run the game, open `FrontEnd/mainGame.html` with live server in two separate browser windows or tabs. This allows two players to join the same game session and interact in real-time.
+   - To run the game, open [file](FrontEnd/mainGame.html) with live server in two separate browser windows or tabs. This allows two players to join the same game session and interact in real-time.
    - Type your name and click on the "Start a game" button to join a new chess match.
 
 2. **Multiplayer Mode**
